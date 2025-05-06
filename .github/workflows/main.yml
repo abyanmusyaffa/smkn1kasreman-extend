@@ -3,7 +3,7 @@ name: Deploy Laravel to cPanel via FTP
 on:
   push:
     branches:
-      - production
+      - main
 
 jobs:
   deploy:
