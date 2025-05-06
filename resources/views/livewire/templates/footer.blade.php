@@ -68,6 +68,6 @@
 
     </div>
     <div class="grid place-items-center w-full h-8 lg:h-12 bg-blue-700">
-      <p class="text-slate-50 text-2xs lg:text-lg">© 2025 SMKN {{ $school->name }} ft Abyan Aufa Alif Musyaffa</p>
+      <p class="text-slate-50 text-2xs lg:text-lg">© 2025 SMKN {{ $school->name }} ft Abyan Aufa Alif Musyaffa (test)</p>
     </div>
   </footer>
