@@ -13,23 +13,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
+      # - name: Setup PHP
+      #   uses: shivammathur/setup-php@v2
+      #   with:
+      #     php-version: '8.2'
     
-      - name: Install Composer dependencies
-        run: composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+      # - name: Install Composer dependencies
+      #   run: composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
         
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 22
+      # - name: Set up Node.js
+      #   uses: actions/setup-node@v3
+      #   with:
+      #     node-version: 22
   
-      - name: Install NPM dependencies and build Vite
-        run: |
-          npm install
-          npm run build
+      # - name: Install NPM dependencies and build Vite
+      #   run: |
+      #     npm install
+      #     npm run build
   
       - name: FTP Deploy
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
@@ -37,8 +37,8 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./smkn1kasreman
-          server-dir: /smkn1kasreman
+          local-dir: ./
+          server-dir: /smkn1kasreman/
           exclude: |
             **/.git*
             **/node_modules/**
