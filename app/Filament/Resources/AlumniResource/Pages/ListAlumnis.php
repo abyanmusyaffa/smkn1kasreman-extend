@@ -68,8 +68,8 @@ class ListAlumnis extends ListRecords
             Actions\ImportAction::make()
                 ->label('Impor Siswa')
                 ->importer(AlumniImporter::class)
-                ->maxRows(300) // Sesuaikan batas maksimum baris
-                ->chunkSize(100), // Ukuran chunk untuk processing
+                ->maxRows(300)
+                ->chunkSize(100),
         ];
     }
 }
