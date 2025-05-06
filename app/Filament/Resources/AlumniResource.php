@@ -277,11 +277,37 @@ class AlumniResource extends Resource
                         ->imageCropAspectRatio('3:4')
                         ->imageResizeTargetWidth('600')
                         ->imageResizeTargetHeight('800')
-                        ->directory(fn ($record) => 'alumnis/' . Str::slug($record?->groups?->name ?? 'unknown'))
-                        ->getUploadedFileNameForStorageUsing(function ($file, $record) {
-                            $nis = $record?->nis ?? '0000';
-                            $prefix = substr($nis, 0, 4);
+                        // ->directory(fn ($record) => 'alumnis/' . Str::slug($record?->groups?->name ?? 'unknown'))
+                        // ->getUploadedFileNameForStorageUsing(function ($file, $record) {
+                        //     $nis = $record?->nis ?? '0000';
+                        //     $prefix = substr($nis, 0, 4);
                         
+                        //     return $prefix . '.' . $file->getClientOriginalExtension();
+                        // })
+                        ->directory(function (callable $get) {
+                            // Get the current group_id from the form state
+                            $groupId = $get('group_id');
+                            
+                            // If using Livewire 3 and have group relationship directly in the form
+                            if ($groupName = $get('groups.name')) {
+                                return 'alumnis/' . Str::slug($groupName);
+                            }
+                            
+                            // If using a Select with group_id, you might need to manually fetch the group name
+                            // This is a fallback for when the group name isn't directly available in the form
+                            if ($groupId) {
+                                // Assuming you have a Group model
+                                $group = \App\Models\Group::find($groupId);
+                                return 'alumnis/' . Str::slug($group?->name ?? 'unknown');
+                            }
+                            
+                            return 'alumnis/unknown';
+                        })
+                        ->getUploadedFileNameForStorageUsing(function ($file, callable $get) {
+                            // Use $get() to access the current form state values
+                            $nis = $get('nis') ?? '0000';
+                            $prefix = substr($nis, 0, 4);
+                            
                             return $prefix . '.' . $file->getClientOriginalExtension();
                         })
                         ->default('/default/alumni.svg')
@@ -351,22 +377,6 @@ class AlumniResource extends Resource
                     ->label('Status'),
             ])
             ->defaultGroup('groups.name')
-            // ->modifyQueryUsing(function (Builder $query) {
-            //     return $query->selectRaw('
-            //         *,
-            //         CASE status
-            //             WHEN "active" THEN "Aktif"
-            //             WHEN "passing" THEN "Lulus"
-            //             WHEN "transferred" THEN "Pindah"
-            //             WHEN "dropped" THEN "Keluar"
-            //             ELSE status
-            //         END AS status_label
-            //     ');
-            // })
-            // ->headerActions([
-            //     ImportAction::make()
-            //         ->importer(AlumniImporter::class)
-            // ])
             ->columns([
                 Tables\Columns\TextColumn::make('nis')
                     ->label('NIS')
@@ -401,13 +411,6 @@ class AlumniResource extends Resource
                 Tables\Columns\TextColumn::make('groups.name')
                     ->searchable()
                     ->label('Kelas')
-                    // ->badge()
-                    // ->color(fn (string $state): string => match ($state) {
-                    //     'TKJ' => 'danger',
-                    //     'AKL' => 'warning',
-                    //     'KL' => 'success',
-                    //     'DPB' => 'info',
-                    // })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('groups.majors.alias')
                     ->searchable()

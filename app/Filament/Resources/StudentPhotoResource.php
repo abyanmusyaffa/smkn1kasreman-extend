@@ -58,7 +58,26 @@ class StudentPhotoResource extends Resource
                         ->imageResizeTargetHeight('400')
                         ->panelLayout('grid')
                         ->reorderable()
-                        ->directory(fn ($record) => 'alumnis/' . Str::slug($record?->groups?->name ?? 'unknown'))
+                        // ->directory(fn ($record) => 'alumnis/' . Str::slug($record?->groups?->name ?? 'unknown'))
+                        ->directory(function (callable $get) {
+                            // Get the current group_id from the form state
+                            $groupId = $get('group_id');
+                            
+                            // If using Livewire 3 and have group relationship directly in the form
+                            if ($groupName = $get('groups.name')) {
+                                return 'alumnis/' . Str::slug($groupName);
+                            }
+                            
+                            // If using a Select with group_id, you might need to manually fetch the group name
+                            // This is a fallback for when the group name isn't directly available in the form
+                            if ($groupId) {
+                                // Assuming you have a Group model
+                                $group = \App\Models\Group::find($groupId);
+                                return 'alumnis/' . Str::slug($group?->name ?? 'unknown');
+                            }
+                            
+                            return 'alumnis/unknown';
+                        })
                         ->required()
                         ->columnSpan([
                             'default' => 2,
