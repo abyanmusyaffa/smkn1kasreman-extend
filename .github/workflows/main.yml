@@ -41,6 +41,7 @@ jobs:
           server-dir: /smkn1kasreman/
           protocol: ftps
           port: 21
+          timeout: 190000
           exclude: |
             **/.git*
             **/node_modules/**
