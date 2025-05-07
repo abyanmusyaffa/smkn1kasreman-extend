@@ -39,6 +39,8 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./
           server-dir: /smkn1kasreman/
+          protocol: ftp
+          passive: true
           exclude: |
             **/.git*
             **/.git*/**
