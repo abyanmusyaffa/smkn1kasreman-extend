@@ -1,4 +1,4 @@
-name: Deploy Laravel to cPanel via FTP
+name: Laravel to cPanel via FTP
 
 on:
   push:
@@ -39,8 +39,6 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./
           server-dir: /smkn1kasreman/
-          protocol: ftp
-          passive: true
           exclude: |
             **/.git*
             **/.git*/**
