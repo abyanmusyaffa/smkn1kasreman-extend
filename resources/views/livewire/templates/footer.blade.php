@@ -61,13 +61,13 @@
           <a href="/major" wire:navigate class="text-xs lg:text-xl text-slate-50">Konsentrasi Keahlian</a>
           <a href="/news" wire:navigate class="text-xs lg:text-xl text-slate-50">Berita</a>
           <a href="/achievement" wire:navigate class="text-xs lg:text-xl text-slate-50">Prestasi</a>
-          <a href="/enrollment" wire:navigate class="text-xs lg:text-xl text-slate-50">PPDB</a>
+          <a href="/enrollment" wire:navigate class="text-xs lg:text-xl text-slate-50">SPMB</a>
         </div>
       </div>
       <!-- menu -->
 
     </div>
     <div class="grid place-items-center w-full h-8 lg:h-12 bg-blue-700">
-      <p class="text-slate-50 text-2xs lg:text-lg">© 2025 SMKN {{ $school->name }}</p>
+      <p class="text-slate-50 text-xs lg:text-lg">© 2025 IT SMKN {{ $school->name }}</p>
     </div>
   </footer>

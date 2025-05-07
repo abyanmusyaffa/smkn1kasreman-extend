@@ -9,7 +9,7 @@
 
     <!-- all announ -->
     <div data-aos="fade-up" class="flex flex-col gap-4 w-full justify-center">
-      <livewire:components.title-left text="Informasi " span="PPDB" />
+      <livewire:components.title-left text="Informasi " span="SPMB" />
 
       <livewire:components.paginate :onEnrollments="true" />
     </div>

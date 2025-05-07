@@ -12,7 +12,7 @@ class Enrollment extends Component
     
     public function mount()
     {
-        $this->dispatch('title', title: 'Informasi PPDB');
+        $this->dispatch('title', title: 'Informasi SPMB');
     }
     
     public function render()
