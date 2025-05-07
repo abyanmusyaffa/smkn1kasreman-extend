@@ -68,6 +68,6 @@
 
     </div>
     <div class="grid place-items-center w-full h-8 lg:h-12 bg-blue-700">
-      <p class="text-slate-50 text-xs lg:text-lg">© 2025 IT SMKN {{ $school->name }}</p>
+      <p class="text-slate-50 text-xs lg:text-lg">© 2025 SMKN {{ $school->name }}</p>
     </div>
   </footer>
