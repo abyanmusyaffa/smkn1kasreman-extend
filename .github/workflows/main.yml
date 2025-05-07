@@ -41,6 +41,7 @@ jobs:
           server-dir: /smkn1kasreman/
           exclude: |
             **/.git*
+            **/.git*/**
             **/node_modules/**
             **/tests/**
             **/.github/**
