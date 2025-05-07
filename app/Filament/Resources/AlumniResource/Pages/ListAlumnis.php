@@ -7,10 +7,12 @@ use App\Models\Alumni;
 use App\Models\StudentPhoto;
 use Filament\Actions\Action;
 use Illuminate\Support\Facades\DB;
+use App\Filament\Exports\AlumniExporter;
 use App\Filament\Imports\AlumniImporter;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 use App\Filament\Resources\AlumniResource;
+use Filament\Actions\Exports\Enums\ExportFormat;
 
 class ListAlumnis extends ListRecords
 {
@@ -70,6 +72,13 @@ class ListAlumnis extends ListRecords
                 ->importer(AlumniImporter::class)
                 ->maxRows(300)
                 ->chunkSize(100),
+            Actions\ExportAction::make()
+                // ->formats([
+                //     ExportFormat::Xlsx,
+                //     ExportFormat::Csv,
+                // ])
+                ->label('Ekspor Siswa')
+                ->exporter(AlumniExporter::class)
         ];
     }
 }

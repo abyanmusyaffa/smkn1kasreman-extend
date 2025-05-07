@@ -22,13 +22,16 @@ use Filament\Support\Enums\ActionSize;
 use Filament\Forms\Components\Repeater;
 use Filament\Tables\Actions\BulkAction;
 use Illuminate\Database\Eloquent\Model;
+use App\Filament\Exports\AlumniExporter;
 use App\Filament\Imports\AlumniImporter;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\ImportAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Filament\Tables\Actions\ExportBulkAction;
 use App\Filament\Resources\AlumniResource\Pages;
+use Filament\Actions\Exports\Enums\ExportFormat;
 
 class AlumniResource extends Resource
 {
@@ -462,6 +465,12 @@ class AlumniResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make()
+                        // ->formats([
+                        //     ExportFormat::Xlsx,
+                        //     ExportFormat::Csv,
+                        // ])
+                        ->exporter(AlumniExporter::class),
                     BulkAction::make('updatePassing')
                         ->label('Ubah Status Lulus')
                         ->icon('fas-graduation-cap')

@@ -73,7 +73,7 @@
               <div class="h-[1px] w-full bg-slate-200"></div>
             </a>
             <a href="/enrollment" wire:navigate class="flex flex-col gap-1 group">
-              <p class="text-sm {{ $title === 'Informasi PPDB' ? 'text-blue-500' : 'text-slate-500' }} group-hover:text-blue-500">PPDB</p>
+              <p class="text-sm {{ $title === 'Informasi SPMB' ? 'text-blue-500' : 'text-slate-500' }} group-hover:text-blue-500">SPMB</p>
               <div class="h-[1px] w-full bg-slate-200"></div>
             </a>
             <a href="/jobfair" wire:navigate class="flex flex-col gap-1 group">
@@ -147,7 +147,7 @@
           <div class="flex-col w-full gap-2 rounded-lg items-center hidden peer-checked:flex transition-all py-2" id="dropdownMenu">
             <a href="/news" wire:navigate class="text-slate-50 whitespace-nowrap">Berita</a>
             <a href="/announcement" wire:navigate class="text-slate-50 whitespace-nowrap">Pengumuman</a>
-            <a href="/enrollment" wire:navigate class="text-slate-50 whitespace-nowrap">PPDB</a>
+            <a href="/enrollment" wire:navigate class="text-slate-50 whitespace-nowrap">SPMB</a>
             <a href="/jobfair" wire:navigate class="text-slate-50 whitespace-nowrap">Bursa Kerja</a>
           </div>
           <!-- dropdown -->
