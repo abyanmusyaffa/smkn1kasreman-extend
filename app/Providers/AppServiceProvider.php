@@ -24,10 +24,10 @@ class AppServiceProvider extends ServiceProvider
     {
         Carbon::setLocale('id');
 
-        // View::composer('livewire.layouts.app', function ($view) {
-        //     $school = School::first();
-        //     $view->with('name', $school->name)
-        //          ->with('logo', $school->logo);
-        // });
+        View::composer('livewire.layouts.app', function ($view) {
+            $school = School::first();
+            $view->with('name', $school->name)
+                 ->with('logo', $school->logo);
+        });
     }
 }
