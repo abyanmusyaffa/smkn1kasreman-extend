@@ -39,6 +39,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./
           server-dir: /smkn1kasreman/
+          protocol: ftp
           exclude: |
             **/.git*
             **/node_modules/**
