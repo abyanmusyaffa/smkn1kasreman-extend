@@ -105,7 +105,9 @@ class TestimonialResource extends Resource
                 Tables\Columns\TextColumn::make('alumnis.name')
                     ->label('Nama')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()                    
+                    ->url(fn ($record) => route('filament.admin.resources.alumnis.edit', ['record' => $record->alumnis->id]))
+                    ->openUrlInNewTab(false),
                 Tables\Columns\TextColumn::make('rating')
                     ->badge()
                     ->color(fn (int $state): string => match ($state) {

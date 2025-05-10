@@ -425,15 +425,59 @@ class AlumniResource extends Resource
                         'DPB' => 'info',
                     })
                     ->label('Jurusan')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('enrollment_year')
                     ->sortable()
-                    ->label('Tahun Masuk')
-                    ->searchable(),
+                    ->label('Tahun Masuk'),
                 Tables\Columns\TextColumn::make('passing_year')
                     ->sortable()
-                    ->label('Tahun Keluar')
-                    ->searchable(),
+                    ->label('Tahun Keluar'),
+                Tables\Columns\TextColumn::make('academic_year')
+                    ->label('Tahun Ajar')
+                    ->toggleable(isToggledHiddenByDefault: true),   
+                Tables\Columns\TextColumn::make('username')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),   
+                Tables\Columns\TextColumn::make('nisn')
+                    ->label('NISN')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),   
+                Tables\Columns\TextColumn::make('address')
+                    ->wrap()
+                    ->label('Alamat')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),   
+                Tables\Columns\TextColumn::make('address_village')
+                    ->label('Kelurahan/Desa')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),   
+                Tables\Columns\TextColumn::make('address_subdistrict')
+                    ->label('Kecamatan')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),   
+                Tables\Columns\TextColumn::make('address_regency')
+                    ->label('Kabupaten')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),     
+                Tables\Columns\TextColumn::make('address_province')
+                    ->label('Provinsi')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),     
+                Tables\Columns\TextColumn::make('gender')
+                    ->label('Jenis Kelamin')
+                    ->formatStateUsing(function (string $state) {
+                        return match ($state) {
+                            'male' => 'L',
+                            'female' => 'P',
+                            default => ucfirst($state),
+                        };
+                    })
+                    ->toggleable(isToggledHiddenByDefault: true),   
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Dibuat')
                     ->since()

@@ -27,7 +27,8 @@ class AppServiceProvider extends ServiceProvider
         View::composer('livewire.layouts.app', function ($view) {
             $school = School::first();
             $view->with('name', $school->name)
-                 ->with('logo', $school->logo);
+                 ->with('logo', $school->logo)
+                 ->with('description', $school->description);
         });
     }
 }
