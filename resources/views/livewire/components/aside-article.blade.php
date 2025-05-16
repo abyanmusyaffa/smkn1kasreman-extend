@@ -8,7 +8,7 @@
                 @elseif($articles->first()->category === 'announcement')
                     Pengumuman
                 @elseif($articles->first()->category === 'enrollment')
-                    Informasi PPDB
+                    Informasi SPMB
                 @endif
             @elseif($achievements && $achievements->count() > 0)
                 Prestasi
