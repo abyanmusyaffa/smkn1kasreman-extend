@@ -26,10 +26,10 @@ class Paginate extends Component
     public function render()
     {
         return view('livewire.components.paginate', [
-            'achievements'=> $this->onAchievements ? Achievement::where('is_pinned', false)->orderBy('updated_at', 'desc')->paginate(12) : [],
+            'achievements'=> $this->onAchievements ? Achievement::orderBy('updated_at', 'desc')->paginate(12) : [],
             'partners' =>  $this->onPartners ? Partner::orderBy('updated_at', 'desc')->paginate(12) : [] ,
             'testimonials' => $this->onTestimonials ? Testimonial::with('alumnis')->where('show', true)->orderBy('created_at', 'desc')->paginate(12) : [] ,
-            'news' => $this->onNews ? Article::where('category', 'news')->where('is_pinned', false)->orderBy('updated_at', 'desc')->paginate(12) : [] ,
+            'news' => $this->onNews ? Article::where('category', 'news')->orderBy('updated_at', 'desc')->paginate(12) : [] ,
             'announcements' => $this->onAnnouncements ? Article::where('category', 'announcement')->where('is_pinned', false)->orderBy('updated_at', 'desc')->paginate(12) : [] ,
             'enrollments' => $this->onEnrollments ? Article::where('category', 'enrollment')->where('is_pinned', false)->orderBy('updated_at', 'desc')->paginate(12) : [] ,
             'jobfairs' => $this->onJobfairs ? Jobfair::where('show', true)->orderBy('updated_at', 'desc')->paginate(12) : [] ,

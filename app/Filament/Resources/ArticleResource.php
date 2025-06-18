@@ -81,7 +81,35 @@ class ArticleResource extends Resource
                         ->required()
                         ->columnSpan([
                             'default' => 2,
-                            'lg' => 12,
+                            'lg' => 6,
+                        ]),
+                    Forms\Components\Toggle::make('is_running')
+                        ->label('Running')
+                        ->live()
+                        ->afterStateUpdated(function (bool $state, callable $set, callable $get) {
+                            $category = $get('category');
+                            $articleId = $get('id'); 
+                        
+                            if ($state) {
+                                Article::whereIn('category', ['announcement', 'enrollment'])
+                                    ->where('is_running', true)
+                                    ->where('id', '!=', $articleId)
+                                    ->update(['is_running' => false]);
+                        
+                                $set('is_running', true);
+                        
+                                Notification::make()
+                                    ->success()
+                                    ->title('Artikel ditampilkan di Running Text')
+                                    ->send();
+                            } else {
+                                $set('is_running', false);
+                            }
+                        })                                                        
+                        ->required()
+                        ->columnSpan([
+                            'default' => 2,
+                            'lg' => 6,
                         ]),
                     Forms\Components\TextInput::make('title')
                         ->label('Judul')
@@ -194,6 +222,24 @@ class ArticleResource extends Resource
                     })
                     ->sortable()
                     ->label('Sematkan'),
+                Tables\Columns\ToggleColumn::make('is_running')
+                    ->label('Running')
+                    ->afterStateUpdated(function (bool $state, Article $record) {
+                        if ($state) {
+                            Article::whereIn('category', ['announcement', 'enrollment'])
+                                ->where('is_running', true)
+                                ->where('id', '!=', $record->id)
+                                ->update(['is_running' => false]);
+                
+                            Notification::make()
+                                ->success()
+                                ->title('Artikel ditampilkan di Running Text')
+                                ->send();
+                        }
+                
+                        $record->is_running = $state;
+                        $record->save();
+                    }),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Dibuat')
                     ->since()

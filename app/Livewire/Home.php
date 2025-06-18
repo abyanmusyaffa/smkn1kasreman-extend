@@ -44,18 +44,32 @@ class Home extends Component
 
     public function render()
     {
+        // return view('livewire.home', [
+        //     'majors' => Major::select('id', 'expertise_concentration', 'alias', 'logo')->get(),
+        //     // 'announcement_text' => Article::whereIn('category',['announcement', 'enrollment'])->where('is_pinned', true)->pluck('title', 'slug')->get(),
+        //     'school' => School::first(),
+        //     'summary' => $this->getFirstParagraph(),
+        //     'video_id' => $this->getYoutubeVideoId(School::first()->url_video_profile),
+        //     'heros' => Photo::where('type', 'hero')->value('photo'),
+        //     'galleries' => Photo::where('type', 'gallery')->value('photo'),
+        //     'partners' => Partner::where('logo', 'NOT LIKE', '%default%')->pluck('logo'),
+        //     'achievements' => Achievement::orderBy('created_at', 'desc')->take(4)->get(),
+        //     'testimonials' => Testimonial::with('alumnis')->where('show', true)->orderBy('created_at', 'desc')->take(6)->get(),
+        //     'articles' => Article::orderBy('created_at', 'desc')->take(4)->get(),
+        // ]);
         return view('livewire.home', [
             'majors' => Major::select('id', 'expertise_concentration', 'alias', 'logo')->get(),
-            'school' => School::first(),
+            'announcement_text' => Article::whereIn('category', ['announcement', 'enrollment'])->where('is_running', true)->select('title', 'slug', 'category')->first(),
+            'school' => $school = School::first(),
             'summary' => $this->getFirstParagraph(),
-            'video_id' => $this->getYoutubeVideoId(School::first()->url_video_profile),
+            'video_id' => $this->getYoutubeVideoId($school->url_video_profile),
             'heros' => Photo::where('type', 'hero')->value('photo'),
             'galleries' => Photo::where('type', 'gallery')->value('photo'),
             'partners' => Partner::where('logo', 'NOT LIKE', '%default%')->pluck('logo'),
-            'achievements' => Achievement::orderBy('created_at', 'desc')->take(4)->get(),
-            'testimonials' => Testimonial::with('alumnis')->where('show', true)->orderBy('created_at', 'desc')->take(6)->get(),
-            'articles' => Article::orderBy('created_at', 'desc')->take(4)->get(),
-        ]);
+            'achievements' => Achievement::latest()->take(4)->get(),
+            'testimonials' => Testimonial::with('alumnis')->where('show', true)->latest()->take(6)->get(),
+            'articles' => Article::latest()->take(4)->get(),
+        ]);        
     }
 
     private function getYoutubeVideoId(?string $url): ?string

@@ -1,13 +1,27 @@
-{{-- @dd($testimonials) --}}
-<div class="w-full overflow-hidden lg:min-h-[calc(100svh-376px)] min-h-[calc(100svh-512px)] flex flex-col gap-9 lg:gap-12 px-4 pt-20 pb-9 lg:px-16 2xl:px-36 lg:pt-[120px] lg:pb-12 bg-slate-100">
+{{-- @dd($announcement_text) --}}
+<div class="w-full overflow-hidden lg:min-h-[calc(100svh-376px)] min-h-[calc(100svh-512px)] flex flex-col gap-9 lg:gap-12 px-4 pt-20 pb-9 lg:px-16 2xl:px-36 lg:pt-32 lg:pb-12 bg-slate-100">
     <!-- hero -->
-    <figure class="relative flex w-full">
+    <figure class="relative flex w-full mt-8">
+      {{-- running text announ --}}
+      @if($announcement_text)
+      <a href="/{{ $announcement_text->category }}/{{ $announcement_text->slug }}" wire:navigate class="announ-container flex w-full h-6 lg:h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl absolute -top-10 lg:-top-12 overflow-hidden gap-8">
+        <div class="h-full w-fit flex bg-blue-500 justify-center items-center px-3 absolute z-[1] gap-2">
+          <p class="hidden lg:block text-slate-50 text-sm font-semibold">Pengumuman</p><span class="icon-[mdi--loudspeaker] text-slate-50 text-xl lg:text-2xl"></span>
+        </div>
+        <div class="announ-animation animate-announs-scroll h-full flex flex-shrink-0 items-center">
+          <p class="text-sm whitespace-nowrap text-slate-50">{{ $announcement_text->title }}</p>
+        </div>
+      </a>
+      @endif
+      {{-- running text announ --}}
+
       <div class="w-full relative overflow-hidden h-[480px] lg:h-[560px]">
         <!-- slideshow -->
         @foreach($heros as $index => $hero)
           <div data-slide-hero="{{ $index+1 }}" style="background-image: url(/storage/{{ $hero }})" class="w-full absolute inset-0 {{ $loop->first ? 'opacity-100' : 'opacity-0' }} transition-opacity duration-[2s] h-[480px] lg:h-[560px] rounded-2xl bg-center bg-cover bg-no-repeat"></div>
         @endforeach
       </div>
+
       <div class="absolute flex w-full h-[480px] lg:h-[560px] rounded-2xl bg-gradient-to-t from-slate-900 to-white/0 justify-center px-4 py-6 lg:py-9 items-end">
         <!-- welcome text -->
         <figcaption class="flex flex-col text-center w-full gap-2">
@@ -49,7 +63,7 @@
     <!-- summary -->
 
     <!-- major -->
-     <aside data-aos="fade-left" class="flex rounded-2xl bg-blue-600 w-full p-4 lg:py-6 lg:px-16 flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
+    <aside data-aos="fade-left" class="flex rounded-2xl bg-blue-600 w-full p-4 lg:py-6 lg:px-16 flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
       <div class="flex flex-col gap-2 lg:gap-4 w-full lg:w-1/3 text-center lg:text-start">
         <h2 class="text-2xl lg:text-5xl font-medium text-slate-50">Konsentrasi <br> Keahlian</h2>
         <p class="lg:text-xl text-slate-100">Beberapa konsentrasi keahlian di SMKN {{ $school->name }} dirancang untuk mengantarkan siswa meraih kesuksesan di masa depan.</p>
@@ -59,8 +73,21 @@
           <livewire:components.card-major-home wire:key="{{ $major->id }}" :alias="$major->alias" :colSpan="$loop->first ? 'lg:col-span-7' : ($loop->last ? 'lg:col-span-7' : 'lg:col-span-5')" :logo="$major->logo" :expertise_concentration="$major->expertise_concentration" />
         @endforeach
       </div>
-     </aside>
+    </aside>
     <!-- major -->
+
+    <!-- news -->
+    @if($articles->count() > 0)
+    <aside data-aos="fade-right" class="flex w-full flex-col gap-4 lg:gap-6 items-center">
+      <livewire:components.title-left :text="$school->alias" span="Terkini" />
+        <div class="drag-to-scroll flex w-full gap-4 overflow-x-scroll lg:overflow-x-visible cursor-grab active:cursor-grabbing snap-x snap-mandatory p-2 lg:p-0">
+          @foreach($articles as $article)
+            <livewire:components.card-article-home wire:key="{{ $article->id }}" :category="$article->category" :slug="$article->slug" :photo="$article->photo" :createdAt="$article->created_at" :title="$article->title" />
+          @endforeach
+        </div>
+    </aside>
+    @endif
+    <!-- news -->
 
     <!-- achievement -->
     @if($achievements->count() > 0)
@@ -89,19 +116,6 @@
       </figure>
     </aside>
     <!-- gallery -->
-
-    <!-- news -->
-    @if($articles->count() > 0)
-    <aside data-aos="fade-right" class="flex w-full flex-col gap-4 lg:gap-6 items-center">
-      <livewire:components.title-right :text="$school->alias" span="Terkini" />
-        <div class="drag-to-scroll flex w-full gap-4 overflow-x-scroll lg:overflow-x-visible cursor-grab active:cursor-grabbing snap-x snap-mandatory p-2 lg:p-0">
-          @foreach($articles as $article)
-            <livewire:components.card-article-home wire:key="{{ $article->id }}" :category="$article->category" :slug="$article->slug" :photo="$article->photo" :createdAt="$article->created_at" :title="$article->title" />
-          @endforeach
-        </div>
-    </aside>
-    @endif
-    <!-- news -->
 
     <!-- alumni story -->
     @if($testimonials->count() > 0)
@@ -176,6 +190,16 @@
             }
         });
         // drag to scroll alumni
+
+        // announ animation
+        const announContainer = document.querySelector('.announ-container');
+        const originalAnnoun = document.querySelector('.announ-animation');
+
+        for (let i = 0; i < 5; i++) {
+            const clonedAnnoun = originalAnnoun.cloneNode(true);
+            announContainer.appendChild(clonedAnnoun);
+        }
+        // announ animation
 
         // logo animation
         const logoContainer = document.querySelector('.logo-container');

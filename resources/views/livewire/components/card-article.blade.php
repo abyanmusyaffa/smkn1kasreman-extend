@@ -1,4 +1,4 @@
-<a href="/news/{{ $slug }}" wire:navigate class="w-full group">
+<a href="/{{ $category }}/{{ $slug }}" wire:navigate class="w-full group">
     <article class="flex w-full lg:flex-col rounded-2xl lg:pb-4 gap-2 lg:gap-12 bg-white lg:group-hover:scale-105 duration-500 transition-all">
         <figure style="background-image: url(/storage/{{ $photo }});" class="lg:aspect-[4/3] lg:w-full w-1/3 aspect-square rounded-s-2xl lg:rounded-tr-2xl lg:rounded-bl-none bg-cover bg-no-repeat bg-center"></figure>
         <figcaption class="w-2/3 lg:w-full flex flex-col justify-between gap-1 lg:gap-2 items-start relative lg:px-4 py-2 lg:py-0">

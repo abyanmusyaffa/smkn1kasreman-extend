@@ -31,6 +31,7 @@ export default {
             },
             animation: {
                 "partners-scroll": "infinite-scroll 15s linear infinite",
+                "announs-scroll": "infinite-scroll 8s linear infinite",
             },
         },
     },
