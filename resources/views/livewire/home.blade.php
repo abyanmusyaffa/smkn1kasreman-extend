@@ -195,9 +195,11 @@
         const announContainer = document.querySelector('.announ-container');
         const originalAnnoun = document.querySelector('.announ-animation');
 
-        for (let i = 0; i < 5; i++) {
-            const clonedAnnoun = originalAnnoun.cloneNode(true);
-            announContainer.appendChild(clonedAnnoun);
+        if (announContainer && originalAnnoun) {
+          for (let i = 0; i < 5; i++) {
+              const clonedAnnoun = originalAnnoun.cloneNode(true);
+              announContainer.appendChild(clonedAnnoun);
+          }
         }
         // announ animation
 
@@ -205,9 +207,11 @@
         const logoContainer = document.querySelector('.logo-container');
         const originalLogo = document.querySelector('.logo-animation');
 
-        for (let i = 0; i < 2; i++) {
-            const clonedLogo = originalLogo.cloneNode(true);
-            logoContainer.appendChild(clonedLogo);
+        if (logoContainer && originalLogo) {
+          for (let i = 0; i < 2; i++) {
+              const clonedLogo = originalLogo.cloneNode(true);
+              logoContainer.appendChild(clonedLogo);
+          }
         }
         // logo animation
       });
