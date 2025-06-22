@@ -1,17 +1,31 @@
 <div class="w-full lg:min-h-[calc(100svh-376px)] min-h-[calc(100svh-512px)] flex flex-col gap-9 lg:gap-12 px-4 pt-20 pb-9 lg:px-16 2xl:px-36 lg:pt-[120px] lg:pb-12 bg-white">
-    <!-- headmaster-->
-    @if($headMaster->count() > 0)
+  {{-- organizational structure --}}
+  @foreach($organizational_structures as $organizational_structure)
+    <article class="flex w-full flex-col gap-4 lg:gap-6 items-center">
+      <livewire:components.title-center text="{{ $organizational_structure->name }}"/>
+      <figcaption>
+        <p class="text-center lg:text-xl text-slate-700 prose max-w-none">{{ $organizational_structure->description }}</p>
+      </figcaption>
+      <figure>
+        <img class="w-full lg:w-auto lg:h-[512px]" src="storage/{{ $organizational_structure->photo }}" alt="">
+      </figure>
+    </article>
+  @endforeach
+  {{-- organizational structure --}}    
+  
+  <!-- headmaster-->
+    {{-- @if($headMaster->count() > 0)
       <article class="flex w-full flex-col gap-4 lg:gap-6 items-center">
           <livewire:components.title-left text="Kepala" span="Sekolah" />
         <div class="flex w-full justify-center">
           <livewire:components.card-staff :photo="$headMaster->photo" :name="$headMaster->name" :role="$headMaster->role" />
         </div>
       </article>
-    @endif
+    @endif --}}
     <!-- headmaster-->
      
     <!-- vice-->
-    @if($viceMasters->count() > 0)
+    {{-- @if($viceMasters)
     <aside data-aos="fade-up" class="flex w-full flex-col gap-4 lg:gap-6 items-center">
         <livewire:components.title-right text="Wakil Kepala" span="Sekolah" />
       <div class="flex w-full lg:justify-between pb-1 gap-2 drag-to-scroll cursor-grab active:cursor-grabbing snap-x snap-mandatory overflow-x-scroll">
@@ -20,11 +34,11 @@
         @endforeach
       </div>
     </aside>
-    @endif
+    @endif --}}
     <!-- vice-->
      
     <!-- head of major-->
-    @if($headsOfMajor->count() > 0)
+    {{-- @if($headsOfMajor)
     <aside data-aos="fade-up" class="flex w-full flex-col gap-4 lg:gap-6 items-center">
         <livewire:components.title-left text="Kakomli" span="" />
       <div class="flex w-full lg:justify-between pb-1 gap-2 drag-to-scroll cursor-grab active:cursor-grabbing snap-x snap-mandatory overflow-x-scroll">
@@ -33,13 +47,13 @@
         @endforeach
       </div>
     </aside>
-    @endif
+    @endif --}}
     <!-- head of major-->
 
     <!-- teacher-->
-    @if($teachers->count() > 0)
+    @if($teachers)
     <aside data-aos="fade-up" class="flex w-full flex-col gap-4 lg:gap-6 items-center">
-        <livewire:components.title-right text="Guru" span="" />
+        <livewire:components.title-center text="Guru" span="" />
       <div class="flex w-full lg:justify-between pb-1 gap-2 drag-to-scroll cursor-grab active:cursor-grabbing snap-x snap-mandatory overflow-x-scroll">
         @foreach($teachers as $teacher )
             <livewire:components.card-staff wire:key="{{ $teacher->id }}" :photo="$teacher->photo" :name="$teacher->name" :role="$teacher->role" />
@@ -50,9 +64,9 @@
     <!-- teacher-->
 
     <!-- staff-->
-    @if($staffMembers->count() > 0)
+    @if($staffMembers)
     <aside data-aos="fade-up" class="flex w-full flex-col gap-4 lg:gap-6 items-center">
-        <livewire:components.title-left text="Tenaga" span="Kependidikan" />
+        <livewire:components.title-center text="Tenaga Kependidikan" />
       <div class="flex w-full lg:justify-between pb-1 gap-2 drag-to-scroll cursor-grab active:cursor-grabbing snap-x snap-mandatory overflow-x-scroll">
         @foreach($staffMembers as $staff )
             <livewire:components.card-staff wire:key="{{ $staff->id }}" :photo="$staff->photo" :name="$staff->name" :role="$staff->role" />

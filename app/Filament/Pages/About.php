@@ -222,6 +222,21 @@ class About extends Page implements HasForms
                             'lg' => 12
                         ]),
             ]),
+            Section::make()
+                ->columns([
+                    'default' => 2,
+                    'lg' => 12,
+                ])
+                ->schema([
+                    FileUpload::make('school_map')
+                        ->image()
+                        ->directory('/logo')
+                        ->label('Denah Sekolah')
+                        ->columnSpan([
+                            'default' => 2,
+                            'lg' => 12
+                        ]),
+            ]),
         ])
         ->statePath('data');
     }

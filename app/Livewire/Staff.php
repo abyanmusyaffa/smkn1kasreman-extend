@@ -2,25 +2,27 @@
 
 namespace App\Livewire;
 
+use App\Models\OrganizationalStructure;
 use App\Models\Staff as StaffModel;
 use Livewire\Component;
 use Livewire\Attributes\Title;
 
 class Staff extends Component
 {
-    #[Title('GTK')]
+    #[Title('Struktur Organisasi')]
     
     public function mount()
     {
-        $this->dispatch('title', title: 'GTK');
+        $this->dispatch('title', title: 'Struktur Organisasi');
     }
 
     public function render()
     {
         return view('livewire.staff', [
-            'headMaster' => StaffModel::where('category', 'head-master')->first(), 
-            'viceMasters' => StaffModel::where('category', 'vice-master')->get(),
-            'headsOfMajor' => StaffModel::where('category', 'head-of-major')->get(),
+            // 'headMaster' => StaffModel::where('category', 'head-master')->first(), 
+            // 'viceMasters' => StaffModel::where('category', 'vice-master')->get(),
+            // 'headsOfMajor' => StaffModel::where('category', 'head-of-major')->get(),
+            'organizational_structures' => OrganizationalStructure::all(),
             'teachers' => StaffModel::where('category', 'teacher')->get(),
             'staffMembers' => StaffModel::where('category', 'staff')->get(),
         ]);

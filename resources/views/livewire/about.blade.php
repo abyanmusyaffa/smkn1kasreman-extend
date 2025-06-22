@@ -72,7 +72,7 @@
     <!-- profile -->
 
     <!-- facility -->
-    @if($facilities->count() > 0)
+    {{-- @if($facilities->count() > 0)
     <aside data-aos="fade-up" class="flex w-full flex-col gap-4 lg:gap-6 items-center">
       <livewire:components.title-right text="Sarana" span="Prasarana" />
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
@@ -81,7 +81,7 @@
         @endforeach
       </div>
     </aside>
-    @endif
+    @endif --}}
     <!-- facility -->
 
     @script

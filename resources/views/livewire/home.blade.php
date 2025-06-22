@@ -196,7 +196,7 @@
         const originalAnnoun = document.querySelector('.announ-animation');
 
         if (announContainer && originalAnnoun) {
-          for (let i = 0; i < 9; i++) {
+          for (let i = 0; i < 14; i++) {
               const clonedAnnoun = originalAnnoun.cloneNode(true);
               announContainer.appendChild(clonedAnnoun);
           }

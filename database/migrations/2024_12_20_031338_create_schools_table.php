@@ -29,6 +29,7 @@ return new class extends Migration
             $table->string('url_facebook')->nullable();
             $table->string('url_youtube')->nullable();
             $table->string('url_tiktok')->nullable();
+            $table->string('school_map')->nullable();
             $table->timestamps();
         });
     }
