@@ -51,6 +51,18 @@ class FacilityResource extends Resource
                             'default' => 2,
                             'lg' => 12,
                         ]),
+                    Forms\Components\Select::make('category')
+                        ->label('Kategori')
+                        ->required()
+                        ->options([
+                            'infrastructure' => 'Sarana Infrastruktur',
+                            'learning' => 'Sarana Pembelajaran',
+                        ])
+                        ->native(false)
+                        ->columnSpan([
+                            'default' => 2,
+                            'lg' => 12,
+                        ]),
                 ])
             ]);
     }
@@ -61,6 +73,21 @@ class FacilityResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nama')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('category')
+                    ->label('Kategori')
+                    ->formatStateUsing(function (string $state) {
+                        return match ($state) {
+                            'infrastructure' => 'Sarana Infrastruktur',
+                            'learning' => 'Sarana Pembelajaran',
+                        };
+                    })
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'infrastructure' => 'info',
+                        'learning' => 'warning',
+                    })
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')

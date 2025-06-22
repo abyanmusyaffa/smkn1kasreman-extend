@@ -11,7 +11,7 @@
     {{-- map --}}
   
     <!--infra-->
-    @if($infraFacilities)
+    @if($infraFacilities->count() !== 0)
     <aside data-aos="fade-up" class="flex w-full flex-col gap-4 lg:gap-6 items-center">
       <livewire:components.title-right text="Sarana" span="Infrastruktur" />
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
@@ -24,7 +24,7 @@
     <!-- infra -->
 
     <!-- learn -->
-    @if($learnFacilities)
+    @if($learnFacilities->count() !== 0)
     <aside data-aos="fade-up" class="flex w-full flex-col gap-4 lg:gap-6 items-center">
       <livewire:components.title-left text="Sarana" span="Pembelajaran" />
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
