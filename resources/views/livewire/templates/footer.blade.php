@@ -57,8 +57,8 @@
         <h2 class="font-medium text-xl lg:text-3xl text-slate-50">Menu Utama</h2>
         <div class="flex flex-col w-full gap-1 lg:gap-2">
           <a href="/about" wire:navigate class="text-xs lg:text-xl text-slate-50">Tentang Sekolah</a>
-          <a href="/staff" wire:navigate class="text-xs lg:text-xl text-slate-50">GTK</a>
-          <a href="/major" wire:navigate class="text-xs lg:text-xl text-slate-50">Konsentrasi Keahlian</a>
+          <a href="/major" wire:navigate class="text-xs lg:text-xl text-slate-50">Program Keahlian</a>
+          <a href="/staff" wire:navigate class="text-xs lg:text-xl text-slate-50">Ekstrakurikuler</a>
           <a href="/news" wire:navigate class="text-xs lg:text-xl text-slate-50">Berita</a>
           <a href="/achievement" wire:navigate class="text-xs lg:text-xl text-slate-50">Prestasi</a>
           <a href="/enrollment" wire:navigate class="text-xs lg:text-xl text-slate-50">SPMB</a>
@@ -68,6 +68,6 @@
 
     </div>
     <div class="grid place-items-center w-full h-8 lg:h-12 bg-blue-700">
-      <p class="text-slate-50 text-xs lg:text-lg">© 2025 SMKN {{ $school->name }}</p>
+      <p class="text-slate-50 text-xs lg:text-lg">© 2025 IT SMKN {{ $school->name }}</p>
     </div>
   </footer>
