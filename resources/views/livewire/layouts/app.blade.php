@@ -11,7 +11,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" href="/storage/{{ $logo }}" type="image/png">
  
-        <title>{{ $title }} | SMK N {{ $name }}</title>
+        <title>{{ $title }} | SMKN {{ $name }}</title>
  
         <style>
             [x-cloak] {

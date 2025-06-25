@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('url_video_profile');
             $table->longText('description');
             $table->text('welcome_text')->nullable();
+            $table->string('url_video_welcome');
             $table->string('address');
             $table->string('phone');
             $table->string('email');

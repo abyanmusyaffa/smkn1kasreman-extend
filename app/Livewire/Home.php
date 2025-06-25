@@ -2,15 +2,16 @@
 
 namespace App\Livewire;
 
-use App\Models\Achievement;
-use App\Models\Article;
 use App\Models\Major;
-use App\Models\Partner;
 use App\Models\Photo;
+use App\Models\Staff;
 use App\Models\School;
+use App\Models\Article;
+use App\Models\Partner;
+use Livewire\Component;
+use App\Models\Achievement;
 use App\Models\Testimonial;
 use Livewire\Attributes\Title;
-use Livewire\Component;
 
 class Home extends Component
 {
@@ -63,6 +64,8 @@ class Home extends Component
             'school' => $school = School::first(),
             'summary' => $this->getFirstParagraph(),
             'video_id' => $this->getYoutubeVideoId($school->url_video_profile),
+            'welcome_video_id' => $this->getYoutubeVideoId($school->url_video_welcome),
+            'head_master' => Staff::where('category', 'head-master')->value('name'),
             'heros' => Photo::where('type', 'hero')->value('photo'),
             'galleries' => Photo::where('type', 'gallery')->value('photo'),
             'partners' => Partner::where('logo', 'NOT LIKE', '%default%')->pluck('logo'),

@@ -62,11 +62,25 @@
     </article>
     <!-- summary -->
 
-    <!-- major -->
-    <aside data-aos="fade-left" class="flex rounded-2xl bg-blue-600 w-full p-4 lg:py-6 lg:px-16 flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
+    {{-- welcome video --}}
+    @if($welcome_video_id)
+    <aside data-aos="fade-right" class="flex w-full flex-col lg:flex-row-reverse gap-4 items-center lg:justify-between rounded-xl bg-white p-4 lg:py-6 lg:px-16">
+      {{-- <livewire:components.title-left text="Sambutan" span="Kepala Sekolah" /> --}}
       <div class="flex flex-col gap-2 lg:gap-4 w-full lg:w-1/3 text-center lg:text-start">
-        <h2 class="text-2xl lg:text-5xl font-medium text-slate-50">Konsentrasi <br> Keahlian</h2>
-        <p class="lg:text-xl text-slate-100">Beberapa konsentrasi keahlian di SMKN {{ $school->name }} dirancang untuk mengantarkan siswa meraih kesuksesan di masa depan.</p>
+        <h2 class="text-2xl lg:text-5xl font-medium text-blue-600">Sambutan <br><span class="text-blue-600 font-semibold">Kepala Sekolah</span></h2>
+        <p class="lg:text-xl text-blue-600">- {{ $head_master }} -</p>
+      </div>
+      <iframe class="w-full lg:w-3/5 aspect-video rounded-xl" src="https://www.youtube.com/embed/{{ $welcome_video_id }}?si=Hifffx7NdQLbAi2f&amp;controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </aside>
+    @endif
+    {{-- welcome video --}}
+    {{-- <iframe src="https://drive.google.com/file/d/1rrR_C9i-HYwslJYkXcJtLns_pzA7dZx_/preview" width="640" height="480" allow="autoplay"></iframe> --}}
+
+    <!-- major -->
+    <aside data-aos="fade-left" class="flex rounded-2xl bg-blue-600 w-full p-4 lg:py-6 lg:px-16 flex-col lg:flex-row lg:justify-between items-center gap-4">
+      <div class="flex flex-col gap-2 lg:gap-4 w-full lg:w-1/3 text-center lg:text-start">
+        <h2 class="text-2xl lg:text-5xl font-medium text-slate-50">Program <br class="hidden lg:block"> Keahlian</h2>
+        <p class="lg:text-xl text-slate-100">Beberapa program keahlian di SMKN {{ $school->name }} dirancang untuk mengantarkan siswa meraih kesuksesan di masa depan.</p>
       </div>
       <div class="grid grid-cols-12 w-full lg:w-3/5 gap-2 lg:gap-4">
         @foreach($majors as $major)
@@ -80,11 +94,11 @@
     @if($articles->count() > 0)
     <aside data-aos="fade-right" class="flex w-full flex-col gap-4 lg:gap-6 items-center">
       <livewire:components.title-left :text="$school->alias" span="Terkini" />
-        <div class="drag-to-scroll flex w-full gap-4 overflow-x-scroll lg:overflow-x-visible cursor-grab active:cursor-grabbing snap-x snap-mandatory p-2 lg:p-0">
-          @foreach($articles as $article)
-            <livewire:components.card-article-home wire:key="{{ $article->id }}" :category="$article->category" :slug="$article->slug" :photo="$article->photo" :createdAt="$article->created_at" :title="$article->title" />
-          @endforeach
-        </div>
+      <div class="drag-to-scroll flex lg:grid lg:grid-cols-4 w-full gap-4 overflow-x-scroll lg:overflow-x-visible cursor-grab active:cursor-grabbing snap-x snap-mandatory p-2 lg:p-0">
+        @foreach($articles as $article)
+          <livewire:components.card-article-home wire:key="{{ $article->id }}" :category="$article->category" :slug="$article->slug" :photo="$article->photo" :createdAt="$article->created_at" :title="$article->title" />
+        @endforeach
+      </div>
     </aside>
     @endif
     <!-- news -->
@@ -107,7 +121,7 @@
 
     <!-- gallery -->
     <aside data-aos="fade-left" class="flex w-full flex-col gap-4 lg:gap-6 items-center">
-        <livewire:components.title-left text="Galeri" :span="$school->alias" />
+      <livewire:components.title-left text="Galeri" :span="$school->alias" />
       <figure class="grid grid-cols-2 lg:grid-cols-3 grid-rows-6 lg:grid-rows-3 w-full gap-2 lg:gap-4">
         <iframe class="w-full aspect-video lg:h-full lg:aspect-auto rounded-2xl col-span-2 row-span-2" src="https://www.youtube.com/embed/{{ $video_id }}?si=Hifffx7NdQLbAi2f&amp;controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         @foreach($galleries as $index => $galerry)

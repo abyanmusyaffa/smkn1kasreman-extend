@@ -221,6 +221,13 @@ class About extends Page implements HasForms
                             'default' => 2,
                             'lg' => 12
                         ]),
+                    TextInput::make('url_video_welcome')
+                        ->label('Link Video Sambutan Kepala Sekolah')
+                        ->url()
+                        ->columnSpan([
+                            'default' => 2,
+                            'lg' => 12,
+                        ]),
             ]),
             Section::make()
                 ->columns([

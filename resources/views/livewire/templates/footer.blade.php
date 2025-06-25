@@ -48,6 +48,8 @@
             <span class="icon-[mdi--email] text-slate-50 lg:text-2xl"></span>
             <p class="text-xs lg:text-xl text-slate-50">{{ $school->email }}</p>
           </div>
+          <iframe class="w-full h-36 lg:h-44 rounded-lg outline outline-blue-300" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7912.894690152071!2d111.49912496810691!3d-7.41564087171856!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e79c2b58c63a561%3A0xdb8cd4f5f83ff1a5!2sSMK%20NEGERI%201%20KASREMAN!5e0!3m2!1sen!2sid!4v1750687936965!5m2!1sen!2sid" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
         </div>
       </div>
       <!-- contact -->
@@ -55,7 +57,7 @@
       <!-- menu -->
       <div class="flex flex-col w-full gap-2 lg:gap-4 lg:pl-[35%]">
         <h2 class="font-medium text-xl lg:text-3xl text-slate-50">Menu Utama</h2>
-        <div class="flex flex-col w-full gap-1 lg:gap-2">
+        <div class="lg:flex lg:flex-col grid grid-cols-2 w-full gap-1 lg:gap-2">
           <a href="/about" wire:navigate class="text-xs lg:text-xl text-slate-50">Tentang Sekolah</a>
           <a href="/major" wire:navigate class="text-xs lg:text-xl text-slate-50">Program Keahlian</a>
           <a href="/staff" wire:navigate class="text-xs lg:text-xl text-slate-50">Ekstrakurikuler</a>
