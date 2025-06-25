@@ -167,7 +167,7 @@ class ArticleResource extends Resource
                         ->options([
                             'news' => 'Berita',
                             'announcement' => 'Pengumuman',
-                            'enrollment' => 'Informasi PPDB',
+                            'enrollment' => 'Informasi SPMB',
                         ])
                         ->native(false)
                         ->required()
