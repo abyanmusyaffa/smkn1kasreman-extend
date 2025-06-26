@@ -1,5 +1,5 @@
 <header>
-    <nav class="w-full flex justify-between bg-gradient-to-r from-blue-500 to-blue-600 h-16 lg:h-24 px-4 lg:px-16 2xl:px-36 items-center fixed z-10">
+    <nav class="w-full flex justify-between bg-gradient-to-r from-blue-500 to-blue-700 h-16 lg:h-24 px-4 lg:px-16 2xl:px-36 items-center fixed z-10">
       <!-- logo -->
       <a href="/" wire:navigate class="flex gap-2 2xl:gap-4 items-center">
         <img src="/storage/{{ $school->logo }}" class="w-9 lg:w-12 2xl:w-16" alt="logo-skanka" />
@@ -156,7 +156,7 @@
       <!-- btn menu -->
 
       <!-- menu mobile -->
-      <div class="flex-col items-center lg:hidden w-full min-h-[calc(100dvh-64px)] bg-gradient-to-b from-blue-500/70 to-blue-600/90 absolute right-full peer-checked:translate-x-full top-16 px-4 py-4 gap-2 flex transition-all duration-700 ">
+      <div class="flex-col items-center lg:hidden w-full min-h-[calc(100dvh-64px)] bg-gradient-to-b from-blue-500/70 to-blue-700/90 absolute right-full peer-checked:translate-x-full top-16 px-4 py-4 gap-2 flex transition-all duration-700 ">
         <a href="/" wire:navigate class="font-medium text-slate-50 text-xl ">Beranda</a>
         <div class="flex flex-col w-full">
           <input type="checkbox" class="peer hidden" id="skankakita-menu" />

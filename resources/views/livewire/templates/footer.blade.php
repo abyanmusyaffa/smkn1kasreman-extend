@@ -1,5 +1,5 @@
 <footer>
-    <div class="grid lg:grid-cols-3 gap-6 w-full bg-gradient-to-r from-blue-500 to-blue-600 py-4 lg:py-6 px-4 lg:px-16 2xl:px-36">
+    <div class="grid lg:grid-cols-3 gap-6 w-full bg-gradient-to-r from-blue-500 to-blue-700 py-4 lg:py-6 px-4 lg:px-16 2xl:px-36">
       <!-- address -->
       <div class="flex flex-col w-full gap-4 lg:gap-6">
         <figure class="flex gap-4 *:h-14 lg:*:h-24">
