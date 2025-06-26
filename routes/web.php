@@ -16,6 +16,9 @@ use App\Livewire\Announcement;
 use App\Livewire\ArticleDetail;
 use App\Livewire\Extracurricular;
 use App\Livewire\Facility;
+use App\Livewire\Internship;
+use App\Livewire\StudentCouncil;
+use App\Livewire\StudentEvents;
 use App\Models\PassingCertificate;
 use App\Models\ScoreCategory;
 use Illuminate\Support\Facades\Route;
@@ -78,19 +81,27 @@ use App\Models\SendPassingCertificate;
 // });
 
 Route::get('/', Home::class);
+
 Route::get('/about', About::class);
 Route::get('/staff', Staff::class);
 Route::get('/facility', Facility::class);
 Route::get('/achievement', Achievement::class);
-Route::get('/partner', Partner::class);
-Route::get('/alumni', Alumni::class);
 Route::get('/download', Download::class);
+
 Route::get('/major', Major::class);
+
+Route::get('/student-council', StudentCouncil::class);
 Route::get('/extracurricular', Extracurricular::class);
+Route::get('/student-events', StudentEvents::class);
+
+Route::get('/internship', Internship::class);
+Route::get('/partner', Partner::class);
+Route::get('/jobfair', Jobfair::class);
+Route::get('/alumni', Alumni::class);
+
 Route::get('/news', News::class);
 Route::get('/announcement', Announcement::class);
 Route::get('/enrollment', Enrollment::class);
-Route::get('/jobfair', Jobfair::class);
 
 Route::get('/achievement/{slug}', ArticleDetail::class);
 Route::get('/news/{slug}', ArticleDetail::class);

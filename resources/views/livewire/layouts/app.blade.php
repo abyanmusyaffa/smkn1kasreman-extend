@@ -21,6 +21,9 @@
         <link rel="stylesheet" href="/css/custom.css">
         <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
         <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+        <script src="/js/fancybox.umd.js"></script>
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@6.0/dist/fancybox/fancybox.css"/>
         @filamentStyles
         @vite('resources/css/app.css')
     </head>

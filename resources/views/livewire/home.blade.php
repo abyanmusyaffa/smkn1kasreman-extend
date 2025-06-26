@@ -123,9 +123,16 @@
     <aside data-aos="fade-left" class="flex w-full flex-col gap-4 lg:gap-6 items-center">
       <livewire:components.title-left text="Galeri" :span="$school->alias" />
       <figure class="grid grid-cols-2 lg:grid-cols-3 grid-rows-6 lg:grid-rows-3 w-full gap-2 lg:gap-4">
-        <iframe class="w-full aspect-video lg:h-full lg:aspect-auto rounded-2xl col-span-2 row-span-2" src="https://www.youtube.com/embed/{{ $video_id }}?si=Hifffx7NdQLbAi2f&amp;controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        {{-- <iframe class="w-full aspect-video lg:h-full lg:aspect-auto rounded-2xl col-span-2 row-span-2" src="https://www.youtube.com/embed/{{ $video_id }}?si=Hifffx7NdQLbAi2f&amp;controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> --}}
         @foreach($galleries as $index => $galerry)
-          <div style="background-image: url(/storage/{{ $galerry }});" class="w-full aspect-video rounded-2xl bg-center bg-no-repeat bg-cover {{ $index == 2 ? 'col-span-2 row-span-2 lg:row-span-1 lg:col-span-1' : '' }}"></div>
+          <div data-fancybox="gallery" data-src="/storage/{{ $galerry }}" data-prevent-scroll="true" data-type="image" style="background-image: url(/storage/{{ $galerry }});" 
+            @class([
+                'w-full aspect-video rounded-2xl bg-center bg-no-repeat bg-cover', 
+                'col-span-2 row-span-2' => $index === 0 || $index === 3,
+                'lg:col-span-2 lg:row-span-2 lg:h-full lg:aspect-auto' => $index === 0,
+                'lg:col-span-1 lg:row-span-1' => $index === 3,
+              ])>
+          </div>
         @endforeach
       </figure>
     </aside>
@@ -150,6 +157,8 @@
     @script
     <script>
       document.addEventListener("livewire:navigated", function () {
+
+
         // slide hero
         const slidesHero = document.querySelectorAll("[data-slide-hero]");
         let currentSlideHero = 0;
@@ -228,6 +237,10 @@
           }
         }
         // logo animation
+
+        // fancybox
+        Fancybox.bind("[data-fancybox]", {});
+        // fancybox
       });
     </script>
     @endscript

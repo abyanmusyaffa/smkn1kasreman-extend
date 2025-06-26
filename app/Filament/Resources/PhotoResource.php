@@ -43,10 +43,10 @@ class PhotoResource extends Resource
                         ->directory('/photos')
                         ->required()
                         ->minFiles(function (callable $get) {
-                            return $get('type') === 'hero' ? 3 : 5; 
+                            return $get('type') === 'hero' ? 3 : 6; 
                         })
                         ->maxFiles(function (callable $get) {
-                            return $get('type') === 'hero' ? 5 : 5;
+                            return $get('type') === 'hero' ? 6 : 6;
                         })
                         ->panelLayout('grid')
                         ->reorderable()

@@ -60,7 +60,7 @@
         <div class="lg:flex lg:flex-col grid grid-cols-2 w-full gap-1 lg:gap-2">
           <a href="/about" wire:navigate class="text-xs lg:text-xl text-slate-50">Tentang Sekolah</a>
           <a href="/major" wire:navigate class="text-xs lg:text-xl text-slate-50">Program Keahlian</a>
-          <a href="/staff" wire:navigate class="text-xs lg:text-xl text-slate-50">Ekstrakurikuler</a>
+          <a href="/extracurricular" wire:navigate class="text-xs lg:text-xl text-slate-50">Ekstrakurikuler</a>
           <a href="/news" wire:navigate class="text-xs lg:text-xl text-slate-50">Berita</a>
           <a href="/achievement" wire:navigate class="text-xs lg:text-xl text-slate-50">Prestasi</a>
           <a href="/enrollment" wire:navigate class="text-xs lg:text-xl text-slate-50">SPMB</a>
