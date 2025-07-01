@@ -8,7 +8,7 @@ use Livewire\Attributes\Title;
 
 class Enrollment extends Component
 {
-    #[Title('Informasi PPDB')]
+    #[Title('Informasi SPMB')]
     
     public function mount()
     {

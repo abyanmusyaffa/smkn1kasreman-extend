@@ -4,13 +4,21 @@
     <figure class="relative flex w-full mt-8">
       {{-- running text announ --}}
       @if($announcement_text)
+
       <a href="/{{ $announcement_text->category }}/{{ $announcement_text->slug }}" wire:navigate class="announ-container flex w-full h-6 lg:h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl absolute -top-10 lg:-top-12 overflow-hidden gap-8">
         <div class="h-full w-fit flex bg-blue-500 justify-center items-center px-3 absolute z-[1] gap-2">
           <p class="hidden lg:block text-slate-50 text-sm font-semibold">Pengumuman</p><span class="icon-[mdi--loudspeaker] text-slate-50 text-xl lg:text-2xl"></span>
         </div>
-        <div class="announ-animation animate-announs-scroll h-full flex flex-shrink-0 items-center">
-          <p class="text-sm whitespace-nowrap text-slate-50">{{ $announcement_text->title }}</p>
+        <div class="w-full f-carousel" id="announCarousel">
+          <div class="f-carousel__viewport" id="announViewport">
+            <div class="f-carousel__slide !w-fit !h-full !px-6 !flex !flex-col !justify-center">
+              <p class="text-sm whitespace-nowrap text-slate-50">{{ $announcement_text->title }}</p>
+            </div>
+          </div>
         </div>
+        {{-- <div class="announ-animation animate-announs-scroll h-full flex flex-shrink-0 items-center">
+          <p class="text-sm whitespace-nowrap text-slate-50">{{ $announcement_text->title }}</p>
+        </div> --}}
       </a>
       @endif
       {{-- running text announ --}}
@@ -51,9 +59,9 @@
           SMKN {{ $school->name }} bekerja sama dengan berbagai mitra DU/DI untuk mendukung pembelajaran siswa dan membuka peluang karir di dunia kerja.
         </p>
         <div class="w-full f-carousel " id="partnersCarousel">
-          <div class="f-carousel__viewport">
+          <div class="f-carousel__viewport" id="partnersViewport">
             @foreach($partners as $partner)
-              <div class="f-carousel__slide !w-fit !px-4">
+              <div class="f-carousel__slide !w-fit !px-6">
                 <img class="h-12 object-contain" src="/storage/{{ $partner }}" alt="" />
               </div>
             @endforeach
@@ -189,65 +197,83 @@
         // slide hero
 
         // drag to scroll alumni
-        let mouseDown = false;
-        let startX, scrollLeft;
+        // let mouseDown = false;
+        // let startX, scrollLeft;
 
-        const sliders = document.querySelectorAll(".drag-to-scroll");
+        // const sliders = document.querySelectorAll(".drag-to-scroll");
 
-        const startDragging = (e, slider) => {
-            mouseDown = true;
-            startX = e.pageX - slider.offsetLeft;
-            scrollLeft = slider.scrollLeft;
-        };
+        // const startDragging = (e, slider) => {
+        //     mouseDown = true;
+        //     startX = e.pageX - slider.offsetLeft;
+        //     scrollLeft = slider.scrollLeft;
+        // };
 
-        const stopDragging = () => {
-            mouseDown = false;
-        };
+        // const stopDragging = () => {
+        //     mouseDown = false;
+        // };
 
-        const move = (e, slider) => {
-            e.preventDefault();
-            if (!mouseDown) {
-                return;
-            }
-            const x = e.pageX - slider.offsetLeft;
-            const scroll = x - startX;
-            slider.scrollLeft = scrollLeft - scroll;
-        };
+        // const move = (e, slider) => {
+        //     e.preventDefault();
+        //     if (!mouseDown) {
+        //         return;
+        //     }
+        //     const x = e.pageX - slider.offsetLeft;
+        //     const scroll = x - startX;
+        //     slider.scrollLeft = scrollLeft - scroll;
+        // };
 
-        sliders.forEach((slider) => {
-            if (slider) {
-                slider.addEventListener("mousemove", (e) => move(e, slider), false);
-                slider.addEventListener(
-                    "mousedown",
-                    (e) => startDragging(e, slider),
-                    false
-                );
-                slider.addEventListener("mouseup", stopDragging, false);
-                slider.addEventListener("mouseleave", stopDragging, false);
-            }
-        });
+        // sliders.forEach((slider) => {
+        //     if (slider) {
+        //         slider.addEventListener("mousemove", (e) => move(e, slider), false);
+        //         slider.addEventListener(
+        //             "mousedown",
+        //             (e) => startDragging(e, slider),
+        //             false
+        //         );
+        //         slider.addEventListener("mouseup", stopDragging, false);
+        //         slider.addEventListener("mouseleave", stopDragging, false);
+        //     }
+        // });
         // drag to scroll alumni
 
         // announ animation
-        const announContainer = document.querySelector('.announ-container');
-        const originalAnnoun = document.querySelector('.announ-animation');
+        // const announContainer = document.querySelector('.announ-container');
+        // const originalAnnoun = document.querySelector('.announ-animation');
 
-        if (announContainer && originalAnnoun) {
-          for (let i = 0; i < 14; i++) {
-              const clonedAnnoun = originalAnnoun.cloneNode(true);
-              announContainer.appendChild(clonedAnnoun);
+        // if (announContainer && originalAnnoun) {
+        //   for (let i = 0; i < 14; i++) {
+        //       const clonedAnnoun = originalAnnoun.cloneNode(true);
+        //       announContainer.appendChild(clonedAnnoun);
+        //   }
+        // }
+        // announ animation
+
+        // announ animation
+        const announViewport = document.getElementById("announViewport");
+
+        if (announViewport) {
+          const slides = announViewport.querySelectorAll(".f-carousel__slide");
+
+          for (let i = 0; i < 4; i++) {
+            slides.forEach(slide => {
+              const clone = slide.cloneNode(true);
+              announViewport.appendChild(clone);
+            });
           }
         }
         // announ animation
 
         // logo animation
-        const logoContainer = document.querySelector('.logo-container');
-        const originalLogo = document.querySelector('.logo-animation');
+        const partnersViewport = document.getElementById("partnersViewport");
 
-        if (logoContainer && originalLogo) {
+        if (partnersViewport) {
+          const slides = partnersViewport.querySelectorAll(".f-carousel__slide");
+
           for (let i = 0; i < 2; i++) {
-              const clonedLogo = originalLogo.cloneNode(true);
-              logoContainer.appendChild(clonedLogo);
+            slides.forEach(slide => {
+              const clone = slide.cloneNode(true);
+              partnersViewport.appendChild(clone);
+            });
           }
         }
         // logo animation
@@ -294,6 +320,18 @@
 
         Carousel(partnersContainer, partnersOptions, { Autoscroll }).init();
         // partners carousel
+
+        // announ carousel
+        const announContainer = document.getElementById("announCarousel");
+        const announOptions = {
+          infinite: true ,
+          Autoscroll: {
+            speedOnHover: 1
+          },
+        };
+
+        Carousel(announContainer, announOptions, { Autoscroll }).init();
+        // announ carousel
       });
     </script>
     @endscript
