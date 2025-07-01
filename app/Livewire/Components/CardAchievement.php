@@ -10,7 +10,7 @@ class CardAchievement extends Component
     public $title;
     public $rankings;
     public $photo;
-    public $createdAt;
+    public $created_at;
 
     public function render()
     {

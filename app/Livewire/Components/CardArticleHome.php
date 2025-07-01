@@ -9,8 +9,9 @@ class CardArticleHome extends Component
     public $category;
     public $slug;
     public $photo;
-    public $createdAt;
+    public $created_at;
     public $title;
+    public $index;
     
     public function render()
     {

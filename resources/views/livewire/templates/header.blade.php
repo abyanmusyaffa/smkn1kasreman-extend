@@ -46,7 +46,7 @@
         </div>
         <a href="/major" wire:navigate class="flex flex-col gap-1 px-2 group">
           <p class="text-slate-50">Program Keahlian</p>
-          <div class="w-full h-0.5 {{ $title === 'Konsentrasi Keahlian' ? 'bg-slate-50' : 'bg-transparent' }} group-hover:bg-slate-50 transition-all"></div>
+          <div class="w-full h-0.5 {{ $title === 'Program Keahlian' ? 'bg-slate-50' : 'bg-transparent' }} group-hover:bg-slate-50 transition-all"></div>
         </a>
         {{-- <a href="/extracurricular" wire:navigate class="flex flex-col gap-1 px-2 group">
           <p class="text-slate-50">Ekstrakurikuler</p>
@@ -84,7 +84,7 @@
           <!-- Dropdown -->
           <div class="flex-col px-4 py-2 gap-2 bg-slate-50 rounded-lg min-w-32 absolute top-[28px] hidden group-hover/dropdown:flex transition-all">
             <a href="/internship" wire:navigate class="flex flex-col gap-1 group">
-              <p class="text-sm {{ $title === 'PKL' ? 'text-blue-500' : 'text-slate-500' }} group-hover:text-blue-500">PKL</p>
+              <p class="text-sm {{ $title === 'Praktek Kerja Lapangan' ? 'text-blue-500' : 'text-slate-500' }} group-hover:text-blue-500">PKL</p>
               <div class="h-[1px] w-full bg-slate-200"></div>
             </a>
             <a href="/partner" wire:navigate class="flex flex-col gap-1 group">

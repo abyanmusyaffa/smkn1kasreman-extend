@@ -1,4 +1,4 @@
-{{-- @dd($announcement_text) --}}
+{{-- @dd($articles) --}}
 <div class="w-full overflow-hidden lg:min-h-[calc(100svh-376px)] min-h-[calc(100svh-512px)] flex flex-col gap-9 lg:gap-12 px-4 pt-20 pb-9 lg:px-16 2xl:px-36 lg:pt-32 lg:pb-12 bg-gradient-to-r from-slate-50 to-slate-100">
     <!-- hero -->
     <figure class="relative flex w-full mt-8">
@@ -92,6 +92,26 @@
 
     <!-- news -->
     @if($articles->count() > 0)
+    <aside data-aos="fade-right" class="flex w-full flex-col lg:flex-row-reverse gap-4 items-center lg:justify-between rounded-2xl bg-white p-4 lg:py-6 lg:px-16">
+      {{-- <livewire:components.title-left text="Sambutan" span="Kepala Sekolah" /> --}}
+      <div class="flex flex-col gap-2 lg:gap-4 w-full lg:w-1/3 text-center lg:text-start">
+        <h2 class="text-2xl lg:text-5xl font-medium text-blue-600">Skanka <span class="text-blue-600 font-semibold">Terkini</span></h2>
+        <p class="lg:text-xl text-blue-600">- {{ \Carbon\Carbon::parse($latest_article)->translatedFormat('j F Y H:i') }} -</p>
+      </div>
+      <div class="w-full lg:w-3/5 f-carousel " id="newsCarousel">
+        <div class="f-carousel__viewport rounded-2xl lg:grid-cols-2 lg:justify-start">
+          @foreach($articles as $index => $article)
+            <livewire:components.card-article-home wire:key="{{ $article->id }}" :category="$article->category" :slug="$article->slug" :photo="$article->photo" :updated_at="$article->updated_at" :title="$article->title" :index="$index" />
+          @endforeach
+        </div>
+      </div>
+      {{-- <iframe class="w-full lg:w-3/5 aspect-video rounded-xl" src="https://www.youtube.com/embed/{{ $welcome_video_id }}?si=Hifffx7NdQLbAi2f&amp;controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> --}}
+    </aside>
+    @endif
+    <!-- news -->
+
+    <!-- news -->
+    {{-- @if($articles->count() > 0)
     <aside data-aos="fade-right" class="flex w-full flex-col gap-4 lg:gap-6 items-center">
       <livewire:components.title-left :text="$school->alias" span="Terkini" />
       <div class="drag-to-scroll flex lg:grid lg:grid-cols-4 w-full gap-4 overflow-x-scroll lg:overflow-x-visible cursor-grab active:cursor-grabbing snap-x snap-mandatory p-2 lg:p-0">
@@ -100,16 +120,16 @@
         @endforeach
       </div>
     </aside>
-    @endif
+    @endif --}}
     <!-- news -->
 
     <!-- achievement -->
     @if($achievements->count() > 0)
     <aside data-aos="fade-right" class="flex w-full flex-col gap-4 lg:gap-6 items-center">
-      <livewire:components.title-right text="Prestasi" span="Kita" />
+      <livewire:components.title-left text="Prestasi" span="Kita" />
       <div class="grid lg:grid-cols-4 gap-4">
         @foreach($achievements as $achievement)
-          <livewire:components.card-achievement wire:key="{{ $achievement->id }}" :slug="$achievement->slug" :photo="$achievement->photo" :rankings="$achievement->rankings" :title="$achievement->title" :createdAt="$achievement->created_at" /> 
+          <livewire:components.card-achievement wire:key="{{ $achievement->id }}" :slug="$achievement->slug" :photo="$achievement->photo" :rankings="$achievement->rankings" :title="$achievement->title" :created_at="$achievement->created_at" /> 
         @endforeach
       </div>
       <footer>
@@ -121,7 +141,7 @@
 
     <!-- gallery -->
     <aside data-aos="fade-left" class="flex w-full flex-col gap-4 lg:gap-6 items-center">
-      <livewire:components.title-left text="Galeri" :span="$school->alias" />
+      <livewire:components.title-right text="Galeri" :span="$school->alias" />
       <figure class="grid grid-cols-2 lg:grid-cols-3 grid-rows-6 lg:grid-rows-3 w-full gap-2 lg:gap-4">
         {{-- <iframe class="w-full aspect-video lg:h-full lg:aspect-auto rounded-2xl col-span-2 row-span-2" src="https://www.youtube.com/embed/{{ $video_id }}?si=Hifffx7NdQLbAi2f&amp;controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> --}}
         @foreach($galleries as $index => $galerry)
@@ -139,7 +159,7 @@
     <!-- gallery -->
 
     <!-- alumni story -->
-    @if($testimonials->count() > 0)
+    {{-- @if($testimonials->count() > 0)
     <aside data-aos="fade-left" class="flex w-full flex-col gap-4 lg:gap-6 items-center">
         <livewire:components.title-left text="Cerita" span="Alumni" />
       <div class="drag-to-scroll flex gap-4 w-full cursor-grab active:cursor-grabbing snap-x snap-mandatory overflow-x-scroll pt-10 lg:pt-14 p-2">
@@ -151,14 +171,12 @@
         <livewire:components.more-button text="Cerita Lainya" href="/alumni" />
       </footer>
     </aside>
-    @endif
+    @endif --}}
     <!-- alumni story -->
 
     @script
     <script>
       document.addEventListener("livewire:navigated", function () {
-
-
         // slide hero
         const slidesHero = document.querySelectorAll("[data-slide-hero]");
         let currentSlideHero = 0;
@@ -256,6 +274,15 @@
           }
         });
         // fancybox
+
+        // carousel
+        const container = document.getElementById("newsCarousel");
+        const options = {
+          infinite: false
+        };
+
+        Carousel(container, options, { Dots , Arrows }).init();
+        // carousel
       });
     </script>
     @endscript

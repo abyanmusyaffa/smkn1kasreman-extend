@@ -8,7 +8,7 @@
             <h4 class="text-sm lg:text-xl text-slate-700 lg:text-center h-[3lh] line-clamp-3 ">{{ $title }}</h4>
             <div class="flex gap-2 items-center">
                 <span class="icon-[mdi--calendar-badge] text-xs lg:text-sm text-slate-600"></span>
-                <p class="text-xs lg:text-sm text-slate-600">{{ \Carbon\Carbon::parse($createdAt)->translatedFormat('j F Y') }}</p>
+                <p class="text-xs lg:text-sm text-slate-600">{{ \Carbon\Carbon::parse($created_at)->translatedFormat('j F Y') }}</p>
             </div>
         </figcaption>
     </article>

@@ -45,33 +45,20 @@ class Home extends Component
 
     public function render()
     {
-        // return view('livewire.home', [
-        //     'majors' => Major::select('id', 'expertise_concentration', 'alias', 'logo')->get(),
-        //     // 'announcement_text' => Article::whereIn('category',['announcement', 'enrollment'])->where('is_pinned', true)->pluck('title', 'slug')->get(),
-        //     'school' => School::first(),
-        //     'summary' => $this->getFirstParagraph(),
-        //     'video_id' => $this->getYoutubeVideoId(School::first()->url_video_profile),
-        //     'heros' => Photo::where('type', 'hero')->value('photo'),
-        //     'galleries' => Photo::where('type', 'gallery')->value('photo'),
-        //     'partners' => Partner::where('logo', 'NOT LIKE', '%default%')->pluck('logo'),
-        //     'achievements' => Achievement::orderBy('created_at', 'desc')->take(4)->get(),
-        //     'testimonials' => Testimonial::with('alumnis')->where('show', true)->orderBy('created_at', 'desc')->take(6)->get(),
-        //     'articles' => Article::orderBy('created_at', 'desc')->take(4)->get(),
-        // ]);
         return view('livewire.home', [
             'majors' => Major::select('id', 'expertise_concentration', 'alias', 'logo')->get(),
             'announcement_text' => Article::whereIn('category', ['announcement', 'enrollment'])->where('is_running', true)->select('title', 'slug', 'category')->first(),
             'school' => $school = School::first(),
             'summary' => $this->getFirstParagraph(),
-            'video_id' => $this->getYoutubeVideoId($school->url_video_profile),
             'welcome_video_id' => $this->getYoutubeVideoId($school->url_video_welcome),
             'head_master' => Staff::where('category', 'head-master')->value('name'),
             'heros' => Photo::where('type', 'hero')->value('photo'),
             'galleries' => Photo::where('type', 'gallery')->value('photo'),
             'partners' => Partner::where('logo', 'NOT LIKE', '%default%')->pluck('logo'),
-            'achievements' => Achievement::latest()->take(4)->get(),
-            'testimonials' => Testimonial::with('alumnis')->where('show', true)->latest()->take(6)->get(),
-            'articles' => Article::latest()->take(4)->get(),
+            'achievements' => Achievement::latest()->take(4)->get(['id', 'photo', 'slug', 'rankings', 'title', 'created_at']),
+            'latest_article' => Article::latest()->take(1)->value('updated_at'),
+            // 'testimonials' => Testimonial::with('alumnis')->where('show', true)->latest()->take(6)->get(),
+            'articles' => Article::latest()->take(4)->get(['id', 'photo', 'slug', 'category', 'title', 'created_at']),
         ]);        
     }
 

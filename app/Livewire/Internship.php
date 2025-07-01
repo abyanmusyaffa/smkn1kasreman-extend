@@ -7,11 +7,11 @@ use Livewire\Attributes\Title;
 
 class Internship extends Component
 {
-    #[Title('Praktek kerja Lapangan')]
+    #[Title('Praktek Kerja Lapangan')]
     
     public function mount()
     {
-        $this->dispatch('title', title: 'Praktek kerja Lapangan');
+        $this->dispatch('title', title: 'Praktek Kerja Lapangan');
     }
     
     public function render()
