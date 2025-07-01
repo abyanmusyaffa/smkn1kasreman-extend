@@ -50,13 +50,22 @@
         <p class="lg:text-xl text-slate-700 lg:w-3/5">
           SMKN {{ $school->name }} bekerja sama dengan berbagai mitra DU/DI untuk mendukung pembelajaran siswa dan membuka peluang karir di dunia kerja.
         </p>
-        <div class="logo-container flex w-full overflow-x-hidden">
+        <div class="w-full f-carousel " id="partnersCarousel">
+          <div class="f-carousel__viewport">
+            @foreach($partners as $partner)
+              <div class="f-carousel__slide !w-fit !px-4">
+                <img class="h-12 object-contain" src="/storage/{{ $partner }}" alt="" />
+              </div>
+            @endforeach
+          </div>
+        </div>
+        {{-- <div class="logo-container flex w-full overflow-x-hidden">
           <div class="logo-animation flex *:object-contain *:h-12 gap-9 lg:gap-12 items-center flex-shrink-0 animate-partners-scroll pe-9 lg:pe-12">
             @foreach($partners as $partner)
               <img src="/storage/{{ $partner }}" alt="" />
             @endforeach
           </div>
-        </div>
+        </div> --}}
       </figure>
       <!-- running partners -->
     </article>
@@ -101,26 +110,13 @@
       <div class="w-full lg:w-3/5 f-carousel " id="newsCarousel">
         <div class="f-carousel__viewport rounded-2xl lg:grid-cols-2 lg:justify-start">
           @foreach($articles as $index => $article)
-            <livewire:components.card-article-home wire:key="{{ $article->id }}" :category="$article->category" :slug="$article->slug" :photo="$article->photo" :updated_at="$article->updated_at" :title="$article->title" :index="$index" />
+            <livewire:components.card-article-home wire:key="{{ $article->id }}" :category="$article->category" :slug="$article->slug" :photo="$article->photo" :created_at="$article->created_at" :title="$article->title" :index="$index" />
           @endforeach
         </div>
       </div>
       {{-- <iframe class="w-full lg:w-3/5 aspect-video rounded-xl" src="https://www.youtube.com/embed/{{ $welcome_video_id }}?si=Hifffx7NdQLbAi2f&amp;controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> --}}
     </aside>
     @endif
-    <!-- news -->
-
-    <!-- news -->
-    {{-- @if($articles->count() > 0)
-    <aside data-aos="fade-right" class="flex w-full flex-col gap-4 lg:gap-6 items-center">
-      <livewire:components.title-left :text="$school->alias" span="Terkini" />
-      <div class="drag-to-scroll flex lg:grid lg:grid-cols-4 w-full gap-4 overflow-x-scroll lg:overflow-x-visible cursor-grab active:cursor-grabbing snap-x snap-mandatory p-2 lg:p-0">
-        @foreach($articles as $article)
-          <livewire:components.card-article-home wire:key="{{ $article->id }}" :category="$article->category" :slug="$article->slug" :photo="$article->photo" :createdAt="$article->created_at" :title="$article->title" />
-        @endforeach
-      </div>
-    </aside>
-    @endif --}}
     <!-- news -->
 
     <!-- achievement -->
@@ -275,14 +271,29 @@
         });
         // fancybox
 
-        // carousel
-        const container = document.getElementById("newsCarousel");
-        const options = {
-          infinite: false
+        // news carousel
+        const newsContainer = document.getElementById("newsCarousel");
+        const newsOptions = {
+          infinite: true ,
+          Autoplay: {
+            showProgressbar: false,
+          },
         };
 
-        Carousel(container, options, { Dots , Arrows }).init();
-        // carousel
+        Carousel(newsContainer, newsOptions, { Dots , Arrows, Autoplay }).init();
+        // news carousel
+
+        // partners carousel
+        const partnersContainer = document.getElementById("partnersCarousel");
+        const partnersOptions = {
+          infinite: true ,
+          Autoscroll: {
+            speedOnHover: 1
+          },
+        };
+
+        Carousel(partnersContainer, partnersOptions, { Autoscroll }).init();
+        // partners carousel
       });
     </script>
     @endscript
