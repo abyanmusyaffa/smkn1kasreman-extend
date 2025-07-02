@@ -26,7 +26,7 @@ class ListArticles extends ListRecords
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('category', 'news')),
             'announcement' => Tab::make('Pengumuman')
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('category', 'announcement')),
-            'enrollment' => Tab::make('Informasi PPDB')
+            'enrollment' => Tab::make('Informasi SPMB')
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('category', 'enrollment')),
         ];
     }

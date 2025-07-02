@@ -11,7 +11,7 @@
         </div>
         <div class="w-full f-carousel" id="announCarousel">
           <div class="f-carousel__viewport" id="announViewport">
-            <div class="f-carousel__slide !w-fit !h-full !px-6 !flex !flex-col !justify-center">
+            <div class="f-carousel__slide !min-w-fit lg:!w-fit !h-full !px-2 !flex !flex-col !justify-center">
               <p class="text-sm whitespace-nowrap text-slate-50">{{ $announcement_text->title }}</p>
             </div>
           </div>
@@ -254,7 +254,7 @@
         if (announViewport) {
           const slides = announViewport.querySelectorAll(".f-carousel__slide");
 
-          for (let i = 0; i < 4; i++) {
+          for (let i = 0; i < 6; i++) {
             slides.forEach(slide => {
               const clone = slide.cloneNode(true);
               announViewport.appendChild(clone);
