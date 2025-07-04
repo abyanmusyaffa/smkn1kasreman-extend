@@ -14,11 +14,14 @@ use App\Livewire\Enrollment;
 use App\Livewire\Achievement;
 use App\Livewire\Announcement;
 use App\Livewire\ArticleDetail;
+use App\Livewire\BusinessUnit;
 use App\Livewire\Extracurricular;
 use App\Livewire\Facility;
 use App\Livewire\Internship;
 use App\Livewire\StudentCouncil;
 use App\Livewire\StudentEvents;
+use App\Livewire\TeachingFactory;
+use App\Livewire\Training;
 use App\Models\PassingCertificate;
 use App\Models\ScoreCategory;
 use Illuminate\Support\Facades\Route;
@@ -86,8 +89,6 @@ Route::get('/about', About::class);
 Route::get('/staff', Staff::class);
 Route::get('/facility', Facility::class);
 Route::get('/achievement', Achievement::class);
-Route::get('/download', Download::class);
-
 Route::get('/major', Major::class);
 
 Route::get('/student-council', StudentCouncil::class);
@@ -99,9 +100,15 @@ Route::get('/partner', Partner::class);
 Route::get('/jobfair', Jobfair::class);
 Route::get('/alumni', Alumni::class);
 
+Route::get('/teaching-factory', TeachingFactory::class);
+Route::get('/business-unit', BusinessUnit::class);
+Route::get('/training', Training::class);
+
 Route::get('/news', News::class);
 Route::get('/announcement', Announcement::class);
 Route::get('/enrollment', Enrollment::class);
+
+Route::get('/download', Download::class);
 
 Route::get('/achievement/{slug}', ArticleDetail::class);
 Route::get('/news/{slug}', ArticleDetail::class);
