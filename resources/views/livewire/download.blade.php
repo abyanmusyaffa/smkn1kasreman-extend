@@ -4,7 +4,7 @@
         <livewire:components.title-left text="Download" span="Area" />
 
         @if($download->count() > 0)
-        <div class="flex bg-white rounded-2xl w-full p-4 lg:p-6">
+        <div class="flex bg-white rounded-2xl w-full p-4 lg:p-6 *:!min-w-full">
             <livewire:components.documents-table theme="tailwind">
             {{-- <div class="prose w-full max-w-none prose-figure:w-36 lg:prose-figure:w-56">
                {!! $download->content !!}
