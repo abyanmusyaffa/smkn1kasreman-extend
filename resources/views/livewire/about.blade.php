@@ -1,14 +1,30 @@
-<div class="w-full overflow-hidden lg:min-h-[calc(100svh-376px)] min-h-[calc(100svh-512px)] flex flex-col gap-9 lg:gap-12 px-4 pt-20 pb-9 lg:px-16 2xl:px-36 lg:pt-[120px] lg:pb-12 bg-slate-100">
+<div class="w-full overflow-hidden lg:min-h-[calc(100svh-376px)] min-h-[calc(100svh-512px)] flex flex-col gap-9 lg:gap-12 px-4 pt-20 pb-9 lg:px-16 2xl:px-36 lg:pt-[120px] lg:pb-12 bg-gradient-to-r from-slate-50 to-slate-100">
     <!-- welcome text-->
     @if($school->welcome_text != null)
-     <article class="flex flex-col lg:flex-row-reverse items-center gap-4 lg:gap-12 lg:px-24">
+    <article class="flex w-full flex-col rounded-2xl outline-4 outline outline-slate-200 p-4 lg:p-6 gap-2 lg:gap-6">
+      {{-- <header class="flex items-center justify-center gap-4 lg:gap-6">
+        <div class="w-full h-1 bg-slate-200 rounded-sm"></div>
+        <p class="text-xl lg:text-3xl text-center font-medium text-slate-800 whitespace-nowrap">Sambutan <br> Kepala Sekolah</p>
+        <div class="w-full h-1 bg-slate-200 rounded-sm"></div>
+      </header> --}}
+      <div class="flex flex-col lg:flex-row items-center lg:justify-between w-full gap-4">
+        <div class="flex flex-col lg:min-w-48 min-w-36">
+            <figure class="h-44 lg:h-64 w-full flex flex-col items-center justify-end rounded-t-3xl lg:border-4 border-2 border-b-0 border-blue-600 bg-cover bg-center bg-no-repeat" style="background-image: url(/storage/{{ $head_master->photo }})">
+            </figure>
+            <div class="w-full h-fit rounded-b-2xl bg-gradient-to-r from-blue-600 to-blue-700 px-2 py-1 text-center">
+              <p class="text-slate-50 text-xs lg:text-sm">{{ $head_master->name }}</p>
+              <p class="text-slate-50 text-2xs lg:text-xs italic">{{ $head_master->role }}</p>
+            </div>
+        </div>
+        <p class="text-sm lg:text-base italic text-slate-700 text-center lg:w-4/5">“{{ $school->welcome_text }}”</p>
+      </div>
+    </article>
+     {{-- <article class="flex flex-col lg:flex-row-reverse items-center gap-4 lg:gap-12 lg:px-24">
       <figure>
-        <livewire:components.card-staff :photo="$headMaster->photo" :name="$headMaster->name" :role="$headMaster->role" />
       </figure>
       <figcaption>
-        <p class="text-sm lg:text-base italic text-slate-700 text-center">“{{ $school->welcome_text }}”</p>
       </figcaption>
-     </article>
+     </article> --}}
     @endif
     <!-- welcome text-->
 
@@ -21,35 +37,36 @@
           <img src="/storage/{{ $school->logo }}" class="h-12 lg:h-28" alt="">
           <img src="/img/svg/vokasi.svg" class="h-8 lg:h-16" alt="">
         </figure>
+        <iframe class="w-full lg:w-2/5 aspect-video rounded-xl" src="https://www.youtube.com/embed/{{ $profile_video_id }}?si=Hifffx7NdQLbAi2f&amp;controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         <article data-aos="fade-up" class="text-justify lg:text-xl text-slate-700 prose max-w-none">{!! $school->description !!}</article>
         <div data-aos="fade-up" class="counter-container grid grid-cols-2 lg:grid-cols-5 gap-2 w-full">
           <div class="flex flex-col items-center w-full bg-blue-600 p-2 rounded-lg lg:rounded-2xl text-slate-50">
             <span class="icon-[mdi--people-outline] text-5xl lg:text-[80px]"></span>
-            <p class="counters text-5xl font-semibold" data-count="{{ $totalStaff }}">0</p>
+            <p class="counters text-5xl font-semibold" data-count="{{ $total_staff }}">0</p>
             <p class="text-sm text-center lg:text-lg font-medium">Tenaga Kependidikan</p>
           </div>
           <div class="flex flex-col items-center w-full bg-blue-600 p-2 rounded-lg lg:rounded-2xl text-slate-50">
             <span class="icon-[mdi--user-outline] text-5xl lg:text-[80px]"></span>
-            <p class="counters text-5xl font-semibold" data-count="{{ $totalTeachers }}">0</p>
+            <p class="counters text-5xl font-semibold" data-count="{{ $total_teachers }}">0</p>
             <p class="text-sm text-center lg:text-lg font-medium">Guru</p>
           </div>
           <div class="flex flex-col lg:order-first col-span-2 lg:col-span-1 items-center w-full bg-blue-600 p-2 rounded-lg lg:rounded-2xl text-slate-50">
             <span class="icon-[ph--student] text-5xl lg:text-[80px]"></span>
-            <p class="counters text-5xl font-semibold" data-count="{{ $totalStudents }}">0</p>
+            <p class="counters text-5xl font-semibold" data-count="{{ $total_students }}">0</p>
             <p class="text-sm text-center lg:text-lg font-medium">Siswa</p>
           </div>
           <div class="flex flex-col items-center w-full bg-blue-600 p-2 rounded-lg lg:rounded-2xl text-slate-50">
             <span class="icon-[mdi--graduation-cap-outline] text-5xl lg:text-[80px]"></span>
-            <p class="counters text-5xl font-semibold" data-count="{{ $totalMajors }}">0</p>
+            <p class="counters text-5xl font-semibold" data-count="{{ $total_majors }}">0</p>
             <p class="text-sm text-center lg:text-lg font-medium">Konsentrasi Keahlian</p>
           </div>
           <div class="flex flex-col items-center w-full bg-blue-600 p-2 rounded-lg lg:rounded-2xl text-slate-50">
             <span class="icon-[mdi--tennis-ball-outline] text-5xl lg:text-[80px]"></span>
-            <p class="counters text-5xl font-semibold" data-count="{{ $totalExtracurriculars }}">0</p>
+            <p class="counters text-5xl font-semibold" data-count="{{ $total_extracurriculars }}">0</p>
             <p class="text-sm text-center lg:text-lg font-medium">Ekstrakurikuler</p>
           </div>
         </div>
-        <article" class="flex w-full flex-col rounded-2xl outline-4 outline outline-slate-200 p-4 lg:p-6 gap-2 lg:gap-6">
+        <article class="flex w-full flex-col rounded-2xl outline-4 outline outline-slate-200 p-4 lg:p-6 gap-2 lg:gap-6">
           <header class="flex items-center gap-4 lg:gap-6">
             <div class="w-full h-1 bg-slate-200 rounded-sm"></div>
             <p class="text-xl lg:text-3xl font-medium text-salte-800 whitespace-nowrap">Visi & Misi</p>
@@ -70,19 +87,6 @@
       </div>
     </aside>
     <!-- profile -->
-
-    <!-- facility -->
-    {{-- @if($facilities->count() > 0)
-    <aside data-aos="fade-up" class="flex w-full flex-col gap-4 lg:gap-6 items-center">
-      <livewire:components.title-right text="Sarana" span="Prasarana" />
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
-        @foreach($facilities as $facility)
-            <livewire:components.card-facility wire:key="{{ $facility->id }}" :name="$facility->name" :photo="$facility->photo" />
-        @endforeach
-      </div>
-    </aside>
-    @endif --}}
-    <!-- facility -->
 
     @script
     <script>

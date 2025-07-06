@@ -240,8 +240,8 @@
           <!-- dropdown -->
         </div>
         <div class="flex flex-col w-full">
-          <input type="checkbox" class="peer hidden" id="informasi-menu" />
-          <label for="informasi-menu" class="flex gap-1 items-center justify-center" id="dropdownBtn">
+          <input type="checkbox" class="peer hidden" id="program-sekolah-menu" />
+          <label for="program-sekolah-menu" class="flex gap-1 items-center justify-center" id="dropdownBtn">
             <p class="font-medium text-slate-50 text-xl whitespace-nowrap">Program Sekolah</p>
             <span class="icon-[mdi--chevron-down] text-2xl text-slate-50"></span>
           </label>

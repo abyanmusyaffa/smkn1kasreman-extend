@@ -23,8 +23,8 @@ class Staff extends Component
             // 'viceMasters' => StaffModel::where('category', 'vice-master')->get(),
             // 'headsOfMajor' => StaffModel::where('category', 'head-of-major')->get(),
             'organizational_structures' => OrganizationalStructure::all(),
-            'teachers' => StaffModel::where('category', 'teacher')->get(),
-            'staffMembers' => StaffModel::where('category', 'staff')->get(),
+            'teachers' => StaffModel::where('category', 'teacher')->orderBy('role')->get(),
+            'staff_members' => StaffModel::where('category', 'staff')->orderBy('role')->get(),
         ]);
     }
 }
