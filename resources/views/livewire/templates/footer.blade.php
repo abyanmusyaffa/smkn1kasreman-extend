@@ -45,7 +45,7 @@
             <p class="text-xs lg:text-xl text-slate-50">{{ $school->phone }}</p>
           </div>
           <div class="flex w-full gap-2 items-center">
-            <span class="icon-[mdi--email] text-slate-50 lg:text-2xl"></span>
+            <span class="icon-[mdi--email-mark-as-unread] text-slate-50 lg:text-2xl shrink-0"></span>
             <p class="text-xs lg:text-xl text-slate-50">{{ $school->email }}</p>
           </div>
           <iframe class="w-full h-36 lg:h-44 rounded-lg outline outline-blue-300" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7912.894690152071!2d111.49912496810691!3d-7.41564087171856!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e79c2b58c63a561%3A0xdb8cd4f5f83ff1a5!2sSMK%20NEGERI%201%20KASREMAN!5e0!3m2!1sen!2sid!4v1750687936965!5m2!1sen!2sid" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">

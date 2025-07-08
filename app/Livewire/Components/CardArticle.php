@@ -9,7 +9,7 @@ class CardArticle extends Component
     public $slug;
     public $category;
     public $title;
-    public $createdAt;
+    public $created_at;
     public $photo;
 
     public function render()

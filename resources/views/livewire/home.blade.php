@@ -4,7 +4,6 @@
     <figure class="relative flex w-full mt-8">
       {{-- running text announ --}}
       @if($announcement_text)
-
       <a href="/{{ $announcement_text->category }}/{{ $announcement_text->slug }}" wire:navigate class="announ-container flex w-full h-6 lg:h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl absolute -top-10 lg:-top-12 overflow-hidden gap-8">
         <div class="h-full w-fit flex bg-blue-500 justify-center items-center px-3 absolute z-[1] gap-2">
           <p class="hidden lg:block text-slate-50 text-sm font-semibold">Pengumuman</p><span class="icon-[mdi--loudspeaker] text-slate-50 text-xl lg:text-2xl"></span>
@@ -115,7 +114,7 @@
         <h2 class="text-2xl lg:text-5xl font-medium text-blue-600">Skanka <span class="text-blue-600 font-semibold">Terkini</span></h2>
         <p class="lg:text-xl text-blue-600">- {{ \Carbon\Carbon::parse($latest_article)->translatedFormat('j F Y H:i') }} -</p>
       </div>
-      <div class="w-full lg:w-3/5 f-carousel " id="newsCarousel">
+      <div class="w-full lg:w-3/5 f-carousel" id="newsCarousel">
         <div class="f-carousel__viewport rounded-2xl lg:grid-cols-2 lg:justify-start">
           @foreach($articles as $index => $article)
             <livewire:components.card-article-home wire:key="{{ $article->id }}" :category="$article->category" :slug="$article->slug" :photo="$article->photo" :created_at="$article->created_at" :title="$article->title" :index="$index" />

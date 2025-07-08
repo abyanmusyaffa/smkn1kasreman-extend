@@ -1,53 +1,86 @@
-{{-- @dd($achievements ) --}}
-<div class="flex w-full flex-col gap-6">
-    @if($partners && $partners->count() > 0)
-        <div class="grid w-full gap-4 lg:grid-cols-2">
-            @foreach($partners as $partner)
-                <livewire:components.card-partner wire:key="{{ $partner->id }}" :logo="$partner->logo" :name="$partner->name" :address="$partner->address" :industry="$partner->industry" />
-            @endforeach
+<div class="flex w-full flex-col items-center gap-4">
+    {{-- Search Input --}}
+    <div class="w-full lg:w-1/4 self-end">
+        <div class="relative">
+            <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari..." class="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <span class="icon-[mingcute--search-ai-line] text-slate-600"></span>
+            </div>
         </div>
-    @elseif($testimonials && $testimonials->count() > 0)
-        <div class="grid w-full lg:grid-cols-3 gap-4">
-            @foreach($testimonials as $testimonial)
-            {{-- @dd($testimonial->alumnis) --}}
-            <livewire:components.card-testimonial wire:key="{{ $testimonial->id }}" :photo="$testimonial->alumnis->photo" :name="$testimonial->alumnis->name" :passing_year="$testimonial->alumnis->passing_year" :position="$testimonial->position" :company="$testimonial->company" :content="$testimonial->content" :rating="$testimonial->rating" />
-            @endforeach
-        </div>
-    @elseif($achievements && $achievements->count() > 0)
-        <div class="grid w-full gap-4 lg:grid-cols-4">
-            @foreach($achievements as $achievement)
-                <livewire:components.card-achievement wire:key="{{ $achievement->id }}" :slug="$achievement->slug" :photo="$achievement->photo" :rankings="$achievement->rankings" :title="$achievement->title" :createdAt="$achievement->created_at" /> 
-            @endforeach
-        </div>
-    @elseif($announcements && $announcements->count() > 0)
-        <div class="grid w-full gap-4 lg:grid-cols-4">
-            @foreach($announcements as $announcement)
-                <livewire:components.card-article wire:key="{{ $announcement->id }}" :category="$announcement->category" :slug="$announcement->slug" :photo="$announcement->photo" :createdAt="$announcement->created_at" :title="$announcement->title" />
-            @endforeach
-        </div>
-    @elseif($enrollments && $enrollments->count() > 0)
-        <div class="grid w-full gap-4 lg:grid-cols-4">
-            @foreach($enrollments as $enrollment)
-                <livewire:components.card-article wire:key="{{ $enrollment->id }}" :category="$enrollment->category" :slug="$enrollment->slug" :photo="$enrollment->photo" :createdAt="$enrollment->created_at" :title="$enrollment->title" />
-            @endforeach
-        </div>
-    @elseif($news && $news->count() > 0)
-        <div class="grid w-full gap-4 lg:grid-cols-4">
-            @foreach($news as $item)
-                <livewire:components.card-article wire:key="{{ $item->id }}" :category="$item->category" :slug="$item->slug" :photo="$item->photo" :createdAt="$item->created_at" :title="$item->title" />
-            @endforeach
-        </div>
-    @elseif($jobfairs && $jobfairs->count() > 0)
-        <div class="grid w-full gap-4 lg:grid-cols-4">
-            @foreach($jobfairs as $jobfair)
-                <livewire:components.card-jobfair wire:key="{{ $jobfair->id }}" :slug="$jobfair->slug" :photo="$jobfair->photo" :deadline="$jobfair->deadline" :title="$jobfair->title" />
-            @endforeach
-        </div>
-    @endif
+    </div>
 
-    @if($partners && $partners->count() > 0)
-        {{ $partners->links(data: ['scrollTo' => false]) }}
-    @elseif($testimonials && $testimonials->count() > 0)
+    {{-- Loading State --}}
+    <div wire:loading class="px-4 py-2 bg-blue-100 border border-blue-200 rounded-lg">
+        <span class="icon-[mingcute--loading-3-fill] text-blue-800 animate-spin mr-1"></span>
+        <p class="text-blue-800 inline">Mencari...</p>
+    </div>
+    {{-- Loading State --}}
+
+    <div wire:loading.remove class="w-full">
+        @if($partners && $partners->count() > 0)
+            <div class="grid w-full gap-4 lg:grid-cols-2">
+                @foreach($partners as $partner)
+                    <livewire:components.card-partner wire:key="{{ $partner->id }}" :logo="$partner->logo" :name="$partner->name" :address="$partner->address" :industry="$partner->industry" />
+                @endforeach
+            </div>
+        @elseif($extracurriculars && $extracurriculars->count() > 0)
+            <div class="grid w-full lg:grid-cols-4 gap-4">
+                @foreach($extracurriculars as $extracurricular)
+                    <livewire:components.card-extracurricular wire:key="{{ $extracurricular->id }}" :url="$extracurricular->url" :logo="$extracurricular->logo" :name="$extracurricular->name" />
+                @endforeach
+            </div>
+        @elseif($testimonials && $testimonials->count() > 0)
+            <div class="grid w-full lg:grid-cols-3 gap-4">
+                @foreach($testimonials as $testimonial)
+                {{-- @dd($testimonial->alumnis) --}}
+                <livewire:components.card-testimonial wire:key="{{ $testimonial->id }}" :photo="$testimonial->alumnis->photo" :name="$testimonial->alumnis->name" :passing_year="$testimonial->alumnis->passing_year" :position="$testimonial->position" :company="$testimonial->company" :content="$testimonial->content" :rating="$testimonial->rating" />
+                @endforeach
+            </div>
+        @elseif($achievements && $achievements->count() > 0)
+            <div class="grid w-full gap-2 lg:gap-4 lg:grid-cols-4">
+                @foreach($achievements as $achievement)
+                    <livewire:components.card-achievement wire:key="{{ $achievement->id }}" :slug="$achievement->slug" :photo="$achievement->photo" :rankings="$achievement->rankings" :title="$achievement->title" :createdAt="$achievement->created_at" /> 
+                @endforeach
+            </div>
+        @elseif($announcements && $announcements->count() > 0)
+            <div class="grid w-full gap-4 lg:grid-cols-4">
+                @foreach($announcements as $announcement)
+                    <livewire:components.card-article wire:key="{{ $announcement->id }}" :category="$announcement->category" :slug="$announcement->slug" :photo="$announcement->photo" :createdAt="$announcement->created_at" :title="$announcement->title" />
+                @endforeach
+            </div>
+        @elseif($enrollments && $enrollments->count() > 0)
+            <div class="grid w-full gap-4 lg:grid-cols-4">
+                @foreach($enrollments as $enrollment)
+                    <livewire:components.card-article wire:key="{{ $enrollment->id }}" :category="$enrollment->category" :slug="$enrollment->slug" :photo="$enrollment->photo" :createdAt="$enrollment->created_at" :title="$enrollment->title" />
+                @endforeach
+            </div>
+        @elseif($news && $news->count() > 0)
+            <div class="grid w-full gap-4 lg:grid-cols-4">
+                @foreach($news as $item)
+                    <livewire:components.card-article wire:key="{{ $item->id }}" :category="$item->category" :slug="$item->slug" :photo="$item->photo" :created_at="$item->created_at" :title="$item->title" />
+                @endforeach
+            </div>
+        @elseif($jobfairs && $jobfairs->count() > 0)
+            <div class="grid w-full gap-4 lg:grid-cols-4">
+                @foreach($jobfairs as $jobfair)
+                    <livewire:components.card-jobfair wire:key="{{ $jobfair->id }}" :slug="$jobfair->slug" :photo="$jobfair->photo" :deadline="$jobfair->deadline" :title="$jobfair->title" />
+                @endforeach
+            </div>
+        @else
+            {{-- No Results Found --}}
+            @if($search)
+                <div class="text-center py-8">
+                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 0a4 4 0 015.656-5.656M9 12H3m6 0v6m0-6V6"></path>
+                    </svg>
+                    <h3 class="mt-2 text-sm font-medium text-gray-900">Tidak ada hasil</h3>
+                    <p class="mt-1 text-sm text-gray-500">Tidak ditemukan hasil untuk pencarian "{{ $search }}"</p>
+                </div>
+            @endif
+        @endif
+    </div>
+
+    @if($testimonials && $testimonials->count() > 0)
         {{ $testimonials->links(data: ['scrollTo' => false]) }}
     @elseif($achievements && $achievements->count() > 0)
         {{ $achievements->links(data: ['scrollTo' => false]) }}

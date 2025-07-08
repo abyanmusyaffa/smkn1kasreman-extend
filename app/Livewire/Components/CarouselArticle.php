@@ -4,24 +4,25 @@ namespace App\Livewire\Components;
 
 use Livewire\Component;
 
-class PinnedArticle extends Component
+class CarouselArticle extends Component
 {
-    public $slug;
-    public $created_at;
-    public $category;
-    public $title;
-    public $content;
     public $photo;
+    public $rankings;
+    public $content;
+    public $title;
+    public $slug;
+    public $category;
+    public $created_at;
 
-    public function getFirstParagraph()
+    public function getFirstParagraph($content)
     {
-        if (empty($this->content)) {
+        if (empty($content)) {
             return '';
         }
 
         $dom = new \DOMDocument();
         libxml_use_internal_errors(true);
-        $dom->loadHTML(mb_convert_encoding($this->content, 'HTML-ENTITIES', 'UTF-8'));
+        $dom->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'));
         libxml_clear_errors();
 
         $paragraphs = $dom->getElementsByTagName('p');
@@ -34,8 +35,8 @@ class PinnedArticle extends Component
 
     public function render()
     {
-        return view('livewire.components.pinned-article', [
-            'summary' => $this->getFirstParagraph(),
+        return view('livewire.components.carousel-article', [
+            'summary' => $this->getFirstParagraph($this->content)
         ]);
     }
 }

@@ -38,8 +38,9 @@ class StaffResource extends Resource
                     Forms\Components\TextInput::make('name')
                         ->label('Nama')
                         ->required()
+                        ->live()
                         ->hint(fn ($state, $component) => 'Sisa ' . $component->getMaxLength() - strlen($state) . ' Karakter')
-                        ->maxLength(22)
+                        ->maxLength(42)
                         ->columnSpan([
                             'default' => 2,
                             'lg' => 12,
@@ -57,8 +58,9 @@ class StaffResource extends Resource
                         ->placeholder('Guru Bahasa Indonesia')
                         ->label('Jabatan')
                         ->required()
+                        ->live()
                         ->hint(fn ($state, $component) => 'Sisa ' . $component->getMaxLength() - strlen($state) . ' Karakter')
-                        ->maxLength(30)
+                        ->maxLength(24)
                         ->columnSpan([
                             'default' => 2,
                             'lg' => 6,

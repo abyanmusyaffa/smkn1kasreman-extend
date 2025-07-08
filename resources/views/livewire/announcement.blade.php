@@ -1,19 +1,18 @@
-<div class="w-full lg:min-h-[calc(100svh-376px)] min-h-[calc(100svh-512px)] flex flex-col gap-9 lg:gap-12 px-4 pt-20 pb-9 lg:px-16 2xl:px-36 lg:pt-[120px] lg:pb-12 bg-slate-100">
-    <!-- announ -->
-    <article class="flex w-full flex-col gap-4 lg:gap-6 items-center">
-      <!-- pinned -->
-      @if($announcementPinned)
-        <livewire:components.pinned-article :slug="$announcementPinned->slug" :createdAt="$announcementPinned->created_at" :title="$announcementPinned->title" :content="$announcementPinned->content" :photo="$announcementPinned->photo" />
-      @endif
-      <!-- pinned -->
+<div class="w-full lg:min-h-[calc(100svh-376px)] min-h-[calc(100svh-512px)] flex flex-col gap-4 lg:gap-6 px-4 pt-20 pb-9 lg:px-16 2xl:px-36 lg:pt-[120px] lg:pb-12 bg-gradient-to-r from-slate-50 to-slate-100">
+  <livewire:components.title-left text="Pengumuman" />
+  <!-- announ -->
+  <!-- pinned -->
+  @if($announcementPinned)
+  <article class="flex w-full flex-col gap-4 lg:gap-6 items-center">
+    <livewire:components.pinned-article :slug="$announcementPinned->slug" :created_at="$announcementPinned->created_at" :title="$announcementPinned->title" :content="$announcementPinned->content" :photo="$announcementPinned->photo" :category="$announcementPinned->category" />
+  </article>
+  @endif
+  <!-- pinned -->
 
-      <!-- all announ -->
-      <div data-aos="fade-up" class="flex flex-col gap-4 w-full justify-center">
-        <livewire:components.title-left text="Pengumuman" />
-
-        <livewire:components.paginate :onAnnouncements="true" />
-      </div>
-      <!-- all announ -->
-    </article>
-    <!-- announ -->
+  <!-- all announ -->
+  <aside data-aos="fade-up" class="flex flex-col gap-4 w-full justify-center p-2 lg:p-4 rounded-2xl bg-white">
+    <livewire:components.paginate :onAnnouncements="true" />
+  </aside>
+  <!-- all announ -->
+  <!-- announ -->
   </div>
