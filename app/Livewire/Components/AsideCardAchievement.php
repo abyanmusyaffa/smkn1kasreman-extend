@@ -10,7 +10,7 @@ class AsideCardAchievement extends Component
     public $photo;
     public $title;
     public $rankings;
-    public $createdAt;
+    public $created_at;
 
     public function render()
     {

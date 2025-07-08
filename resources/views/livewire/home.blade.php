@@ -1,5 +1,5 @@
 {{-- @dd($articles) --}}
-<div class="w-full overflow-hidden lg:min-h-[calc(100svh-376px)] min-h-[calc(100svh-512px)] flex flex-col gap-9 lg:gap-12 px-4 pt-20 pb-9 lg:px-16 2xl:px-36 lg:pt-32 lg:pb-12 bg-gradient-to-r from-slate-50 to-slate-100">
+<div class="{{ $announcement_text ? 'pt-20 lg:pt-32' : 'pt-16 lg:pt-24' }} w-full overflow-hidden lg:min-h-[calc(100svh-376px)] min-h-[calc(100svh-512px)] flex flex-col gap-9 lg:gap-12 px-4  pb-9 lg:px-16 2xl:px-36  lg:pb-12 bg-gradient-to-r from-slate-50 to-slate-100">
     <!-- hero -->
     <figure class="relative flex w-full mt-8">
       {{-- running text announ --}}
@@ -15,9 +15,6 @@
             </div>
           </div>
         </div>
-        {{-- <div class="announ-animation animate-announs-scroll h-full flex flex-shrink-0 items-center">
-          <p class="text-sm whitespace-nowrap text-slate-50">{{ $announcement_text->title }}</p>
-        </div> --}}
       </a>
       @endif
       {{-- running text announ --}}

@@ -21,11 +21,11 @@
     <div class="flex flex-col gap-2 ">
         @if($articles && $articles->count() > 0) 
             @foreach($articles as $article)
-                <livewire:components.aside-card-article wire:key="{{ $article->id }}" :slug="$article->slug" :title="$article->title" :photo="$article->photo" :category="$article->category"  :createdAt="$article->created_at"   />
+                <livewire:components.aside-card-article wire:key="{{ $article->id }}" :slug="$article->slug" :title="$article->title" :photo="$article->photo" :category="$article->category"  :created_at="$article->created_at"   />
             @endforeach
         @elseif($achievements && $achievements->count() > 0)
             @foreach($achievements as $achievement)
-                <livewire:components.aside-card-achievement wire:key="{{ $achievement->id }}" :slug="$achievement->slug" :title="$achievement->title" :photo="$achievement->photo" :rankings="$achievement->rankings"  :createdAt="$achievement->created_at"   />
+                <livewire:components.aside-card-achievement wire:key="{{ $achievement->id }}" :slug="$achievement->slug" :title="$achievement->title" :photo="$achievement->photo" :rankings="$achievement->rankings"  :created_at="$achievement->created_at"   />
             @endforeach
         @elseif($jobfairs && $jobfairs->count() > 0)
             @foreach($jobfairs as $jobfair)

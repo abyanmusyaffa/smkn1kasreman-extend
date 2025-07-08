@@ -18,10 +18,6 @@
             <span class="icon-[mdi--calendar-badge] text-xs lg:text-sm"></span>
             <p class="text-xs lg:text-base">{{ \Carbon\Carbon::parse($created_at)->translatedFormat('j F Y H:i') }}</p>
         </div>
-          {{-- <div class="flex gap-2 items-center">
-              <span class="icon-[mdi--calendar-badge] text-xs lg:text-sm text-slate-600"></span>
-              <p class="text-xs lg:text-sm text-slate-600">{{ \Carbon\Carbon::parse($created_at)->translatedFormat('j F Y') }}</p>
-          </div> --}}
       </figcaption>
     </article>
 </a>

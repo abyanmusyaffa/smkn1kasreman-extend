@@ -10,7 +10,7 @@ class AsideCardArticle extends Component
     public $photo;
     public $title;
     public $category;
-    public $createdAt;
+    public $created_at;
 
     public function render()
     {

@@ -42,10 +42,10 @@
                     {{-- {{ $articleDetail->deadline ? \Carbon\Carbon::parse($articleDetail->deadline)->diffForHumans() : \Carbon\Carbon::parse($articleDetail->created_at)->translatedFormat('j F Y') }} --}}
                 </p>
             </div>
-            <img src="/storage/{{ $articleDetail->photo }}" class="w-5/6 lg:w-auto lg:h-80" alt="">
+            <img data-fancybox src="/storage/{{ $articleDetail->photo }}" class="w-5/6 lg:w-auto lg:h-80" alt="">
         </header>
         <div class="flex bg-white rounded-2xl p-4 lg:p-6">
-            <div class="prose lg:prose-figure:w-2/3 w-full max-w-none">
+            <div id="rich-content" class="prose lg:prose-figure:w-2/3 w-full max-w-none">
                {!! $articleDetail->content !!}
             </div>
         </div>
@@ -68,4 +68,42 @@
         </footer>
     </article>
     <livewire:components.aside-article :articles="$articles" :achievements="$achievements" :jobfairs="$jobfairs" />
+
+    @script
+    <script>
+      document.addEventListener("livewire:navigated", function () {
+        const richContentContainers = document.querySelectorAll('#rich-content');
+
+        richContentContainers.forEach(container => {
+            const imageLinks = container.querySelectorAll('a > img');
+
+            imageLinks.forEach(img => {
+                const link = img.closest('a');
+                if (link && !link.hasAttribute('data-fancybox')) {
+                link.setAttribute('data-fancybox', 'gallery');
+                }
+            });
+        });
+
+        // fancybox
+        Fancybox.bind("[data-fancybox]", {
+          Hash: false,
+          hideScrollbar: false,
+          parentEl: null,
+          
+          on: {
+            init: (fancybox) => {
+              scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+            },
+            destroy: (fancybox) => {
+              setTimeout(() => {
+                window.scrollTo(0, scrollPosition);
+              }, 10);
+            }
+          }
+        });
+        // fancybox
+      });
+    </script>
+    @endscript
 </div>
