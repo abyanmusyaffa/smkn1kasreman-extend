@@ -40,7 +40,6 @@ jobs:
           local-dir: ./
           server-dir: /smkn1kasreman/
           timeout: 190000
-          protocol: ftp
           exclude: |
             **/.git*
             **/node_modules/**
