@@ -81,10 +81,18 @@ class ArticleResource extends Resource
                         ->required()
                         ->columnSpan([
                             'default' => 2,
-                            'lg' => 6,
+                            'lg' => 4,
                         ]),
-                    Forms\Components\Toggle::make('is_running')
-                        ->label('Running')
+                    Forms\Components\Toggle::make('is_published')
+                        ->label('Publish')
+                        ->required()
+                        ->default(true)
+                        ->columnSpan([
+                            'default' => 2,
+                            'lg' => 4,
+                        ]),
+                    Forms\Components\Toggle::make('is_headline')
+                        ->label('Headline')
                         ->live()
                         ->afterStateUpdated(function (bool $state, callable $set, callable $get) {
                             $category = $get('category');
@@ -92,24 +100,24 @@ class ArticleResource extends Resource
                         
                             if ($state) {
                                 Article::whereIn('category', ['announcement', 'enrollment'])
-                                    ->where('is_running', true)
+                                    ->where('is_headline', true)
                                     ->where('id', '!=', $articleId)
-                                    ->update(['is_running' => false]);
+                                    ->update(['is_headline' => false]);
                         
-                                $set('is_running', true);
+                                $set('is_headline', true);
                         
                                 Notification::make()
                                     ->success()
-                                    ->title('Artikel ditampilkan di Running Text')
+                                    ->title('Artikel ditampilkan di Headline Text')
                                     ->send();
                             } else {
-                                $set('is_running', false);
+                                $set('is_headline', false);
                             }
                         })                                                        
                         ->required()
                         ->columnSpan([
                             'default' => 2,
-                            'lg' => 6,
+                            'lg' => 4,
                         ]),
                     Forms\Components\TextInput::make('title')
                         ->label('Judul')
@@ -222,24 +230,28 @@ class ArticleResource extends Resource
                     })
                     ->sortable()
                     ->label('Sematkan'),
-                Tables\Columns\ToggleColumn::make('is_running')
-                    ->label('Running')
+                Tables\Columns\ToggleColumn::make('is_headline')
+                    ->label('Headline')
+                    ->sortable()
                     ->afterStateUpdated(function (bool $state, Article $record) {
                         if ($state) {
                             Article::whereIn('category', ['announcement', 'enrollment'])
-                                ->where('is_running', true)
+                                ->where('is_headline', true)
                                 ->where('id', '!=', $record->id)
-                                ->update(['is_running' => false]);
+                                ->update(['is_headline' => false]);
                 
                             Notification::make()
                                 ->success()
-                                ->title('Artikel ditampilkan di Running Text')
+                                ->title('Artikel ditampilkan di Headline Text')
                                 ->send();
                         }
                 
-                        $record->is_running = $state;
+                        $record->is_headline = $state;
                         $record->save();
                     }),
+                Tables\Columns\ToggleColumn::make('is_published')
+                    ->label('Publish')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Dibuat')
                     ->since()

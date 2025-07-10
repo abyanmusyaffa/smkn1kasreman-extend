@@ -16,6 +16,7 @@ use App\Livewire\Announcement;
 use App\Livewire\ArticleDetail;
 use App\Livewire\BusinessUnit;
 use App\Livewire\Extracurricular;
+use App\Livewire\ExtracurricularDetail;
 use App\Livewire\Facility;
 use App\Livewire\Internship;
 use App\Livewire\StudentCouncil;
@@ -91,7 +92,6 @@ Route::get('/facility', Facility::class);
 Route::get('/achievement', Achievement::class);
 Route::get('/major', Major::class);
 
-Route::get('/student-council', StudentCouncil::class);
 Route::get('/extracurricular', Extracurricular::class);
 Route::get('/student-events', StudentEvents::class);
 
@@ -115,3 +115,5 @@ Route::get('/news/{slug}', ArticleDetail::class);
 Route::get('/announcement/{slug}', ArticleDetail::class);
 Route::get('/enrollment/{slug}', ArticleDetail::class);
 Route::get('/jobfair/{slug}', ArticleDetail::class);
+
+Route::get('/e/{slug}', ExtracurricularDetail::class);

@@ -47,7 +47,7 @@ class Home extends Component
     {
         return view('livewire.home', [
             'majors' => Major::select('id', 'expertise_concentration', 'alias', 'logo')->get(),
-            'announcement_text' => Article::whereIn('category', ['announcement', 'enrollment'])->where('is_running', true)->select('title', 'slug', 'category')->first(),
+            'announcement_text' => Article::whereIn('category', ['announcement', 'enrollment'])->where('is_headline', true)->select('title', 'slug', 'category')->first(),
             'school' => $school = School::first(),
             'summary' => $this->getFirstParagraph(),
             'welcome_video_id' => $this->getYoutubeVideoId($school->url_video_welcome),
@@ -58,7 +58,7 @@ class Home extends Component
             'achievements' => Achievement::latest()->take(4)->get(['id', 'photo', 'slug', 'rankings', 'title', 'created_at']),
             'latest_article' => Article::latest()->take(1)->value('updated_at'),
             // 'testimonials' => Testimonial::with('alumnis')->where('show', true)->latest()->take(6)->get(),
-            'articles' => Article::latest()->take(4)->get(['id', 'photo', 'slug', 'category', 'title', 'created_at']),
+            'articles' => Article::where('is_published', true)->latest()->take(6)->get(['id', 'photo', 'slug', 'category', 'title', 'created_at']),
         ]);        
     }
 

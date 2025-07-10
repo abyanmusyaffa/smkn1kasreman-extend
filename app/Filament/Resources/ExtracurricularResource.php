@@ -4,8 +4,10 @@ namespace App\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Tables;
+use Filament\Forms\Set;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 use App\Models\Extracurricular;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Section;
@@ -33,27 +35,165 @@ class ExtracurricularResource extends Resource
                     'lg' => 12,
                 ])
                 ->schema([
+                    Forms\Components\Select::make('user_id')
+                        ->label('Administrator')
+                        ->searchable()
+                        ->native(false)
+                        ->relationship(name: 'users', titleAttribute: 'name')
+                        ->required()
+                        ->columnSpan([
+                            'default' => 2,
+                            'lg' => 12,
+                        ]),
                     Forms\Components\TextInput::make('name')
                         ->label('Nama')
                         ->required()
-                        ->hint(fn ($state, $component) => 'Sisa ' . $component->getMaxLength() - strlen($state) . ' Karakter') 
+                        ->hint(fn ($component) => 'Maksimal ' . $component->getMaxLength() . ' Karakter')
+                        ->live(onBlur: true)
+                        ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state)))
                         ->maxLength(40)
                         ->columnSpan([
                             'default' => 2,
                             'lg' => 12,
                         ]),
+                    Forms\Components\Hidden::make('slug'),
                     Forms\Components\FileUpload::make('logo')
                         ->image()
-                        ->directory('/extracurriculars')
+                        ->maxSize(512)
+                        ->directory(function ($get) {
+                            $slug = $get('slug');
+                    
+                            return 'extracurriculars/' . ($slug ?: 'temp');
+                        })
                         ->default('/default/extracurricular.svg')
                         ->columnSpan([
                             'default' => 2,
                             'lg' => 12,
                         ]),
-                    Forms\Components\TextInput::make('url')
-                        ->label('Link Sosial Media / Website')
-                        ->url()
-                        ->maxLength(255)
+                    Forms\Components\Repeater::make('contacts')
+                        ->label('Kontak/Media Sosial')
+                        ->addActionLabel('Tambahkan Kontak/Media Sosial')
+                        ->schema([
+                            Forms\Components\Select::make('platform')
+                                ->options([
+                                    'whatsapp' => 'Whatsapp',
+                                    'email' => 'Email',
+                                    'instagram' => 'Instagram',
+                                    'facebook' => 'Facebook',
+                                    'tiktok' => 'Tiktok',
+                                    'youtube' => 'Youtube',
+                                ])
+                                ->native(false)
+                                ->required(),
+                            Forms\Components\TextInput::make('url')
+                                ->label('Tautan')
+                                ->url()
+                                ->required(),
+                        ])
+                        ->columns(2)
+                        ->columnSpan([
+                            'default' => 2,
+                            'lg' => 12,
+                        ]),
+                    ]),
+                Section::make()
+                ->columns([
+                    'default' => 2,
+                    'lg' => 12,
+                ])
+                ->schema([
+                    Forms\Components\RichEditor::make('description')
+                        ->label('Deskripsi')
+                        ->fileAttachmentsDirectory(function ($get) {
+                            $slug = $get('slug');
+                    
+                            return 'extracurriculars/' . ($slug ?: 'temp') . '/attachments';
+                        })
+                        ->toolbarButtons([
+                            'attachFiles',
+                            'blockquote',
+                            'bold',
+                            'bulletList',
+                            'h2',
+                            'h3',
+                            'h4',
+                            'italic',
+                            'link',
+                            'orderedList',
+                            'redo',
+                            'strike',
+                            'underline',
+                            'undo',
+                        ])
+                        ->required()
+                        ->columnSpan([
+                            'default' => 2,
+                            'lg' => 12,
+                        ]),
+                    Forms\Components\FileUpload::make('galleries')
+                        ->label('Galeri')
+                        ->hint(fn ($component) => 'Minimal ' . $component->getMinFiles() . ' Foto')
+                        ->directory(function ($get) {
+                            $slug = $get('slug');
+                    
+                            return 'extracurriculars/' . ($slug ?: 'temp') . '/galleries';
+                        })
+                        ->required()
+                        ->image()
+                        ->imageResizeMode('cover')
+                        ->imageCropAspectRatio('4:3')
+                        ->imageResizeTargetWidth('1024')
+                        ->imageResizeTargetHeight('768')
+                        ->multiple()
+                        ->minFiles(4)
+                        ->columnSpan([
+                            'default' => 2,
+                            'lg' => 12,
+                        ]),
+                    Forms\Components\Repeater::make('staff')
+                        ->label('Pengurus')
+                        ->addActionLabel('Tambahkan Pengurus')
+                        ->schema([
+                            Forms\Components\TextInput::make('name')
+                                ->label('Nama')
+                                ->required()
+                                ->live()
+                                ->hint(fn ($state, $component) => 'Sisa ' . $component->getMaxLength() - strlen($state) . ' Karakter') 
+                                ->maxLength(42)
+                                ->columnSpan([
+                                    'default' => 2,
+                                    'lg' => 8,
+                                ]),
+                            Forms\Components\TextInput::make('role')
+                                ->label('Jabatan')
+                                ->required()
+                                ->live()
+                                ->hint(fn ($state, $component) => 'Sisa ' . $component->getMaxLength() - strlen($state) . ' Karakter')
+                                ->maxLength(24)
+                                ->columnSpan([
+                                    'default' => 2,
+                                    'lg' => 4,
+                                ]),
+                            Forms\Components\FileUpload::make('photo')
+                                ->label('Foto')
+                                ->image()
+                                ->imageResizeMode('cover')
+                                ->imageCropAspectRatio('4:6')
+                                ->imageResizeTargetWidth('560')
+                                ->imageResizeTargetHeight('840')
+                                ->directory(function ($get) {
+                                    return 'extracurriculars/' . ($get('../../slug') ?: 'temp') . '/staff';
+                                })
+                                ->required()
+                                ->columnSpan([
+                                    'default' => 2,
+                                    'lg' => 12,
+                                ]),
+                        ])
+                        ->columns([
+                            'default' => 2,
+                            'lg' => 12,
+                        ])
                         ->columnSpan([
                             'default' => 2,
                             'lg' => 12,

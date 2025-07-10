@@ -18,7 +18,7 @@ class News extends Component
     public function render()
     {
         return view('livewire.news', [
-            'newsPinned' => Article::where('category', 'news')->where('is_pinned', true)->get()
+            'newsPinned' => Article::where('category', 'news')->where('is_published', true)->where('is_pinned', true)->get()
         ]);
     }
 }

@@ -15,4 +15,4 @@
   </aside>
   <!-- all announ -->
   <!-- announ -->
-  </div>
+</div>

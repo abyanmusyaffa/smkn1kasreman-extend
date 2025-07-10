@@ -109,33 +109,31 @@ class Paginate extends Component
 
     private function getNews()
     {
-        return Article::where('category', 'news')
+        return Article::where('category', 'news')->where('is_published', true)
             ->when($this->search, function ($query) {
                 $query->where('title', 'like', '%' . $this->search . '%');
             })
-            ->orderBy('updated_at', 'desc')
+            ->latest()
             ->paginate(12);
     }
 
     private function getAnnouncements()
     {
-        return Article::where('category', 'announcement')
-            ->where('is_pinned', false)
+        return Article::where('category', 'announcement')->where('is_published', true)
             ->when($this->search, function ($query) {
                 $query->where('title', 'like', '%' . $this->search . '%');
             })
-            ->orderBy('updated_at', 'desc')
+            ->latest()
             ->paginate(12);
     }
 
     private function getEnrollments()
     {
-        return Article::where('category', 'enrollment')
-            ->where('is_pinned', false)
+        return Article::where('category', 'enrollment')->where('is_published', true)
             ->when($this->search, function ($query) {
                 $query->where('title', 'like', '%' . $this->search . '%');
             })
-            ->orderBy('updated_at', 'desc')
+            ->latest()
             ->paginate(12);
     }
 

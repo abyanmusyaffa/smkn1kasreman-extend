@@ -6,7 +6,7 @@
                 <span class="icon-[mdi--calendar-badge] text-sm lg:text-lg"></span>
                 <p class="text-sm lg:text-lg whitespace-nowrap">{{ \Carbon\Carbon::parse($created_at)->translatedFormat('j F Y H:i') }}</p>
             </div>
-            <h2 class="text-lg font-medium text-slate-700 lg:text-xl xl:text-2xl text-center lg:text-start h-[3lh] line-clamp-3 lg:max-h-[2lh] lg:h-fit lg:line-clamp-2 xl:max-h-[3lh] xl:h-fit xl:line-clamp-3">{{ $title }}</h2>
+            <h2 class="text-lg font-medium text-slate-700 lg:text-xl xl:text-2xl text-center lg:text-start h-fit max-h-[3lh] line-clamp-3 lg:max-h-[2lh] lg:line-clamp-2 xl:max-h-[3lh] xl:line-clamp-3">{{ $title }}</h2>
             <p class="text-sm lg:text-base text-center lg:text-start text-slate-700 h-[3lh] line-clamp-3 lg:h-[2lh] lg:line-clamp-2 xl:h-[3lh] xl:line-clamp-3">{{ $summary }}</p>
         </div>
         <livewire:components.more-button text="Selengkapnya" :href=" $category === 'announcement' ? 'announcement/' . $slug : 'enrollment/' . $slug "  />

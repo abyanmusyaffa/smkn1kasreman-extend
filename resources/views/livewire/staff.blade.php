@@ -182,7 +182,7 @@
         Carousel(teachersContainer, teachersOptions, { Arrows, Autoplay }).init();
         // teachers carousel
 
-        // teachers carousel
+        // staff carousel
         const staffContainer = document.getElementById("staffCarousel");
         const staffOptions = {
           infinite: true ,
@@ -192,7 +192,7 @@
         };
 
         Carousel(staffContainer, staffOptions, { Arrows, Autoplay }).init();
-        // teachers carousel
+        // staff carousel
       });
     </script>
     @endscript

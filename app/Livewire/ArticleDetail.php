@@ -10,7 +10,6 @@ use Livewire\Attributes\Title;
 
 class ArticleDetail extends Component
 {
-    
     public $articleDetail;
     
     public function mount($slug)

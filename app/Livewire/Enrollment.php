@@ -18,7 +18,7 @@ class Enrollment extends Component
     public function render()
     {
         return view('livewire.enrollment', [
-            'enrollmentPinned' => Article::where('category', 'enrollment')->where('is_pinned', true)->first(),
+            'enrollmentPinned' => Article::where('category', 'enrollment')->where('is_published', true)->where('is_pinned', true)->first(),
         ]);
     }
 }

@@ -56,6 +56,11 @@ class User extends Authenticatable implements FilamentUser
         ];
     }
 
+    public function extracurriculars(): HasMany
+    {
+        return $this->hasMany(Extracurricular::class);
+    }
+
     public function achievements(): HasMany
     {
         return $this->hasMany(Achievement::class);

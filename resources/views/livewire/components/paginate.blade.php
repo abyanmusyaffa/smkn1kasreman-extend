@@ -1,3 +1,4 @@
+{{-- @dd($announcements, $enrollments, $achievements) --}}
 <div class="flex w-full flex-col items-center gap-4">
     {{-- Search Input --}}
     <div class="w-full lg:w-1/4 self-end">
@@ -39,19 +40,19 @@
         @elseif($achievements && $achievements->count() > 0)
             <div class="grid w-full gap-2 lg:gap-4 lg:grid-cols-4">
                 @foreach($achievements as $achievement)
-                    <livewire:components.card-achievement wire:key="{{ $achievement->id }}" :slug="$achievement->slug" :photo="$achievement->photo" :rankings="$achievement->rankings" :title="$achievement->title" :createdAt="$achievement->created_at" /> 
+                    <livewire:components.card-achievement wire:key="{{ $achievement->id }}" :slug="$achievement->slug" :photo="$achievement->photo" :rankings="$achievement->rankings" :title="$achievement->title" :created_at="$achievement->created_at" /> 
                 @endforeach
             </div>
         @elseif($announcements && $announcements->count() > 0)
             <div class="grid w-full gap-4 lg:grid-cols-4">
                 @foreach($announcements as $announcement)
-                    <livewire:components.card-article wire:key="{{ $announcement->id }}" :category="$announcement->category" :slug="$announcement->slug" :photo="$announcement->photo" :createdAt="$announcement->created_at" :title="$announcement->title" />
+                    <livewire:components.card-article wire:key="{{ $announcement->id }}" :category="$announcement->category" :slug="$announcement->slug" :photo="$announcement->photo" :created_at="$announcement->created_at" :title="$announcement->title" />
                 @endforeach
             </div>
         @elseif($enrollments && $enrollments->count() > 0)
             <div class="grid w-full gap-4 lg:grid-cols-4">
                 @foreach($enrollments as $enrollment)
-                    <livewire:components.card-article wire:key="{{ $enrollment->id }}" :category="$enrollment->category" :slug="$enrollment->slug" :photo="$enrollment->photo" :createdAt="$enrollment->created_at" :title="$enrollment->title" />
+                    <livewire:components.card-article wire:key="{{ $enrollment->id }}" :category="$enrollment->category" :slug="$enrollment->slug" :photo="$enrollment->photo" :created_at="$enrollment->created_at" :title="$enrollment->title" />
                 @endforeach
             </div>
         @elseif($news && $news->count() > 0)

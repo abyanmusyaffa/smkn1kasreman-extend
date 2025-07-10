@@ -20,7 +20,10 @@ return new class extends Migration
             $table->enum('category', ['news', 'announcement', 'enrollment']);
             $table->json('tags');
             $table->boolean('is_pinned')->default(false);
-            $table->boolean('is_running')->default(false);
+            $table->boolean('is_headline')->default(false);
+            $table->boolean('is_published')->default(true);
+            $table->string('organization_type')->nullable();
+            $table->bigInteger('organization_id')->nullable();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });

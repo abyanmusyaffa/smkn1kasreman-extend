@@ -18,7 +18,7 @@ class Announcement extends Component
     public function render()
     {
         return view('livewire.announcement', [
-            'announcementPinned' => Article::where('category', 'announcement')->where('is_pinned', true)->first(),
+            'announcementPinned' => Article::where('category', 'announcement')->where('is_published', true)->where('is_pinned', true)->first(),
         ]);
     }
 }

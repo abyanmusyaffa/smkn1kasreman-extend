@@ -16,7 +16,13 @@ return new class extends Migration
             $table->id();
             $table->string('logo')->nullable()->default('/default/extracurricular.svg');
             $table->string('name');
-            $table->string('url')->nullable();
+            $table->string('slug');
+            $table->json('contacts')->nullable();
+            $table->longText('description');
+            $table->json('galleries');
+            $table->json('staff')->nullable();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            // $table->string('url')->nullable();
             $table->timestamps();
         });
     }
