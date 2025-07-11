@@ -55,12 +55,12 @@ class Extracurricular extends Model
                 Storage::disk('public')->delete($file);
             }
 
-            // Hapus attachment yang dihapus dari content
-            $originalContent = $extracurricular->getOriginal('content');
-            $newContent = $extracurricular->content;
+            // Hapus attachment yang dihapus dari description
+            $originalDescription = $extracurricular->getOriginal('description');
+            $newDescription = $extracurricular->description;
 
-            preg_match_all('/extracurriculars\/[^"\']+/', $originalContent, $originalFiles);
-            preg_match_all('/extracurriculars\/[^"\']+/', $newContent, $newFiles);
+            preg_match_all('/extracurriculars\/[^"\']+/', $originalDescription, $originalFiles);
+            preg_match_all('/extracurriculars\/[^"\']+/', $newDescription, $newFiles);
 
             $filesToDelete = array_diff($originalFiles[0] ?? [], $newFiles[0] ?? []);
 
@@ -91,8 +91,8 @@ class Extracurricular extends Model
                 }
             }
 
-            // Hapus semua attachment dari content
-            preg_match_all('/extracurriculars\/[^"\']+/', $extracurricular->content, $files);
+            // Hapus semua attachment dari description
+            preg_match_all('/extracurriculars\/[^"\']+/', $extracurricular->description, $files);
             foreach ($files[0] ?? [] as $file) {
                 Storage::disk('public')->delete($file);
             }
@@ -161,7 +161,7 @@ class Extracurricular extends Model
 
     //     // attachment
     //     static::updating(function ($extracurricular) {
-    //         $originalContent = $extracurricular->getOriginal('content');
+    //         $originaldescription = $extracurricular->getOriginal('content');
     //         $newContent = $extracurricular->content;
 
     //         // ambil semua path file yang berada di folder extracurriculars/... (termasuk subfolder)

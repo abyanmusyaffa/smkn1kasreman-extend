@@ -7,6 +7,7 @@ use Filament\Tables;
 use App\Models\Major;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Section;
 use Illuminate\Database\Eloquent\Builder;
@@ -17,8 +18,8 @@ use App\Filament\Resources\MajorResource\RelationManagers;
 class MajorResource extends Resource
 {
     protected static ?string $model = Major::class;
-    protected static ?string $modelLabel = 'Konsentrasi Keahlian';
-    protected static ?string $pluralModelLabel = 'Konsentrasi Keahlian';
+    protected static ?string $modelLabel = 'Program Keahlian';
+    protected static ?string $pluralModelLabel = 'Program Keahlian';
 
     protected static ?string $navigationGroup = 'Sekolah';
     protected static ?string $navigationIcon = 'fas-graduation-cap';
@@ -33,23 +34,11 @@ class MajorResource extends Resource
                     'lg' => 12,
                 ])
                 ->schema([
-                    Forms\Components\FileUpload::make('logo')
-                        ->directory('/majors/logo')
-                        ->image()
-                        ->required()
-                        ->columnSpan([
-                            'default' => 2,
-                            'lg' => 12,
-                        ]),
-                    Forms\Components\FileUpload::make('photo')
-                        ->label('Foto Sampul')
-                        ->multiple()
-                        ->minFiles(2)
-                        ->maxFiles(2)
-                        ->directory('/majors/cover')
-                        ->image()
-                        ->panelLayout('grid')
-                        ->reorderable()
+                    Forms\Components\Select::make('user_id')
+                        ->label('Administrator')
+                        ->searchable()
+                        ->native(false)
+                        ->relationship(name: 'users', titleAttribute: 'name')
                         ->required()
                         ->columnSpan([
                             'default' => 2,
@@ -74,9 +63,71 @@ class MajorResource extends Resource
                     Forms\Components\TextInput::make('alias')
                         ->required()
                         ->maxLength(5)
+                        ->afterStateUpdated(fn ($state, callable $set) => $set('alias', strtoupper($state)))
+                        ->dehydrateStateUsing(fn ($state) => strtoupper($state))
                         ->columnSpan([
                             'default' => 2,
                             'lg' => 3,
+                        ]),
+                    Forms\Components\Repeater::make('contacts')
+                        ->label('Kontak/Media Sosial')
+                        ->addActionLabel('Tambahkan Kontak/Media Sosial')
+                        ->schema([
+                            Forms\Components\Select::make('platform')
+                                ->options([
+                                    'whatsapp' => 'Whatsapp',
+                                    'email' => 'Email',
+                                    'instagram' => 'Instagram',
+                                    'facebook' => 'Facebook',
+                                    'tiktok' => 'Tiktok',
+                                    'youtube' => 'Youtube',
+                                ])
+                                ->native(false)
+                                ->required(),
+                            Forms\Components\TextInput::make('url')
+                                ->label('Tautan')
+                                ->url()
+                                ->required(),
+                        ])
+                        ->columns(2)
+                        ->columnSpan([
+                            'default' => 2,
+                            'lg' => 12,
+                        ]),
+                    Forms\Components\FileUpload::make('logo')
+                        // ->directory('/majors/logo')
+                        ->directory(function ($get) {
+                            $alias = $get('alias');
+                    
+                            return 'majors/' . (Str::slug($alias) ?: 'temp');
+                        })
+                        ->image()
+                        ->required()
+                        ->columnSpan([
+                            'default' => 2,
+                            'lg' => 12,
+                        ]),
+                    Forms\Components\FileUpload::make('galleries')
+                        ->label('Galeri')
+                        ->multiple()
+                        ->minFiles(2)
+                        ->directory(function ($get) {
+                            $alias = $get('alias');
+                    
+                            return 'majors/' . (Str::slug($alias) ?: 'temp') . '/galleries';
+                        })
+                        // ->directory('/majors/cover')
+                        ->image()
+                        ->imageResizeMode('cover')
+                        ->imageCropAspectRatio('4:3')
+                        ->imageResizeTargetWidth('1024')
+                        ->imageResizeTargetHeight('768')
+                        ->panelLayout('grid')
+                        ->reorderable()
+                        ->required()
+                        ->columnSpan([
+                            'default' => 2,
+                            'lg' => 12,
                         ]),
                     Forms\Components\TextInput::make('study_group')
                         ->label('Jumlah Rombel')
@@ -107,7 +158,11 @@ class MajorResource extends Resource
                         ]),
                     Forms\Components\RichEditor::make('description')
                         ->label('Deskripsi')
-                        ->fileAttachmentsDirectory('/attachments-major')
+                        ->fileAttachmentsDirectory(function ($get) {
+                            $alias = $get('alias');
+                    
+                            return 'majors/' . (Str::slug($alias) ?: 'temp') . '/attachments';
+                        })
                         ->required()
                         ->toolbarButtons([
                             'attachFiles',

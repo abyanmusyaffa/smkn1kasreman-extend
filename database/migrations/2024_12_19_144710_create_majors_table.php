@@ -16,12 +16,14 @@ return new class extends Migration
             $table->string('expertise_program');
             $table->string('expertise_concentration');
             $table->string('alias');
+            $table->json('contacts');
             $table->longText('description');
             $table->integer('study_group');
             $table->integer('study_period');
             $table->integer('total_students');
             $table->string('logo');
-            $table->json('photo');
+            $table->json('galleries');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

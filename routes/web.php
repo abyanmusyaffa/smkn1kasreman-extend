@@ -19,6 +19,7 @@ use App\Livewire\Extracurricular;
 use App\Livewire\ExtracurricularDetail;
 use App\Livewire\Facility;
 use App\Livewire\Internship;
+use App\Livewire\MajorDetail;
 use App\Livewire\StudentCouncil;
 use App\Livewire\StudentEvents;
 use App\Livewire\TeachingFactory;
@@ -117,3 +118,5 @@ Route::get('/enrollment/{slug}', ArticleDetail::class);
 Route::get('/jobfair/{slug}', ArticleDetail::class);
 
 Route::get('/e/{slug}', ExtracurricularDetail::class);
+
+Route::get('/m/{alias}', MajorDetail::class);

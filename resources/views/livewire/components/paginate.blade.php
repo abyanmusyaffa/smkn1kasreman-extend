@@ -27,7 +27,7 @@
         @elseif($extracurriculars && $extracurriculars->count() > 0)
             <div class="grid w-full lg:grid-cols-4 gap-4">
                 @foreach($extracurriculars as $extracurricular)
-                    <livewire:components.card-extracurricular wire:key="{{ $extracurricular->id }}" :url="$extracurricular->url" :logo="$extracurricular->logo" :name="$extracurricular->name" />
+                    <livewire:components.card-extracurricular wire:key="{{ $extracurricular->id }}" :slug="$extracurricular->slug" :logo="$extracurricular->logo" :name="$extracurricular->name" />
                 @endforeach
             </div>
         @elseif($testimonials && $testimonials->count() > 0)

@@ -7,7 +7,7 @@ use Livewire\Component;
 class CardMajor extends Component
 {
     public $logo;
-    public $photo;
+    public $galleries;
     public $alias;
     public $expertise_concentration;
     public $description;

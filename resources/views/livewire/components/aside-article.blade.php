@@ -1,5 +1,5 @@
 {{-- @dd($jobfairs, $articles, $achievements) --}}
-<aside class="flex w-full flex-col lg:w-1/3 h-fit rounded-2xl p-2 lg:p-4 bg-white gap-4">
+<aside class="flex w-full flex-col lg:min-w-96 lg:max-w-96 h-fit rounded-2xl p-2 lg:p-4 bg-white gap-4">
     <header>
         <h3 class="font-semibold lg:text-xl text-slate-700 text-center">
             @if($articles && $articles->count() > 0)

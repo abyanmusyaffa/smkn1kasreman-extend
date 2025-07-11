@@ -1,7 +1,7 @@
 {{-- @dd($articles) --}}
 <div class="w-full flex flex-col lg:flex-row gap-6 lg:gap-8 px-4 pt-20 pb-9 lg:px-16 2xl:px-36 lg:pt-[120px] lg:pb-12 bg-slate-100">
     <article class="flex flex-col gap-4 w-full lg:w-2/3">
-        <header class="flex flex-col gap-4 items-center">
+        <header class="flex flex-col gap-2 items-center">
             {{-- <a href="{{ url()->previous() }}" class="flex gap-1 lg:gap-2 items-center self-start">
                 <span class="icon-[mdi--arrow-left]"></span>
                 <p class="text-lg lg:text-xl font-medium">Kembali</p>
@@ -42,6 +42,9 @@
                     {{-- {{ $articleDetail->deadline ? \Carbon\Carbon::parse($articleDetail->deadline)->diffForHumans() : \Carbon\Carbon::parse($articleDetail->created_at)->translatedFormat('j F Y') }} --}}
                 </p>
             </div>
+            @if($articleDetail->deadline)
+            <p class="text-xs lg:text-base italic text-slate-500">Lowongan ditutup {{ \Carbon\Carbon::parse($articleDetail->deadline)->translatedFormat('j F Y H:i') }} </p>
+            @endif
             <img data-fancybox src="/storage/{{ $articleDetail->photo }}" class="w-5/6 lg:w-auto lg:h-80" alt="">
         </header>
         <div class="flex bg-white rounded-2xl p-4 lg:p-6">

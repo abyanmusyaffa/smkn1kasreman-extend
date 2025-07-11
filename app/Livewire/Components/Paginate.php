@@ -82,11 +82,12 @@ class Paginate extends Component
 
     private function getExtracurriculars()
     {
-        return Extracurricular::when($this->search, function ($query) {
-            $query->where('name', 'like', '%' . $this->search . '%');
-        })
-        ->latest()
-        ->get();
+        return Extracurricular::where('name', 'not like', '%osis%')
+            ->when($this->search, function ($query) {
+                $query->where('name', 'like', '%' . $this->search . '%');
+            })
+            ->latest()
+            ->get();
     }
 
     private function getTestimonials()

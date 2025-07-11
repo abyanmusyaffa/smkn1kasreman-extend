@@ -1,6 +1,5 @@
 {{-- @dd($extracurricularDetail->contacts) --}}
 <div class="w-full lg:min-h-[calc(100svh-376px)] min-h-[calc(100svh-512px)] flex flex-col lg:flex-row gap-4 lg:gap-6 px-4 pt-20 pb-9 lg:px-16 2xl:px-36 lg:pt-[120px] lg:pb-12 bg-gradient-to-r from-slate-50 to-slate-100">
-    {{-- <livewire:components.title-left text="OSIS" /> --}}
     <!-- student council -->
     <aside class="flex flex-col items-center lg:w-1/4 gap-4 lg:gap-6">
         <div class="flex flex-col items-center w-full bg-white h-fit rounded-2xl p-4 lg:p-8 gap-2 lg:gap-4">
@@ -36,6 +35,7 @@
             </div>
         </div>
 
+        @if($extracurricularDetail->staff)
         <div class="flex flex-col bg-white rounded-2xl w-full p-4 lg:py-8 lg:px-20 lg:flex-row gap-4 items-center lg:justify-between">
             <div class="flex flex-col gap-2 lg:gap-4 w-full lg:w-1/2 text-center lg:text-start">
               <h2 class="text-xl lg:text-4xl font-medium text-slate-800">Pengurus <br><span class="font-semibold">{{ $extracurricularDetail->name }}</span></h2>
@@ -49,8 +49,7 @@
               </div>
             </div>
         </div>
-        {{-- <aside data-aos="fade-right" class="flex w-full flex-col lg:flex-row gap-4 items-center lg:justify-between rounded-2xl bg-white p-4 lg:py-6 lg:px-16">
-        </aside> --}}
+        @endif
     </article>
     <!-- student council -->
     @script
