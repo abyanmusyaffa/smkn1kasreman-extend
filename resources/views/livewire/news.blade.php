@@ -24,31 +24,15 @@
     @script
     <script>
       document.addEventListener("livewire:navigated", function () {
-        // slide achieve
-        // const slidesAchieve = document.querySelectorAll("[data-slide-achievement]");
-        // let currentSlideAchieve = 0;
-
-        // function showNextSlideAchieve() {
-        //     slidesAchieve[currentSlideAchieve].classList.add("hidden");
-
-        //     currentSlideAchieve = (currentSlideAchieve + 1) % slidesAchieve.length;
-
-        //     slidesAchieve[currentSlideAchieve].classList.remove("hidden");
-        // }
-
-        // setInterval(showNextSlideAchieve, 4000);
-        // slide achieve
-
         // news carousel
         const newsContainer = document.getElementById("newsCarousel");
-        const newsOptions = {
-          infinite: true ,
-          Autoplay: {
-            showProgressbar: false,
-          },
-        };
-
-        Carousel(newsContainer, newsOptions, { Dots , Arrows, Autoplay }).init();
+        if (newsContainer && !newsContainer.dataset.initialized) {
+          Carousel(newsContainer, {
+            infinite: true,
+            Autoplay: { showProgressbar: false }
+          }, { Arrows, Autoplay, Dots }).init();
+          newsContainer.dataset.initialized = "true";
+        }
         // news carousel
       });
     </script>

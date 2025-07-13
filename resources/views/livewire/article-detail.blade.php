@@ -89,11 +89,11 @@
         });
 
         // fancybox
+        Fancybox.destroy(); // clear binding
         Fancybox.bind("[data-fancybox]", {
           Hash: false,
           hideScrollbar: false,
           parentEl: null,
-          
           on: {
             init: (fancybox) => {
               scrollPosition = window.pageYOffset || document.documentElement.scrollTop;

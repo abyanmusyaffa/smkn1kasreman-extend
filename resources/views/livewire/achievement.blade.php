@@ -25,31 +25,15 @@
     @script
     <script>
       document.addEventListener("livewire:navigated", function () {
-        // slide achieve
-        // const slidesAchieve = document.querySelectorAll("[data-slide-achievement]");
-        // let currentSlideAchieve = 0;
-
-        // function showNextSlideAchieve() {
-        //     slidesAchieve[currentSlideAchieve].classList.add("hidden");
-
-        //     currentSlideAchieve = (currentSlideAchieve + 1) % slidesAchieve.length;
-
-        //     slidesAchieve[currentSlideAchieve].classList.remove("hidden");
-        // }
-
-        // setInterval(showNextSlideAchieve, 4000);
-        // slide achieve
-
         // achievements carousel
         const achievementsContainer = document.getElementById("achievementsCarousel");
-        const achievementsOptions = {
-          infinite: true ,
-          Autoplay: {
-            showProgressbar: false,
-          },
-        };
-
-        Carousel(achievementsContainer, achievementsOptions, { Autoplay, Dots, Arrows }).init();
+        if (achievementsContainer && !achievementsContainer.dataset.initialized) {
+          Carousel(achievementsContainer, {
+            infinite: true,
+            Autoplay: { showProgressbar: false }
+          }, { Arrows, Autoplay, Dots }).init();
+          achievementsContainer.dataset.initialized = "true";
+        }
         // achievements carousel
       });
     </script>

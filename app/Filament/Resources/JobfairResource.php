@@ -26,7 +26,7 @@ class JobfairResource extends Resource
     protected static ?string $modelLabel = 'Bursa Kerja Khusus';
     protected static ?string $pluralModelLabel = 'Bursa Kerja Khusus';
 
-    protected static ?string $navigationGroup = 'Informasi';
+    protected static ?string $navigationGroup = 'Kehumasan';
     protected static ?string $navigationIcon = 'fas-briefcase';
 
     public static function form(Form $form): Form

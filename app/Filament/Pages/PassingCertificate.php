@@ -26,7 +26,7 @@ class PassingCertificate extends Page implements HasForms
 
     public ?array $data = []; 
     
-    protected static ?string $navigationGroup = 'SKL';
+    protected static ?string $navigationGroup = 'Data Siswa';
     protected static ?string $navigationIcon = 'fas-print';
 
     protected static ?string $title = 'Template SKL';

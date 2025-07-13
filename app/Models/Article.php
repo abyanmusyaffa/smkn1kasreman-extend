@@ -19,6 +19,12 @@ class Article extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function organization()
+    {
+        return $this->morphTo();
+    }
+
+
     protected static function booted()
     {
         static::deleting(function ($article) {

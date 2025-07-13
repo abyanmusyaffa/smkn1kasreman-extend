@@ -32,7 +32,7 @@ class ArticleResource extends Resource
     protected static ?string $modelLabel = 'Artikel';
     protected static ?string $pluralModelLabel = 'Artikel';
 
-    protected static ?string $navigationGroup = 'Informasi';
+    protected static ?string $navigationGroup = 'Kehumasan';
     protected static ?string $navigationIcon = 'fas-newspaper';
 
     public static function form(Form $form): Form
@@ -162,6 +162,51 @@ class ArticleResource extends Resource
                             'default' => 2,
                             'lg' => 12,
                         ]),
+                    Forms\Components\Select::make('organization_type')
+                        ->label('Jenis Organisasi')
+                        ->native(false)
+                        ->options([
+                            '' => 'Umum',
+                            'App\Models\Extracurricular' => 'Ekstrakurikuler',
+                            'App\Models\Major' => 'Program Keahlian',
+                            'App\Models\Internship' => 'PKL',
+                        ])
+                        ->live()
+                        ->afterStateUpdated(fn($set, $state) => $set('organization_id', 
+                            $state === 'App\Models\Internship' ? 1 : null
+                        ))
+                        ->columnSpan([
+                            'default' => 2, 
+                            'lg' => 6
+                        ]),
+                    Forms\Components\Select::make('organization_id')
+                        ->label('Organisasi')
+                        ->native(false)
+                        ->live()
+                        ->options(function (callable $get) {
+                            $type = $get('organization_type');
+                            
+                            if (!class_exists($type)) return [];
+                            
+                            return match($type) {
+                                'App\Models\Major' => $type::pluck('expertise_concentration', 'id')->toArray(),
+                                'App\Models\Extracurricular' => $type::pluck('name', 'id')->toArray(),
+                                default => []
+                            };
+                        })
+                        ->searchable()
+                        ->required(fn($get) => in_array($get('organization_type'), ['App\Models\Extracurricular', 'App\Models\Major']))
+                        ->visible(fn($get) => in_array($get('organization_type'), ['App\Models\Extracurricular', 'App\Models\Major']))
+                        ->columnSpan([
+                            'default' => 2, 
+                            'lg' => 6
+                        ]),
+                    Forms\Components\Hidden::make('organization_id_backup')
+                        ->default(fn($get) => $get('organization_type') === 'App\Models\Internship' ? 1 : null)
+                        ->visible(fn($get) => in_array($get('organization_type'), ['', 'App\Models\Internship']))
+                        ->dehydrated(fn($get) => in_array($get('organization_type'), ['', 'App\Models\Internship']))
+                        ->dehydrateStateUsing(fn($state, $get) => $get('organization_type') === 'App\Models\Internship' ? 1 : null)
+                        ->statePath('organization_id'),
                     Forms\Components\TagsInput::make('tags')
                         ->label('Tagar')
                         ->splitKeys(['Tab'])
@@ -252,11 +297,27 @@ class ArticleResource extends Resource
                 Tables\Columns\ToggleColumn::make('is_published')
                     ->label('Publish')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('organization.name')
+                    ->label('Organisasi')
+                    ->getStateUsing(function ($record) {
+                        if (! $record->organization) {
+                            return 'Umum'; 
+                        }
+
+                        return match (get_class($record->organization)) {
+                            \App\Models\Major::class => $record->organization->expertise_concentration,
+                            \App\Models\Internship::class => 'PKL',
+                            default => $record->organization->name ?? '-',
+                        };
+                    })
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Dibuat')
                     ->since()
                     ->dateTimeTooltip()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label('Diperbarui')
                     ->since()

@@ -44,10 +44,8 @@ class AdminPanelProvider extends PanelProvider
             ->topNavigation()
             ->navigationGroups([
                 'Sekolah',
-                'Informasi',
+                'Kehumasan',
                 'Data Siswa',
-                'SKL',
-                'Alumni',
                 'Preferensi',
                 'Manajemen Admin',
             ])

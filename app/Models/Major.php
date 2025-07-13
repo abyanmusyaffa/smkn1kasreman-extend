@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Major extends Model
 {
@@ -25,9 +26,15 @@ class Major extends Model
     {
         return $this->hasMany(Group::class);
     }
+
     public function subjects(): HasMany
     {
         return $this->hasMany(Subject::class);
+    }
+
+    public function articles(): MorphMany
+    {
+        return $this->morphMany(Article::class, 'organization');
     }
 
     protected static function booted()

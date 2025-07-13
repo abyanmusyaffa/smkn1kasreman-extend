@@ -61,6 +61,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(Major::class);
     }
 
+    public function internships(): HasMany
+    {
+        return $this->hasMany(Internship::class);
+    }
+
     public function extracurriculars(): HasMany
     {
         return $this->hasMany(Extracurricular::class);
@@ -81,8 +86,8 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(Jobfair::class);
     }
 
-    public function alumnis(): HasOne
-    {
-        return $this->hasOne(Alumni::class);
-    }
+    // public function alumnis(): HasOne
+    // {
+    //     return $this->hasOne(Alumni::class);
+    // }
 }

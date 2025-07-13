@@ -192,58 +192,6 @@
         setInterval(showNextSlideHero, 4000);
         // slide hero
 
-        // drag to scroll alumni
-        // let mouseDown = false;
-        // let startX, scrollLeft;
-
-        // const sliders = document.querySelectorAll(".drag-to-scroll");
-
-        // const startDragging = (e, slider) => {
-        //     mouseDown = true;
-        //     startX = e.pageX - slider.offsetLeft;
-        //     scrollLeft = slider.scrollLeft;
-        // };
-
-        // const stopDragging = () => {
-        //     mouseDown = false;
-        // };
-
-        // const move = (e, slider) => {
-        //     e.preventDefault();
-        //     if (!mouseDown) {
-        //         return;
-        //     }
-        //     const x = e.pageX - slider.offsetLeft;
-        //     const scroll = x - startX;
-        //     slider.scrollLeft = scrollLeft - scroll;
-        // };
-
-        // sliders.forEach((slider) => {
-        //     if (slider) {
-        //         slider.addEventListener("mousemove", (e) => move(e, slider), false);
-        //         slider.addEventListener(
-        //             "mousedown",
-        //             (e) => startDragging(e, slider),
-        //             false
-        //         );
-        //         slider.addEventListener("mouseup", stopDragging, false);
-        //         slider.addEventListener("mouseleave", stopDragging, false);
-        //     }
-        // });
-        // drag to scroll alumni
-
-        // announ animation
-        // const announContainer = document.querySelector('.announ-container');
-        // const originalAnnoun = document.querySelector('.announ-animation');
-
-        // if (announContainer && originalAnnoun) {
-        //   for (let i = 0; i < 14; i++) {
-        //       const clonedAnnoun = originalAnnoun.cloneNode(true);
-        //       announContainer.appendChild(clonedAnnoun);
-        //   }
-        // }
-        // announ animation
-
         // announ animation
         const announViewport = document.getElementById("announViewport");
 
@@ -275,11 +223,11 @@
         // logo animation
 
         // fancybox
+        Fancybox.destroy(); // clear binding
         Fancybox.bind("[data-fancybox]", {
           Hash: false,
           hideScrollbar: false,
           parentEl: null,
-          
           on: {
             init: (fancybox) => {
               scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
@@ -295,14 +243,13 @@
 
         // news carousel
         const newsContainer = document.getElementById("newsCarousel");
-        const newsOptions = {
-          infinite: true ,
-          Autoplay: {
-            showProgressbar: false,
-          },
-        };
-
-        Carousel(newsContainer, newsOptions, { Dots , Arrows, Autoplay }).init();
+        if (newsContainer && !newsContainer.dataset.initialized) {
+          Carousel(newsContainer, {
+            infinite: true,
+            Autoplay: { showProgressbar: false }
+          }, { Arrows, Autoplay, Dots }).init();
+          newsContainer.dataset.initialized = "true";
+        }
         // news carousel
 
         // partners carousel

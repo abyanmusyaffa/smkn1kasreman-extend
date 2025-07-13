@@ -112,11 +112,11 @@
     <script>
       document.addEventListener("livewire:navigated", function () {
         // fancybox
+        Fancybox.destroy(); // clear binding
         Fancybox.bind("[data-fancybox]", {
           Hash: false,
           hideScrollbar: false,
           parentEl: null,
-          
           on: {
             init: (fancybox) => {
               scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
@@ -130,68 +130,26 @@
         });
         // fancybox
 
-        // drag to scroll alumni
-        // let mouseDown = false;
-        // let startX, scrollLeft;
-
-        // const sliders = document.querySelectorAll(".drag-to-scroll");
-
-        // const startDragging = (e, slider) => {
-        //     mouseDown = true;
-        //     startX = e.pageX - slider.offsetLeft;
-        //     scrollLeft = slider.scrollLeft;
-        // };
-
-        // const stopDragging = () => {
-        //     mouseDown = false;
-        // };
-
-        // const move = (e, slider) => {
-        //     e.preventDefault();
-        //     if (!mouseDown) {
-        //         return;
-        //     }
-        //     const x = e.pageX - slider.offsetLeft;
-        //     const scroll = x - startX;
-        //     slider.scrollLeft = scrollLeft - scroll;
-        // };
-
-        // sliders.forEach((slider) => {
-        //     if (slider) {
-        //         slider.addEventListener("mousemove", (e) => move(e, slider), false);
-        //         slider.addEventListener(
-        //             "mousedown",
-        //             (e) => startDragging(e, slider),
-        //             false
-        //         );
-        //         slider.addEventListener("mouseup", stopDragging, false);
-        //         slider.addEventListener("mouseleave", stopDragging, false);
-        //     }
-        // });
-        // drag to scroll alumni
-
         // teachers carousel
         const teachersContainer = document.getElementById("teachersCarousel");
-        const teachersOptions = {
-          infinite: true ,
-          Autoplay: {
-            showProgressbar: false,
-          },
-        };
-
-        Carousel(teachersContainer, teachersOptions, { Arrows, Autoplay }).init();
+        if (teachersContainer && !teachersContainer.dataset.initialized) {
+          Carousel(teachersContainer, {
+            infinite: true,
+            Autoplay: { showProgressbar: false }
+          }, { Arrows, Autoplay }).init();
+          teachersContainer.dataset.initialized = "true";
+        }
         // teachers carousel
 
         // staff carousel
         const staffContainer = document.getElementById("staffCarousel");
-        const staffOptions = {
-          infinite: true ,
-          Autoplay: {
-            showProgressbar: false,
-          },
-        };
-
-        Carousel(staffContainer, staffOptions, { Arrows, Autoplay }).init();
+        if (staffContainer && !staffContainer.dataset.initialized) {
+          Carousel(staffContainer, {
+            infinite: true,
+            Autoplay: { showProgressbar: false }
+          }, { Arrows, Autoplay }).init();
+          staffContainer.dataset.initialized = "true";
+        }
         // staff carousel
       });
     </script>

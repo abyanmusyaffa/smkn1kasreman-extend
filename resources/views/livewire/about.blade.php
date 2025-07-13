@@ -2,14 +2,9 @@
     <!-- welcome text-->
     @if($school->welcome_text != null)
     <article class="flex w-full flex-col rounded-2xl outline-4 outline outline-slate-200 p-4 lg:p-6 gap-2 lg:gap-6">
-      {{-- <header class="flex items-center justify-center gap-4 lg:gap-6">
-        <div class="w-full h-1 bg-slate-200 rounded-sm"></div>
-        <p class="text-xl lg:text-3xl text-center font-medium text-slate-800 whitespace-nowrap">Sambutan <br> Kepala Sekolah</p>
-        <div class="w-full h-1 bg-slate-200 rounded-sm"></div>
-      </header> --}}
       <div class="flex flex-col lg:flex-row items-center lg:justify-between w-full gap-4">
         <div class="flex flex-col lg:min-w-48 min-w-36">
-            <figure class="h-44 lg:h-64 w-full flex flex-col items-center justify-end rounded-t-3xl lg:border-4 border-2 border-b-0 border-blue-600 bg-cover bg-center bg-no-repeat" style="background-image: url(/storage/{{ $head_master->photo }})">
+            <figure data-fancybox data-src="/storage/{{ $head_master->photo }}" class="h-44 lg:h-64 w-full flex flex-col items-center justify-end rounded-t-3xl lg:border-4 border-2 border-b-0 border-blue-600 bg-cover bg-center bg-no-repeat" style="background-image: url(/storage/{{ $head_master->photo }})">
             </figure>
             <div class="w-full h-fit rounded-b-2xl bg-gradient-to-r from-blue-600 to-blue-700 px-2 py-1 text-center">
               <p class="text-slate-50 text-xs lg:text-sm">{{ $head_master->name }}</p>
@@ -30,7 +25,7 @@
 
     <!-- profile -->
     <aside class="flex w-full flex-col gap-4 lg:gap-6 items-center">
-        <livewire:components.title-left text="Profil" span="Sekolah" />
+      <livewire:components.title-left text="Profil" span="Sekolah" />
       <div class="flex flex-col w-full items-center gap-4 lg:gap-9">
         <figure class="flex gap-4 lg:gap-11 items-center">
           <img src="/img/svg/smk bisa.svg" class="h-6 lg:h-12" alt="">
@@ -91,68 +86,88 @@
     @script
     <script>
       document.addEventListener("livewire:navigated", function() {
-          let activated = false;
-          const container = document.querySelector(".counter-container");
-          const counters = document.querySelectorAll(".counters");
-
-          if (!container || counters.length === 0) {
-            console.warn('Counter elements tidak ditemukan');
-            return;
-          }
-
-          function animateCounter(counter, target) {
-            let current = 0;
-            const duration = 2000;
-            const stepTime = 20; 
-            const steps = duration / stepTime;
-            const increment = target / steps;
-
-            const timer = setInterval(() => {
-              current += increment;
-              
-              if (current >= target) {
-                clearInterval(timer);
-                counter.textContent = Math.round(target);
-              } else {
-                counter.textContent = Math.round(current);
-              }
-            }, stepTime);
-          }
-
-          // function resetCounters() {
-          //   counters.forEach(counter => {
-          //     counter.textContent = '0';
-          //   });
-          //   activated = false;
-          // }
-
-          let ticking = false;
-
-          window.addEventListener("scroll", () => {
-            if (!ticking) {
-              window.requestAnimationFrame(() => {
-                const triggerPoint = container.offsetTop - (window.innerHeight * 1);
-
-                if (window.scrollY > triggerPoint && !activated) {
-                  counters.forEach(counter => {
-                    const target = parseInt(counter.dataset.count) || 0;
-                    animateCounter(counter, target);
-                  });
-                  activated = true;
-                } 
-                // Reset jika scroll ke atas jauh
-                // else if (window.scrollY < triggerPoint - 300) {
-                //   resetCounters();
-                // }
-                
-                ticking = false;
-              });
-              
-              ticking = true;
+        // fancybox
+        Fancybox.destroy(); // clear binding
+        Fancybox.bind("[data-fancybox]", {
+          Hash: false,
+          hideScrollbar: false,
+          parentEl: null,
+          on: {
+            init: (fancybox) => {
+              scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+            },
+            destroy: (fancybox) => {
+              setTimeout(() => {
+                window.scrollTo(0, scrollPosition);
+              }, 10);
             }
-          });
+          }
+        });
+        // fancybox
 
-          window.dispatchEvent(new Event('scroll'));
+        // counter
+        let activated = false;
+        const container = document.querySelector(".counter-container");
+        const counters = document.querySelectorAll(".counters");
+
+        if (!container || counters.length === 0) {
+          console.warn('Counter elements tidak ditemukan');
+          return;
+        }
+
+        function animateCounter(counter, target) {
+          let current = 0;
+          const duration = 2000;
+          const stepTime = 20; 
+          const steps = duration / stepTime;
+          const increment = target / steps;
+
+          const timer = setInterval(() => {
+            current += increment;
+            
+            if (current >= target) {
+              clearInterval(timer);
+              counter.textContent = Math.round(target);
+            } else {
+              counter.textContent = Math.round(current);
+            }
+          }, stepTime);
+        }
+
+        // function resetCounters() {
+        //   counters.forEach(counter => {
+        //     counter.textContent = '0';
+        //   });
+        //   activated = false;
+        // }
+
+        let ticking = false;
+
+        window.addEventListener("scroll", () => {
+          if (!ticking) {
+            window.requestAnimationFrame(() => {
+              const triggerPoint = container.offsetTop - (window.innerHeight * 1);
+
+              if (window.scrollY > triggerPoint && !activated) {
+                counters.forEach(counter => {
+                  const target = parseInt(counter.dataset.count) || 0;
+                  animateCounter(counter, target);
+                });
+                activated = true;
+              } 
+              // Reset jika scroll ke atas jauh
+              // else if (window.scrollY < triggerPoint - 300) {
+              //   resetCounters();
+              // }
+              
+              ticking = false;
+            });
+            
+            ticking = true;
+          }
+        });
+
+        window.dispatchEvent(new Event('scroll'));
       });      
     </script>
     @endscript

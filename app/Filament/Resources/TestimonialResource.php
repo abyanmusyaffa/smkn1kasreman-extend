@@ -24,7 +24,7 @@ class TestimonialResource extends Resource
     protected static ?string $modelLabel = 'Testimoni Alumni';
     protected static ?string $pluralModelLabel = 'Testimoni Alumni';
 
-    protected static ?string $navigationGroup = 'Alumni';
+    protected static ?string $navigationGroup = 'Kehumasan';
     protected static ?string $navigationIcon = 'heroicon-s-chat-bubble-bottom-center-text';
 
     public static function form(Form $form): Form
