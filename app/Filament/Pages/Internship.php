@@ -56,7 +56,7 @@ class Internship extends Page
                 FileUpload::make('galleries')
                     ->label('Galeri')
                     ->hint(fn ($component) => 'Minimal ' . $component->getMinFiles() . ' Foto')
-                    ->directory('/internship/galleries')
+                    ->directory('/internships/galleries')
                     ->required()
                     ->image()
                     ->imageResizeMode('cover')
@@ -71,7 +71,7 @@ class Internship extends Page
                     ]),
                 RichEditor::make('description')
                     ->label('Deskripsi')
-                    ->fileAttachmentsDirectory('/internship/attachments')
+                    ->fileAttachmentsDirectory('/internships/attachments')
                     ->toolbarButtons([
                         'attachFiles',
                         'blockquote',

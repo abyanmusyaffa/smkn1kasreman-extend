@@ -7,18 +7,30 @@
                 {!! $internship->description !!}
             </div>
         </article>
-        @if($internship->articles->count() > 0)
-        <aside class="lg:min-w-96 lg:max-w-96 h-fit flex flex-col bg-white rounded-2xl w-full p-4 lg:p-8 gap-4 items-center lg:justify-between">
-            <h3 class="text-xl font-semibold text-slate-800 text-center">Informasi</h3>
-            <div class="w-full f-carousel" id="informationsCarousel">
+        <div class="flex-col lg:min-w-96 lg:max-w-96 flex w-full gap-4 lg:gap-6">
+          <article class=" flex flex-col bg-white rounded-2xl w-full h-fit p-4 lg:p-8 gap-4 items-center lg:justify-between">
+            <h3 class="text-xl font-semibold text-slate-800 text-center">Galeri</h3>
+            <div class="w-full f-carousel" id="galleriesCarousel">
               <div class="f-carousel__viewport rounded-2xl">
-                @foreach($internship->articles as $article)
-                  <livewire:components.card-article-home wire:key="{{ $article->id }}" :category="$article->category" :slug="$article->slug" :photo="$article->photo" :created_at="$article->created_at" :title="$article->title" />
+                @foreach($internship->galleries as $item)
+                  <figure data-fancybox="gallery" data-src="/storage/{{ $item }}" class="f-carousel__slide w-full aspect-[4/3] bg-no-repeat !bg-cover !bg-center" style="background-image: url('/storage/{{ $item }}')"></figure>
                 @endforeach
               </div>
             </div>
-        </aside>
-        @endif
+          </article>
+          @if($internship->articles->count() > 0)
+          <aside class=" h-fit flex flex-col bg-white rounded-2xl w-full p-4 lg:p-8 gap-4 items-center lg:justify-between">
+              <h3 class="text-xl font-semibold text-slate-800 text-center">Informasi</h3>
+              <div class="w-full f-carousel" id="informationsCarousel">
+                <div class="f-carousel__viewport rounded-2xl">
+                  @foreach($internship->articles as $article)
+                    <livewire:components.card-article-home wire:key="{{ $article->id }}" :category="$article->category" :slug="$article->slug" :photo="$article->photo" :created_at="$article->created_at" :title="$article->title" />
+                  @endforeach
+                </div>
+              </div>
+          </aside>
+          @endif
+        </div>
     </div>
     <!-- internship -->
     @script
@@ -52,7 +64,17 @@
         //   galleriesContainer.dataset.initialized = "true";
         // }
   
-        // Carousel: informations
+        // Carousel: galleries
+        const galleriesContainer = document.getElementById("galleriesCarousel");
+        if (galleriesContainer && !galleriesContainer.dataset.initialized) {
+          Carousel(galleriesContainer, {
+            infinite: true,
+            Autoplay: { showProgressbar: false }
+          }, { Arrows, Autoplay }).init();
+          galleriesContainer.dataset.initialized = "true";
+        }
+
+        // Carousel: galleries
         const informationsContainer = document.getElementById("informationsCarousel");
         if (informationsContainer && !informationsContainer.dataset.initialized) {
           Carousel(informationsContainer, {
