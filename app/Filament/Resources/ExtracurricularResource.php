@@ -22,7 +22,7 @@ class ExtracurricularResource extends Resource
     protected static ?string $modelLabel = 'Ekstrakurikuler';
     protected static ?string $pluralModelLabel = 'Ekstrakurikuler';
 
-    protected static ?string $navigationGroup = 'Sekolah';
+    protected static ?string $navigationGroup = 'Kesiswaan';
     protected static ?string $navigationIcon = 'fas-baseball-ball';
 
     public static function form(Form $form): Form
@@ -145,7 +145,7 @@ class ExtracurricularResource extends Resource
                         ->imageResizeTargetWidth('1024')
                         ->imageResizeTargetHeight('768')
                         ->multiple()
-                        ->minFiles(4)
+                        ->minFiles(2)
                         ->columnSpan([
                             'default' => 2,
                             'lg' => 12,

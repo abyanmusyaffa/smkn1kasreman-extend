@@ -30,7 +30,7 @@ class SendPassingCertificateResource extends Resource
     protected static ?string $modelLabel = 'Surat Keterangan Lulus';
     protected static ?string $pluralModelLabel = 'Surat Keterangan Lulus';
 
-    protected static ?string $navigationGroup = 'Data Siswa';
+    protected static ?string $navigationGroup = 'Data Akademik';
     protected static ?string $navigationIcon = 'fas-file-contract';
 
     public static function form(Form $form): Form

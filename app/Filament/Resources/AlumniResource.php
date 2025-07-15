@@ -39,7 +39,7 @@ class AlumniResource extends Resource
     protected static ?string $modelLabel = 'Siswa';
     protected static ?string $pluralModelLabel = 'Siswa';
 
-    protected static ?string $navigationGroup = 'Data Siswa';
+    protected static ?string $navigationGroup = 'Siswa';
     protected static ?string $navigationIcon = 'fas-user-graduate';
 
     public static function form(Form $form): Form

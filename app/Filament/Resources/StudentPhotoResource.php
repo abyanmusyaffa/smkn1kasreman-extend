@@ -23,7 +23,7 @@ class StudentPhotoResource extends Resource
     protected static ?string $modelLabel = 'Foto Siswa';
     protected static ?string $pluralModelLabel = 'Foto Siswa';
 
-    protected static ?string $navigationGroup = 'Data Siswa';
+    protected static ?string $navigationGroup = 'Siswa';
     protected static ?string $navigationIcon = 'fas-chalkboard-teacher';
 
     public static function form(Form $form): Form
