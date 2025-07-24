@@ -92,8 +92,9 @@ class Paginate extends Component
 
     private function getTestimonials()
     {
-        return Testimonial::with('alumnis')
-            ->where('show', true)
+        return Testimonial::with(['alumnis:id,name,photo,passing_year'])
+            ->where('is_published', true)
+            ->where('type', 'text')
             ->when($this->search, function ($query) {
                 $query->where(function ($subQuery) {
                     $subQuery->where('position', 'like', '%' . $this->search . '%')

@@ -11,6 +11,8 @@ class CardTestimonial extends Component
     public $passing_year;
     public $position;
     public $company;
+    // public $type;
+    // public $url;
     public $content;
     public $rating;
     

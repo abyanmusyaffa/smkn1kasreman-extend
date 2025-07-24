@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use Closure;
 use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Get;
@@ -85,6 +86,13 @@ class DocumentResource extends Resource
                             $slug = Str::slug($get('name') ?? 'file');
                             return "{$slug}-" . now()->timestamp . "." . $file->getClientOriginalExtension();
                         })
+                        // ->rule(function (Get $get) {
+                        //     return function (string $attribute, $value, Closure $fail) use ($get) {
+                        //         if ($get('type') === 'file' && $get('url')) {
+                        //             $fail('Tidak boleh mengisi file dan tautan sekaligus.');
+                        //         }
+                        //     };
+                        // })
                         ->columnSpan([
                             'default' => 2,
                             'lg' => 12,
@@ -94,6 +102,13 @@ class DocumentResource extends Resource
                         ->visible(fn (Get $get) => $get('type') === 'url')
                         ->required(fn (Get $get) => $get('type') === 'url')
                         ->url()
+                        // ->rule(function (Get $get) {
+                        //     return function (string $attribute, $value, Closure $fail) use ($get) {
+                        //         if ($get('type') === 'url' && $get('file')) {
+                        //             $fail('Tidak boleh mengisi file dan tautan sekaligus.');
+                        //         }
+                        //     };
+                        // })
                         ->columnSpan([
                             'default' => 2,
                             'lg' => 12,

@@ -2,8 +2,10 @@
 
 namespace App\Filament\Resources;
 
+use Closure;
 use Filament\Forms;
 use Filament\Tables;
+use Filament\Forms\Get;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\Testimonial;
@@ -37,7 +39,7 @@ class TestimonialResource extends Resource
                     'lg' => 12,
                 ])
                 ->schema([
-                    Forms\Components\Toggle::make('show')
+                    Forms\Components\Toggle::make('is_published')
                         ->default(true)
                         ->label('Tampilkan')
                         ->required()
@@ -81,15 +83,58 @@ class TestimonialResource extends Resource
                             'default' => 2,
                             'lg' => 6,
                         ]),
+                    Forms\Components\Radio::make('type')
+                        ->label('Tipe Testimoni')
+                        ->options([
+                            'text' => 'Teks',
+                            'url' => 'Tautan Youtube',
+                        ])
+                        ->descriptions([
+                            'text' => 'Pilih tipe Teks jika testimoni berbentuk teks',
+                            'url' => 'Pilih tipe Tautan Youtube jika testimoni berbentuk Video (Upload terlebih dahulu pada Youtube)',
+                        ])
+                        ->required()
+                        ->inline()
+                        ->inlineLabel(false)
+                        ->live()
+                        ->columnSpan([
+                            'default' => 2,
+                            'lg' => 12,
+                        ]),
                     Forms\Components\Textarea::make('content')
-                        ->label('Isi')
+                        ->label('Teks')
                         ->rows(6)
                         ->live()
                         ->hint(fn ($state, $component) => strlen($state) . ' Karakter | Sisa ' . $component->getMaxLength() - strlen($state) . ' Karakter') 
                         ->maxlength(400) 
                         ->helperText('Minimal 100 Karakter')
                         ->minLength(100)
-                        ->required()
+                        ->visible(fn (Get $get) => $get('type') === 'text')
+                        ->required(fn (Get $get) => $get('type') === 'text')
+                        // ->rule(function (Get $get) {
+                        //     return function (string $attribute, $value, Closure $fail) use ($get) {
+                        //         if ($get('type') === 'text' && $get('url')) {
+                        //             $fail('Tidak boleh mengisi teks dan tautan video sekaligus.');
+                        //         }
+                        //     };
+                        // })
+                        ->columnSpan([
+                            'default' => 2,
+                            'lg' => 12,
+                        ]),
+                    Forms\Components\TextInput::make('url')
+                        ->label('Tautan Video')
+                        ->live()
+                        ->url()
+                        ->visible(fn (Get $get) => $get('type') === 'url')
+                        ->required(fn (Get $get) => $get('type') === 'url')
+                        // ->rule(function (Get $get) {
+                        //     return function (string $attribute, $value, Closure $fail) use ($get) {
+                        //         if ($get('type') === 'url' && $get('content')) {
+                        //             $fail('Tidak boleh mengisi teks dan tautan video sekaligus.');
+                        //         }
+                        //     };
+                        // })
                         ->columnSpan([
                             'default' => 2,
                             'lg' => 12,
@@ -128,7 +173,7 @@ class TestimonialResource extends Resource
                     ->label('Instansi')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\ToggleColumn::make('show')
+                Tables\Columns\ToggleColumn::make('is_published')
                     ->label('Tampilkan')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')

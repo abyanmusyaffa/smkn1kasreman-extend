@@ -16,9 +16,11 @@ return new class extends Migration
             $table->foreignId('alumni_id')->constrained()->cascadeOnDelete();
             $table->string('position')->nullable();
             $table->string('company')->nullable();
-            $table->text('content');
+            $table->enum('type', ['text', 'url']);
+            $table->string('url')->nullable();
+            $table->text('content')->nullable();
             $table->integer('rating');
-            $table->boolean('show')->default(false);
+            $table->boolean('is_published')->default(false);
             $table->timestamps();
         });
     }

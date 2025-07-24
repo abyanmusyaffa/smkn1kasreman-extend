@@ -3,16 +3,16 @@
   <!-- announ -->
   <!-- pinned -->
   @if($announcementPinned)
-  <article class="flex w-full flex-col gap-4 lg:gap-6 items-center">
+  <aside class="flex w-full flex-col gap-4 lg:gap-6 items-center">
     <livewire:components.pinned-article :slug="$announcementPinned->slug" :created_at="$announcementPinned->created_at" :title="$announcementPinned->title" :content="$announcementPinned->content" :photo="$announcementPinned->photo" :category="$announcementPinned->category" />
-  </article>
+  </aside>
   @endif
   <!-- pinned -->
 
   <!-- all announ -->
-  <aside data-aos="fade-up" class="flex flex-col gap-4 w-full justify-center p-2 lg:p-4 rounded-2xl bg-white">
+  <article data-aos="fade-up" class="flex flex-col gap-4 w-full justify-center p-2 lg:p-4 rounded-2xl bg-white">
     <livewire:components.paginate :onAnnouncements="true" />
-  </aside>
+  </article>
   <!-- all announ -->
   <!-- announ -->
 </div>
