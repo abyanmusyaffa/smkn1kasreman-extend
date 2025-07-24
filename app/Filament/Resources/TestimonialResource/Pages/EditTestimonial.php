@@ -10,14 +10,14 @@ class EditTestimonial extends EditRecord
 {
     protected static string $resource = TestimonialResource::class;
 
-    protected function beforeValidate(): void
+    protected function beforeSave(): void
     {
         $data = $this->form->getState();
     
         if ($data['type'] === 'text') {
-            $this->form->fill([...$data, 'url' => null]);
+            $this->record->url = null;
         } elseif ($data['type'] === 'url') {
-            $this->form->fill([...$data, 'content' => null]);
+            $this->record->content = null;
         }
     }
 

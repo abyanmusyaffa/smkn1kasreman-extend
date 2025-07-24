@@ -1,6 +1,7 @@
 <div class="w-full lg:min-h-[calc(100svh-376px)] min-h-[calc(100svh-512px)] flex flex-col gap-4 lg:gap-6 px-4 pt-20 pb-9 lg:px-16 2xl:px-36 lg:pt-[120px] lg:pb-12 bg-gradient-to-r from-slate-50 to-slate-100">
     <livewire:components.title-left text="Cerita" span="Alumni" />
     {{-- Video --}}
+    @if($testimonialVideo->count() > 0)
     <aside data-aos="fade-up" class="flex flex-col gap-4 w-full justify-center rounded-2xl bg-white px-4 py-2 lg:py-4">
       <div class="w-full f-carousel" id="testimonialsCarousel">
         <div class="f-carousel__viewport lg:grid-cols-3 xl:grid-cols-4">
@@ -10,6 +11,7 @@
         </div>
       </div>
     </aside>
+    @endif
     {{-- Video --}}
 
     <!-- alumni -->

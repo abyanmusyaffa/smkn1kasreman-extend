@@ -8,22 +8,23 @@ use Filament\Forms\Set;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
-use App\Models\Extracurricular;
+use App\Models\TeachingFactory;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Section;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\ExtracurricularResource\Pages;
-use App\Filament\Resources\ExtracurricularResource\RelationManagers;
+use App\Filament\Resources\TeachingFactoryResource\Pages;
+use App\Filament\Resources\TeachingFactoryResource\RelationManagers;
 
-class ExtracurricularResource extends Resource
+class TeachingFactoryResource extends Resource
 {
-    protected static ?string $model = Extracurricular::class;
-    protected static ?string $modelLabel = 'Ekstrakurikuler';
-    protected static ?string $pluralModelLabel = 'Ekstrakurikuler';
+    protected static ?string $model = TeachingFactory::class;
 
-    protected static ?string $navigationGroup = 'Kesiswaan';
-    protected static ?string $navigationIcon = 'fas-baseball-ball';
+    protected static ?string $modelLabel = 'Teaching Factory';
+    protected static ?string $pluralModelLabel = 'Teaching Factory';
+
+    protected static ?string $navigationGroup = 'Program Sekolah';
+    protected static ?string $navigationIcon = 'fas-industry';
 
     public static function form(Form $form): Form
     {
@@ -63,7 +64,7 @@ class ExtracurricularResource extends Resource
                         ->directory(function ($get) {
                             $slug = $get('slug');
                     
-                            return 'extracurriculars/' . ($slug ?: 'temp');
+                            return 'teaching-factories/' . ($slug ?: 'temp');
                         })
                         ->default('/default/extracurricular.svg')
                         ->columnSpan([
@@ -95,7 +96,7 @@ class ExtracurricularResource extends Resource
                             'default' => 2,
                             'lg' => 12,
                         ]),
-                    ]),
+                ]),
                 Section::make()
                 ->columns([
                     'default' => 2,
@@ -107,10 +108,9 @@ class ExtracurricularResource extends Resource
                         ->fileAttachmentsDirectory(function ($get) {
                             $slug = $get('slug');
                     
-                            return 'extracurriculars/' . ($slug ?: 'temp') . '/attachments';
+                            return 'teaching-factories/' . ($slug ?: 'temp') . '/attachments';
                         })
                         ->toolbarButtons([
-                            'attachFiles',
                             'blockquote',
                             'bold',
                             'bulletList',
@@ -136,7 +136,7 @@ class ExtracurricularResource extends Resource
                         ->directory(function ($get) {
                             $slug = $get('slug');
                     
-                            return 'extracurriculars/' . ($slug ?: 'temp') . '/galleries';
+                            return 'teaching-factories/' . ($slug ?: 'temp') . '/galleries';
                         })
                         ->required()
                         ->image()
@@ -150,55 +150,62 @@ class ExtracurricularResource extends Resource
                             'default' => 2,
                             'lg' => 12,
                         ]),
-                    Forms\Components\Repeater::make('staff')
-                        ->label('Pengurus')
-                        ->addActionLabel('Tambahkan Pengurus')
+                ]),
+                Section::make()
+                ->columns([
+                    'default' => 2,
+                    'lg' => 12,
+                ])
+                ->schema([
+                    Forms\Components\Repeater::make('products')
+                        ->label('Produk')
+                        ->addActionLabel('Tambahkan Produk')
                         ->schema([
                             Forms\Components\TextInput::make('name')
-                                ->label('Nama')
+                                ->label('Nama Produk')
                                 ->required()
-                                ->live()
-                                ->hint(fn ($state, $component) => 'Sisa ' . $component->getMaxLength() - strlen($state) . ' Karakter') 
-                                ->maxLength(42)
                                 ->columnSpan([
                                     'default' => 2,
-                                    'lg' => 8,
-                                ]),
-                            Forms\Components\TextInput::make('role')
-                                ->label('Jabatan')
-                                ->required()
-                                ->live()
-                                ->hint(fn ($state, $component) => 'Sisa ' . $component->getMaxLength() - strlen($state) . ' Karakter')
-                                ->maxLength(24)
-                                ->columnSpan([
-                                    'default' => 2,
-                                    'lg' => 4,
+                                    'lg' => 12,
                                 ]),
                             Forms\Components\FileUpload::make('photo')
-                                ->label('Foto')
-                                ->image()
-                                ->imageResizeMode('cover')
-                                ->imageCropAspectRatio('4:6')
-                                ->imageResizeTargetWidth('560')
-                                ->imageResizeTargetHeight('840')
-                                ->directory(function ($get) {
-                                    return 'extracurriculars/' . ($get('../../slug') ?: 'temp') . '/staff';
-                                })
+                                ->label('Foto Produk')
                                 ->required()
                                 ->columnSpan([
                                     'default' => 2,
                                     'lg' => 12,
                                 ]),
                         ])
-                        ->columns([
-                            'default' => 2,
-                            'lg' => 12,
-                        ])
+                        ->columns(2)
                         ->columnSpan([
                             'default' => 2,
                             'lg' => 12,
                         ]),
-                    ])
+                ]),   
+                Section::make()
+                ->columns([
+                    'default' => 2,
+                    'lg' => 12,
+                ])
+                ->schema([
+                    Forms\Components\Repeater::make('services')
+                        ->label('Layanan')
+                        ->addActionLabel('Tambahkan Layanan')
+                        ->schema([
+                            Forms\Components\TextInput::make('Nama Layanan')
+                                ->label('Foto Produk')
+                                ->required()
+                                ->columnSpan([
+                                    'default' => 2,
+                                    'lg' => 12,
+                                ]),
+                        ])
+                        ->columns(2)
+                        ->columnSpan([
+                            'default' => 2,
+                            'lg' => 12,
+                        ]),
+                ])   
             ]);
     }
 
@@ -208,22 +215,17 @@ class ExtracurricularResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nama')
-                    ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Dibuat')
-                    ->since()
-                    ->dateTimeTooltip()
+                    ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),   
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->label('Diperbarui')
-                    ->since()
-                    ->dateTimeTooltip()
+                    ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->defaultSort('name')
             ->filters([
                 //
             ])
@@ -248,9 +250,9 @@ class ExtracurricularResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListExtracurriculars::route('/'),
-            'create' => Pages\CreateExtracurricular::route('/create'),
-            'edit' => Pages\EditExtracurricular::route('/{record}/edit'),
+            'index' => Pages\ListTeachingFactories::route('/'),
+            'create' => Pages\CreateTeachingFactory::route('/create'),
+            'edit' => Pages\EditTeachingFactory::route('/{record}/edit'),
         ];
     }
 }

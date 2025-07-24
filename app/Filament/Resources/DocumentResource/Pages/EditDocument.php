@@ -10,14 +10,14 @@ class EditDocument extends EditRecord
 {
     protected static string $resource = DocumentResource::class;
 
-    protected function beforeValidate(): void
+    protected function beforeSave(): void
     {
         $data = $this->form->getState();
-    
+
         if ($data['type'] === 'file') {
-            $this->form->fill([...$data, 'url' => null]);
+            $this->record->url = null;
         } elseif ($data['type'] === 'url') {
-            $this->form->fill([...$data, 'file' => null]);
+            $this->record->file = null;
         }
     }
     

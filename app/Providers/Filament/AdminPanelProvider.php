@@ -41,11 +41,12 @@ class AdminPanelProvider extends PanelProvider
             ->databaseNotifications()
             ->unsavedChangesAlerts()
             ->login()
-            ->topNavigation()
+            // ->topNavigation()
             ->navigationGroups([
                 'Sekolah',
                 'Kehumasan',
                 'Kesiswaan',
+                'Program Sekolah',
                 'Siswa',
                 'Data Akademik',
                 'Preferensi',

@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use phpDocumentor\Reflection\Types\Nullable;
 
 return new class extends Migration
 {
@@ -12,15 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('extracurriculars', function (Blueprint $table) {
+        Schema::create('teaching_factories', function (Blueprint $table) {
             $table->id();
-            $table->string('logo')->nullable()->default('/default/extracurricular.svg');
             $table->string('name');
             $table->string('slug');
             $table->json('contacts')->nullable();
+            $table->string('logo')->nullable();
             $table->longText('description');
-            $table->json('galleries');
-            $table->json('staff')->nullable();
+            $table->json('products')->nullable();
+            $table->json('services')->nullable();
+            $table->json('galleries')->nullable();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('extracurriculars');
+        Schema::dropIfExists('teaching_factories');
     }
 };
