@@ -24,6 +24,18 @@
                     <livewire:components.card-partner wire:key="{{ $partner->id }}" :logo="$partner->logo" :name="$partner->name" :address="$partner->address" :industry="$partner->industry" />
                 @endforeach
             </div>
+        @elseif($teachingFactories && $teachingFactories->count() > 0)
+            <div class="grid w-full gap-4 lg:grid-cols-4">
+                @foreach($teachingFactories as $teachingFactory)
+                    <livewire:components.card-teaching-factory wire:key="{{ $teachingFactory->id }}" :logo="$teachingFactory->logo" :name="$teachingFactory->name" :slug="$teachingFactory->slug" />
+                @endforeach
+            </div>
+        @elseif($studentEvents && $studentEvents->count() > 0)
+            <div class="grid lg:grid-cols-2 xl:grid-cols-3 w-full gap-4 ">
+                @foreach($studentEvents as $studentEvent)
+                <livewire:components.card-student-event wire:key="{{ $studentEvent->id }}" :id="$studentEvent->id" :name="$studentEvent->name" :photo="$studentEvent->photo" :description="$studentEvent->description" :start_date="$studentEvent->start_date" :end_date="$studentEvent->end_date" :start_time="$studentEvent->start_time" :end_time="$studentEvent->end_time" :location="$studentEvent->location" >
+                @endforeach
+            </div>
         @elseif($extracurriculars && $extracurriculars->count() > 0)
             <div class="grid w-full lg:grid-cols-4 gap-4">
                 @foreach($extracurriculars as $extracurricular)
@@ -83,6 +95,8 @@
 
     @if($testimonials && $testimonials->count() > 0)
         {{ $testimonials->links(data: ['scrollTo' => false]) }}
+    @elseif($studentEvents && $studentEvents->count() > 0)
+        {{ $studentEvents->links(data: ['scrollTo' => false]) }}
     @elseif($achievements && $achievements->count() > 0)
         {{ $achievements->links(data: ['scrollTo' => false]) }}
     @elseif($announcements && $announcements->count() > 0)

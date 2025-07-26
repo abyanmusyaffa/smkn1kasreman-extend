@@ -65,7 +65,7 @@ class ExtracurricularResource extends Resource
                     
                             return 'extracurriculars/' . ($slug ?: 'temp');
                         })
-                        ->default('/default/extracurricular.svg')
+                        ->default('/default/logo.svg')
                         ->columnSpan([
                             'default' => 2,
                             'lg' => 12,

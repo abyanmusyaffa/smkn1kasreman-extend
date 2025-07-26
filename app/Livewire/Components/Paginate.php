@@ -8,6 +8,8 @@ use Livewire\Component;
 use App\Models\Achievement;
 use App\Models\Extracurricular;
 use App\Models\Jobfair;
+use App\Models\StudentEvent;
+use App\Models\TeachingFactory;
 use App\Models\Testimonial;
 use Livewire\WithPagination;
 use Livewire\WithoutUrlPagination;
@@ -18,6 +20,8 @@ class Paginate extends Component
 
     public $onAchievements;
     public $onPartners;
+    public $onTeachingFactories;
+    public $onStudentEvents;
     public $onExtracurriculars;
     public $onTestimonials;
     public $onAnnouncements;
@@ -32,24 +36,13 @@ class Paginate extends Component
         $this->resetPage();
     }
 
-    // public function render()
-    // {
-    //     return view('livewire.components.paginate', [
-    //         'achievements'=> $this->onAchievements ? Achievement::orderBy('updated_at', 'desc')->paginate(12) : [],
-    //         'partners' =>  $this->onPartners ? Partner::orderBy('updated_at', 'desc')->paginate(12) : [] ,
-    //         'testimonials' => $this->onTestimonials ? Testimonial::with('alumnis')->where('show', true)->orderBy('created_at', 'desc')->paginate(12) : [] ,
-    //         'news' => $this->onNews ? Article::where('category', 'news')->orderBy('updated_at', 'desc')->paginate(12) : [] ,
-    //         'announcements' => $this->onAnnouncements ? Article::where('category', 'announcement')->where('is_pinned', false)->orderBy('updated_at', 'desc')->paginate(12) : [] ,
-    //         'enrollments' => $this->onEnrollments ? Article::where('category', 'enrollment')->where('is_pinned', false)->orderBy('updated_at', 'desc')->paginate(12) : [] ,
-    //         'jobfairs' => $this->onJobfairs ? Jobfair::where('show', true)->orderBy('updated_at', 'desc')->paginate(12) : [] ,
-    //     ]);
-    // }
-
     public function render()
     {
         return view('livewire.components.paginate', [
             'achievements' => $this->onAchievements ? $this->getAchievements() : [],
             'partners' => $this->onPartners ? $this->getPartners() : [],
+            'teachingFactories' => $this->onTeachingFactories? $this->getTeachingFactories() : [],
+            'studentEvents' => $this->onStudentEvents? $this->getStudentEvents() : [],
             'extracurriculars' => $this->onExtracurriculars ? $this->getExtracurriculars() : [],
             'testimonials' => $this->onTestimonials ? $this->getTestimonials() : [],
             'news' => $this->onNews ? $this->getNews() : [],
@@ -64,9 +57,9 @@ class Paginate extends Component
         return Achievement::when($this->search, function ($query) {
             $query->where('title', 'like', '%' . $this->search . '%')
                   ->orWhere('rankings', 'like', '%' . $this->search . '%');
-        })
-        ->latest()
-        ->paginate(12);
+            })
+            ->latest()
+            ->paginate(12);
     }
 
     private function getPartners()
@@ -75,9 +68,27 @@ class Paginate extends Component
             $query->where('name', 'like', '%' . $this->search . '%')
                   ->orWhere('industry', 'like', '%' . $this->search . '%')
                   ->orWhere('address', 'like', '%' . $this->search . '%');
-        })
-        ->latest()
-        ->get();
+            })
+            ->latest()
+            ->get();
+    }
+
+    private function getTeachingFactories()
+    {
+        return TeachingFactory::when($this->search, function ($query) {
+                $query->where('name', 'like', '%' . $this->search . '%');
+            })
+            ->latest()
+            ->get();
+    }
+
+    private function getStudentEvents()
+    {
+        return StudentEvent::when($this->search, function ($query) {
+                $query->where('name', 'like', '%' . $this->search . '%');
+            })
+            ->latest()
+            ->paginate(12);
     }
 
     private function getExtracurriculars()

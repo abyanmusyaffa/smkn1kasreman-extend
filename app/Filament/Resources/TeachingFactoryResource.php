@@ -66,7 +66,7 @@ class TeachingFactoryResource extends Resource
                     
                             return 'teaching-factories/' . ($slug ?: 'temp');
                         })
-                        ->default('/default/extracurricular.svg')
+                        ->default('/default/logo.svg')
                         ->columnSpan([
                             'default' => 2,
                             'lg' => 12,
