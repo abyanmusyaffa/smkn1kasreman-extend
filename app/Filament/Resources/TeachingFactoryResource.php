@@ -132,20 +132,22 @@ class TeachingFactoryResource extends Resource
                         ]),
                     Forms\Components\FileUpload::make('galleries')
                         ->label('Galeri')
-                        ->hint(fn ($component) => 'Minimal ' . $component->getMinFiles() . ' Foto Rasio Aspek 4:3')
+                        ->hint(fn ($component) => $component->getMinFiles() . ' Foto Rasio Aspek 4:3')
                         ->directory(function ($get) {
                             $slug = $get('slug');
                     
                             return 'teaching-factories/' . ($slug ?: 'temp') . '/galleries';
                         })
                         ->required()
+                        ->reorderable()
                         ->image()
                         ->imageResizeMode('cover')
                         ->imageCropAspectRatio('4:3')
                         ->imageResizeTargetWidth('1024')
                         ->imageResizeTargetHeight('768')
                         ->multiple()
-                        ->minFiles(2)
+                        ->minFiles(6)
+                        ->maxFiles(6)
                         ->columnSpan([
                             'default' => 2,
                             'lg' => 12,
@@ -163,6 +165,8 @@ class TeachingFactoryResource extends Resource
                         ->schema([
                             Forms\Components\TextInput::make('name')
                                 ->label('Nama Produk')
+                                ->hint(fn ($component) => 'Maksimal ' . $component->getMaxLength() . ' Karakter')
+                                ->maxLength(24)
                                 ->required()
                                 ->columnSpan([
                                     'default' => 2,
@@ -171,6 +175,15 @@ class TeachingFactoryResource extends Resource
                             Forms\Components\FileUpload::make('photo')
                                 ->label('Foto Produk')
                                 ->required()
+                                ->image()
+                                ->imageResizeMode('cover')
+                                ->imageCropAspectRatio('1:1')
+                                ->imageResizeTargetWidth('560')
+                                ->imageResizeTargetHeight('560')
+                                ->hint('Rasio Aspek 1:1')
+                                ->directory(function ($get) {
+                                    return 'teaching-factories/' . ($get('../../slug') ?: 'temp') . '/products';
+                                })
                                 ->columnSpan([
                                     'default' => 2,
                                     'lg' => 12,
@@ -192,8 +205,10 @@ class TeachingFactoryResource extends Resource
                         ->label('Layanan')
                         ->addActionLabel('Tambahkan Layanan')
                         ->schema([
-                            Forms\Components\TextInput::make('Nama Layanan')
-                                ->label('Foto Produk')
+                            Forms\Components\TextInput::make('name')
+                                ->label('Nama Layanan')
+                                ->hint(fn ($component) => 'Maksimal ' . $component->getMaxLength() . ' Karakter')
+                                ->maxLength(32)
                                 ->required()
                                 ->columnSpan([
                                     'default' => 2,

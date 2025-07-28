@@ -33,7 +33,7 @@ class Extracurricular extends Model
             // Hapus logo lama jika berubah dan bukan default
             if ($extracurricular->isDirty('logo')) {
                 $oldLogo = $extracurricular->getOriginal('logo');
-                if ($oldLogo && $oldLogo !== '/default/extracurricular.svg') {
+                if ($oldLogo && $oldLogo !== '/default/logo.svg') {
                     Storage::disk('public')->delete($oldLogo);
                 }
             }
@@ -77,7 +77,7 @@ class Extracurricular extends Model
 
         static::deleting(function ($extracurricular) {
             // Hapus logo jika bukan default
-            if ($extracurricular->logo && $extracurricular->logo !== '/default/extracurricular.svg') {
+            if ($extracurricular->logo && $extracurricular->logo !== '/default/logo.svg') {
                 Storage::disk('public')->delete($extracurricular->logo);
             }
 
