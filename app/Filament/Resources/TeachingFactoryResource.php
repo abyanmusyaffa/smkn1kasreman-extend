@@ -105,11 +105,6 @@ class TeachingFactoryResource extends Resource
                 ->schema([
                     Forms\Components\RichEditor::make('description')
                         ->label('Deskripsi')
-                        ->fileAttachmentsDirectory(function ($get) {
-                            $slug = $get('slug');
-                    
-                            return 'teaching-factories/' . ($slug ?: 'temp') . '/attachments';
-                        })
                         ->toolbarButtons([
                             'blockquote',
                             'bold',

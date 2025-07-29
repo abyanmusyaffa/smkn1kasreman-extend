@@ -64,7 +64,7 @@ class BusinessUnitResource extends Resource
                         ->directory(function ($get) {
                             $slug = $get('slug');
                     
-                            return 'teaching-factories/' . ($slug ?: 'temp');
+                            return 'business-units/' . ($slug ?: 'temp');
                         })
                         ->default('/default/logo.svg')
                         ->columnSpan([
@@ -105,11 +105,6 @@ class BusinessUnitResource extends Resource
                 ->schema([
                     Forms\Components\RichEditor::make('description')
                         ->label('Deskripsi')
-                        ->fileAttachmentsDirectory(function ($get) {
-                            $slug = $get('slug');
-                    
-                            return 'teaching-factories/' . ($slug ?: 'temp') . '/attachments';
-                        })
                         ->toolbarButtons([
                             'blockquote',
                             'bold',
@@ -136,7 +131,7 @@ class BusinessUnitResource extends Resource
                         ->directory(function ($get) {
                             $slug = $get('slug');
                     
-                            return 'teaching-factories/' . ($slug ?: 'temp') . '/galleries';
+                            return 'business-units/' . ($slug ?: 'temp') . '/galleries';
                         })
                         ->required()
                         ->reorderable()
@@ -182,7 +177,7 @@ class BusinessUnitResource extends Resource
                                 ->imageResizeTargetHeight('560')
                                 ->hint('Rasio Aspek 1:1')
                                 ->directory(function ($get) {
-                                    return 'teaching-factories/' . ($get('../../slug') ?: 'temp') . '/products';
+                                    return 'business-units/' . ($get('../../slug') ?: 'temp') . '/products';
                                 })
                                 ->columnSpan([
                                     'default' => 2,

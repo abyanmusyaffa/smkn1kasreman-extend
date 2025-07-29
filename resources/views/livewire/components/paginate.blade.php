@@ -42,16 +42,21 @@
                 <livewire:components.card-student-event wire:key="{{ $studentEvent->id }}" :id="$studentEvent->id" :name="$studentEvent->name" :photo="$studentEvent->photo" :description="$studentEvent->description" :start_date="$studentEvent->start_date" :end_date="$studentEvent->end_date" :start_time="$studentEvent->start_time" :end_time="$studentEvent->end_time" :location="$studentEvent->location" >
                 @endforeach
             </div>
+        @elseif($trainings && $trainings->count() > 0)
+            <div class="grid lg:grid-cols-4 w-full gap-4 ">
+                @foreach($trainings as $training)
+                <livewire:components.card-training wire:key="{{ $training->id }}" :id="$training->id" :name="$training->name" :photo="$training->photo" :description="$training->description" :start_date="$training->start_date" :end_date="$training->end_date" :start_time="$training->start_time" :end_time="$training->end_time" :location="$training->location" :url="$training->url" :organizer="$training->organizer" :participants="$training->participants" >
+                @endforeach
+            </div>
         @elseif($extracurriculars && $extracurriculars->count() > 0)
             <div class="grid w-full lg:grid-cols-4 gap-4">
                 @foreach($extracurriculars as $extracurricular)
-                    <livewire:components.card-extracurricular wire:key="{{ $extracurricular->id }}" :slug="$extracurricular->slug" :logo="$extracurricular->logo" :name="$extracurricular->name" />
+                <livewire:components.card-extracurricular wire:key="{{ $extracurricular->id }}" :slug="$extracurricular->slug" :logo="$extracurricular->logo" :name="$extracurricular->name" />
                 @endforeach
             </div>
         @elseif($testimonials && $testimonials->count() > 0)
             <div class="grid w-full lg:grid-cols-3 gap-4">
                 @foreach($testimonials as $testimonial)
-                {{-- @dd($testimonial->alumnis) --}}
                 <livewire:components.card-testimonial wire:key="{{ $testimonial->id }}" :photo="$testimonial->alumnis->photo" :name="$testimonial->alumnis->name" :passing_year="$testimonial->alumnis->passing_year" :position="$testimonial->position" :company="$testimonial->company" :content="$testimonial->content" :rating="$testimonial->rating" />
                 @endforeach
             </div>

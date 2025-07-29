@@ -12,6 +12,7 @@ use App\Models\Jobfair;
 use App\Models\StudentEvent;
 use App\Models\TeachingFactory;
 use App\Models\Testimonial;
+use App\Models\Training;
 use Livewire\WithPagination;
 use Livewire\WithoutUrlPagination;
 
@@ -24,6 +25,7 @@ class Paginate extends Component
     public $onTeachingFactories;
     public $onBusinessUnits;
     public $onStudentEvents;
+    public $onTrainings;
     public $onExtracurriculars;
     public $onTestimonials;
     public $onAnnouncements;
@@ -46,6 +48,7 @@ class Paginate extends Component
             'teachingFactories' => $this->onTeachingFactories? $this->getTeachingFactories() : [],
             'businessUnits' => $this->onBusinessUnits? $this->getBusinessUnits() : [],
             'studentEvents' => $this->onStudentEvents? $this->getStudentEvents() : [],
+            'trainings' => $this->onTrainings? $this->getTrainings() : [],
             'extracurriculars' => $this->onExtracurriculars ? $this->getExtracurriculars() : [],
             'testimonials' => $this->onTestimonials ? $this->getTestimonials() : [],
             'news' => $this->onNews ? $this->getNews() : [],
@@ -98,6 +101,16 @@ class Paginate extends Component
     {
         return StudentEvent::when($this->search, function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%');
+            })
+            ->latest()
+            ->paginate(12);
+    }
+
+    private function getTrainings()
+    {
+        return Training::when($this->search, function ($query) {
+                $query->where('name', 'like', '%' . $this->search . '%')
+                      ->orWhere('organizer', 'like', '%' . $this->search . '%');
             })
             ->latest()
             ->paginate(12);
