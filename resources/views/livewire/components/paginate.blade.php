@@ -30,6 +30,12 @@
                     <livewire:components.card-teaching-factory wire:key="{{ $teachingFactory->id }}" :logo="$teachingFactory->logo" :name="$teachingFactory->name" :slug="$teachingFactory->slug" />
                 @endforeach
             </div>
+        @elseif($businessUnits && $businessUnits->count() > 0)
+            <div class="grid w-full gap-4 lg:grid-cols-4">
+                @foreach($businessUnits as $businessUnit)
+                    <livewire:components.card-business-unit wire:key="{{ $businessUnit->id }}" :logo="$businessUnit->logo" :name="$businessUnit->name" :slug="$businessUnit->slug" />
+                @endforeach
+            </div>
         @elseif($studentEvents && $studentEvents->count() > 0)
             <div class="grid lg:grid-cols-2 xl:grid-cols-3 w-full gap-4 ">
                 @foreach($studentEvents as $studentEvent)

@@ -20,6 +20,7 @@ use App\Models\ScoreCategory;
 use App\Livewire\Announcement;
 use App\Livewire\BusinessUnit;
 use App\Livewire\ArticleDetail;
+use App\Livewire\BusinessUnitDetail;
 use App\Livewire\StudentEvents;
 use App\Livewire\StudentCouncil;
 use App\Livewire\Extracurricular;
@@ -71,3 +72,5 @@ Route::get('/e/{slug}', ExtracurricularDetail::class);
 Route::get('/m/{alias}', MajorDetail::class);
 
 Route::get('/t/{slug}', TeachingFactoryDetail::class);
+
+Route::get('/b/{slug}', BusinessUnitDetail::class);

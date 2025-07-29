@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Models\Partner;
 use Livewire\Component;
 use App\Models\Achievement;
+use App\Models\BusinessUnit;
 use App\Models\Extracurricular;
 use App\Models\Jobfair;
 use App\Models\StudentEvent;
@@ -21,6 +22,7 @@ class Paginate extends Component
     public $onAchievements;
     public $onPartners;
     public $onTeachingFactories;
+    public $onBusinessUnits;
     public $onStudentEvents;
     public $onExtracurriculars;
     public $onTestimonials;
@@ -42,6 +44,7 @@ class Paginate extends Component
             'achievements' => $this->onAchievements ? $this->getAchievements() : [],
             'partners' => $this->onPartners ? $this->getPartners() : [],
             'teachingFactories' => $this->onTeachingFactories? $this->getTeachingFactories() : [],
+            'businessUnits' => $this->onBusinessUnits? $this->getBusinessUnits() : [],
             'studentEvents' => $this->onStudentEvents? $this->getStudentEvents() : [],
             'extracurriculars' => $this->onExtracurriculars ? $this->getExtracurriculars() : [],
             'testimonials' => $this->onTestimonials ? $this->getTestimonials() : [],
@@ -76,6 +79,15 @@ class Paginate extends Component
     private function getTeachingFactories()
     {
         return TeachingFactory::when($this->search, function ($query) {
+                $query->where('name', 'like', '%' . $this->search . '%');
+            })
+            ->latest()
+            ->get();
+    }
+
+    private function getBusinessUnits()
+    {
+        return BusinessUnit::when($this->search, function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%');
             })
             ->latest()

@@ -8,23 +8,23 @@ use Filament\Forms\Set;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
-use App\Models\TeachingFactory;
+use App\Models\BusinessUnit;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Section;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\TeachingFactoryResource\Pages;
-use App\Filament\Resources\TeachingFactoryResource\RelationManagers;
+use App\Filament\Resources\BusinessUnitResource\Pages;
+use App\Filament\Resources\BusinessUnitResource\RelationManagers;
 
-class TeachingFactoryResource extends Resource
+class BusinessUnitResource extends Resource
 {
-    protected static ?string $model = TeachingFactory::class;
+    protected static ?string $model = BusinessUnit::class;
 
-    protected static ?string $modelLabel = 'Teaching Factory';
-    protected static ?string $pluralModelLabel = 'Teaching Factory';
+    protected static ?string $modelLabel = 'UPJ';
+    protected static ?string $pluralModelLabel = 'UPJ';
 
     protected static ?string $navigationGroup = 'Program Sekolah';
-    protected static ?string $navigationIcon = 'fas-industry';
+    protected static ?string $navigationIcon = 'fas-shop';
 
     public static function form(Form $form): Form
     {
@@ -268,9 +268,9 @@ class TeachingFactoryResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListTeachingFactories::route('/'),
-            'create' => Pages\CreateTeachingFactory::route('/create'),
-            'edit' => Pages\EditTeachingFactory::route('/{record}/edit'),
+            'index' => Pages\ListBusinessUnits::route('/'),
+            'create' => Pages\CreateBusinessUnit::route('/create'),
+            'edit' => Pages\EditBusinessUnit::route('/{record}/edit'),
         ];
     }
 }
