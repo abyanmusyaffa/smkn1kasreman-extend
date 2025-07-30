@@ -10,6 +10,7 @@ use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Section;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\MajorResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -24,6 +25,18 @@ class MajorResource extends Resource
     protected static ?string $navigationGroup = 'Sekolah';
     protected static ?string $navigationIcon = 'fas-graduation-cap';
 
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        // Jika user bukan admin, hanya tampilkan data miliknya
+        if (!auth()->user()->hasRole(['admin', 'super_admin'])) {
+            $query->where('user_id', auth()->id());
+        }
+
+        return $query;
+    }
+    
     public static function form(Form $form): Form
     {
         return $form
@@ -39,6 +52,19 @@ class MajorResource extends Resource
                         ->searchable()
                         ->native(false)
                         ->relationship(name: 'users', titleAttribute: 'name')
+                        ->disabled(function (?Model $record) {
+                            $user = auth()->user();
+                            
+                            if ($user->hasRole(['admin', 'super_admin'])) {
+                                return false;
+                            }
+                    
+                            if ($record && $record->user_id === $user->id) {
+                                return true;
+                            }
+                    
+                            return false;
+                        })
                         ->required()
                         ->columnSpan([
                             'default' => 2,

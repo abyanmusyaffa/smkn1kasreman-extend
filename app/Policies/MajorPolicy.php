@@ -23,7 +23,7 @@ class MajorPolicy
      */
     public function view(User $user, Major $major): bool
     {
-        return $user->can('view_major');
+        return $user->can('view_major') || $user->can('view_major') && $major->user_id === $user->id;
     }
 
     /**
@@ -39,7 +39,7 @@ class MajorPolicy
      */
     public function update(User $user, Major $major): bool
     {
-        return $user->can('update_major');
+        return $user->can('update_major') || $user->can('update_major') && $major->user_id === $user->id;
     }
 
     /**
@@ -47,7 +47,7 @@ class MajorPolicy
      */
     public function delete(User $user, Major $major): bool
     {
-        return $user->can('delete_major');
+        return $user->can('delete_major') || $user->can('delete_major') && $major->user_id === $user->id;
     }
 
     /**

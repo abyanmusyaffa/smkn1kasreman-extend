@@ -9,6 +9,7 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Support\Exceptions\Halt;
 use Filament\Forms\Components\Section;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Notifications\Notification;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
@@ -48,6 +49,22 @@ class Internship extends Page
                     ->searchable()
                     ->native(false)
                     ->options(User::all()->pluck('name', 'id'))
+                    ->disabled(function () {
+                        $user = auth()->user();
+                    
+                        // Ambil record PKL (dengan id tetap 1)
+                        $record = ModelsInternship::find(1);
+                    
+                        if ($user->hasRole(['admin', 'super_admin'])) {
+                            return false;
+                        }
+                    
+                        if ($record && $record->user_id === $user->id) {
+                            return true;
+                        }
+                    
+                        return false;
+                    })                    
                     ->required()
                     ->columnSpan([
                         'default' => 2,

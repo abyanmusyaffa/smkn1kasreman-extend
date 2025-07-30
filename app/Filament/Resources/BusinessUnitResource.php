@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 use App\Models\BusinessUnit;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Section;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\BusinessUnitResource\Pages;
@@ -25,6 +26,18 @@ class BusinessUnitResource extends Resource
 
     protected static ?string $navigationGroup = 'Program Sekolah';
     protected static ?string $navigationIcon = 'fas-shop';
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        // Jika user bukan admin, hanya tampilkan data miliknya
+        if (!auth()->user()->hasRole(['admin', 'super_admin'])) {
+            $query->where('user_id', auth()->id());
+        }
+
+        return $query;
+    }
 
     public static function form(Form $form): Form
     {
@@ -41,6 +54,19 @@ class BusinessUnitResource extends Resource
                         ->searchable()
                         ->native(false)
                         ->relationship(name: 'users', titleAttribute: 'name')
+                        ->disabled(function (?Model $record) {
+                            $user = auth()->user();
+                            
+                            if ($user->hasRole(['admin', 'super_admin'])) {
+                                return false;
+                            }
+                    
+                            if ($record && $record->user_id === $user->id) {
+                                return true;
+                            }
+                    
+                            return false;
+                        })
                         ->required()
                         ->columnSpan([
                             'default' => 2,

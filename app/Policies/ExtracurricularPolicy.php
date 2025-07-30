@@ -23,7 +23,7 @@ class ExtracurricularPolicy
      */
     public function view(User $user, Extracurricular $extracurricular): bool
     {
-        return $user->can('view_extracurricular');
+        return $user->can('view_extracurricular') || $user->can('view_extracurricular') && $extracurricular->user_id === $user->id;
     }
 
     /**
@@ -39,7 +39,7 @@ class ExtracurricularPolicy
      */
     public function update(User $user, Extracurricular $extracurricular): bool
     {
-        return $user->can('update_extracurricular');
+        return $user->can('update_extracurricular') || $user->can('update_extracurricular') && $extracurricular->user_id === $user->id;
     }
 
     /**
@@ -47,7 +47,7 @@ class ExtracurricularPolicy
      */
     public function delete(User $user, Extracurricular $extracurricular): bool
     {
-        return $user->can('delete_extracurricular');
+        return $user->can('delete_extracurricular') || $user->can('delete_extracurricular')  && $extracurricular->user_id === $user->id;
     }
 
     /**
@@ -105,4 +105,9 @@ class ExtracurricularPolicy
     {
         return $user->can('{{ Reorder }}');
     }
+
+    // public function manage(User $user)
+    // {
+    //     return $user->can('manage_extracurricular');
+    // }
 }

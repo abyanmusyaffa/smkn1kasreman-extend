@@ -23,7 +23,7 @@ class TeachingFactoryPolicy
      */
     public function view(User $user, TeachingFactory $teachingFactory): bool
     {
-        return $user->can('view_teaching::factory');
+        return $user->can('view_teaching::factory') || $user->can('view_teaching::factory') && $teachingFactory->user_id === $user->id;
     }
 
     /**
@@ -39,7 +39,7 @@ class TeachingFactoryPolicy
      */
     public function update(User $user, TeachingFactory $teachingFactory): bool
     {
-        return $user->can('update_teaching::factory');
+        return $user->can('update_teaching::factory') || $user->can('update_teaching::factory') && $teachingFactory->user_id === $user->id;
     }
 
     /**
@@ -47,7 +47,7 @@ class TeachingFactoryPolicy
      */
     public function delete(User $user, TeachingFactory $teachingFactory): bool
     {
-        return $user->can('delete_teaching::factory');
+        return $user->can('delete_teaching::factory') || $user->can('delete_teaching::factory') && $teachingFactory->user_id === $user->id;
     }
 
     /**

@@ -142,13 +142,12 @@ class TrainingResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('start_date')
-                    ->date()
+                    ->label('Nama')
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('organizer')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('participants')
+                    ->label('Penyelenggara')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -164,6 +163,7 @@ class TrainingResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

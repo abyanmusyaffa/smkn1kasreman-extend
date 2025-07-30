@@ -19,6 +19,7 @@ use Filament\Forms\Components\Section;
 use Filament\Resources\Components\Tab;
 use Filament\Support\Enums\ActionSize;
 use Filament\Navigation\NavigationItem;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\ActionGroup;
 use Illuminate\Database\Eloquent\Builder;
@@ -35,6 +36,18 @@ class ArticleResource extends Resource
     protected static ?string $navigationGroup = 'Kehumasan';
     protected static ?string $navigationIcon = 'fas-newspaper';
 
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        // Jika user bukan admin, hanya tampilkan data miliknya
+        if (!auth()->user()->hasRole(['admin', 'super_admin'])) {
+            $query->where('user_id', auth()->id());
+        }
+
+        return $query;
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -45,8 +58,26 @@ class ArticleResource extends Resource
                     'lg' => 12,
                 ])
                 ->schema([
+                    // Forms\Components\Hidden::make('user_id'),
+                    // Forms\Components\Hidden::make('id'),
                     Forms\Components\Toggle::make('is_pinned')
                         ->label('Sematkan')
+                        // ->disabled(function (?Model $record) {
+                        //     $user = auth()->user();
+                            
+                        //     if ($user->hasRole(['admin', 'super_admin'])) {
+                        //         return false;
+                        //     }
+                    
+                        //     if ($record && $record->user_id === $user->id) {
+                        //         return true;
+                        //     }
+                    
+                        //     return false;
+                        // })
+                        ->disabled(function () {
+                            return !auth()->user()->hasRole(['admin', 'super_admin']);
+                        })                                                
                         ->live()
                         ->afterStateUpdated(function (bool $state, callable $set, callable $get) {
                             $category = $get('category');
@@ -85,6 +116,9 @@ class ArticleResource extends Resource
                         ]),
                     Forms\Components\Toggle::make('is_published')
                         ->label('Publish')
+                        ->disabled(function () {
+                            return !auth()->user()->hasRole(['admin', 'super_admin']);
+                        })    
                         ->required()
                         ->default(true)
                         ->columnSpan([
@@ -93,6 +127,9 @@ class ArticleResource extends Resource
                         ]),
                     Forms\Components\Toggle::make('is_headline')
                         ->label('Headline')
+                        ->disabled(function () {
+                            return !auth()->user()->hasRole(['admin', 'super_admin']);
+                        })    
                         ->live()
                         ->afterStateUpdated(function (bool $state, callable $set, callable $get) {
                             $category = $get('category');
@@ -164,6 +201,19 @@ class ArticleResource extends Resource
                         ]),
                     Forms\Components\Select::make('organization_type')
                         ->label('Jenis Organisasi')
+                        ->disabled(function (?Model $record) {
+                            $user = auth()->user();
+                            
+                            if ($user->hasRole(['admin', 'super_admin'])) {
+                                return false;
+                            }
+                    
+                            if ($record && $record->user_id === $user->id) {
+                                return true;
+                            }
+                    
+                            return false;
+                        })
                         ->native(false)
                         ->options([
                             '' => 'Umum',
@@ -181,6 +231,19 @@ class ArticleResource extends Resource
                         ]),
                     Forms\Components\Select::make('organization_id')
                         ->label('Organisasi')
+                        ->disabled(function (?Model $record) {
+                            $user = auth()->user();
+                            
+                            if ($user->hasRole(['admin', 'super_admin'])) {
+                                return false;
+                            }
+                    
+                            if ($record && $record->user_id === $user->id) {
+                                return true;
+                            }
+                    
+                            return false;
+                        })
                         ->native(false)
                         ->live()
                         ->options(function (callable $get) {
@@ -244,6 +307,19 @@ class ArticleResource extends Resource
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\ToggleColumn::make('is_pinned')
+                    ->disabled(function (?Model $record) {
+                        $user = auth()->user();
+                        
+                        if ($user->hasRole(['admin', 'super_admin'])) {
+                            return false;
+                        }
+                
+                        if ($record && $record->user_id === $user->id) {
+                            return true;
+                        }
+                
+                        return false;
+                    })
                     ->afterStateUpdated(function ($state, $record) {
                         if ($record->category == 'announcement' || $record->category == 'enrollment') {
                             if ($state) {
@@ -278,6 +354,19 @@ class ArticleResource extends Resource
                 Tables\Columns\ToggleColumn::make('is_headline')
                     ->label('Headline')
                     ->sortable()
+                    ->disabled(function (?Model $record) {
+                        $user = auth()->user();
+                        
+                        if ($user->hasRole(['admin', 'super_admin'])) {
+                            return false;
+                        }
+                
+                        if ($record && $record->user_id === $user->id) {
+                            return true;
+                        }
+                
+                        return false;
+                    })
                     ->afterStateUpdated(function (bool $state, Article $record) {
                         if ($state) {
                             Article::whereIn('category', ['announcement', 'enrollment'])
@@ -296,6 +385,19 @@ class ArticleResource extends Resource
                     }),
                 Tables\Columns\ToggleColumn::make('is_published')
                     ->label('Publish')
+                    ->disabled(function (?Model $record) {
+                        $user = auth()->user();
+                        
+                        if ($user->hasRole(['admin', 'super_admin'])) {
+                            return false;
+                        }
+                
+                        if ($record && $record->user_id === $user->id) {
+                            return true;
+                        }
+                
+                        return false;
+                    })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('organization.name')
                     ->label('Organisasi')

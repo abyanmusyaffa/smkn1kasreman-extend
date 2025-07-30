@@ -23,7 +23,7 @@ class BusinessUnitPolicy
      */
     public function view(User $user, BusinessUnit $businessUnit): bool
     {
-        return $user->can('view_business::unit');
+        return $user->can('view_business::unit') || $user->can('view_business::unit') && $businessUnit->user_id === $user->id;
     }
 
     /**
@@ -39,7 +39,7 @@ class BusinessUnitPolicy
      */
     public function update(User $user, BusinessUnit $businessUnit): bool
     {
-        return $user->can('update_business::unit');
+        return $user->can('update_business::unit') || $user->can('update_business::unit') && $businessUnit->user_id === $user->id;
     }
 
     /**
@@ -47,7 +47,7 @@ class BusinessUnitPolicy
      */
     public function delete(User $user, BusinessUnit $businessUnit): bool
     {
-        return $user->can('delete_business::unit');
+        return $user->can('delete_business::unit') || $user->can('delete_business::unit') && $businessUnit->user_id === $user->id;
     }
 
     /**
