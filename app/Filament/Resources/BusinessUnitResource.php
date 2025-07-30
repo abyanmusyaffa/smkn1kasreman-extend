@@ -54,19 +54,9 @@ class BusinessUnitResource extends Resource
                         ->searchable()
                         ->native(false)
                         ->relationship(name: 'users', titleAttribute: 'name')
-                        ->disabled(function (?Model $record) {
-                            $user = auth()->user();
-                            
-                            if ($user->hasRole(['admin', 'super_admin'])) {
-                                return false;
-                            }
-                    
-                            if ($record && $record->user_id === $user->id) {
-                                return true;
-                            }
-                    
-                            return false;
-                        })
+                        ->disabled(function () {
+                            return !auth()->user()->hasRole(['admin', 'super_admin']);
+                        })    
                         ->required()
                         ->columnSpan([
                             'default' => 2,

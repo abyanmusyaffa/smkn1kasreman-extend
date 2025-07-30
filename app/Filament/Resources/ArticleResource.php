@@ -120,7 +120,6 @@ class ArticleResource extends Resource
                             return !auth()->user()->hasRole(['admin', 'super_admin']);
                         })    
                         ->required()
-                        ->default(true)
                         ->columnSpan([
                             'default' => 2,
                             'lg' => 4,
@@ -307,19 +306,9 @@ class ArticleResource extends Resource
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\ToggleColumn::make('is_pinned')
-                    ->disabled(function (?Model $record) {
-                        $user = auth()->user();
-                        
-                        if ($user->hasRole(['admin', 'super_admin'])) {
-                            return false;
-                        }
-                
-                        if ($record && $record->user_id === $user->id) {
-                            return true;
-                        }
-                
-                        return false;
-                    })
+                    ->disabled(function () {
+                        return !auth()->user()->hasRole(['admin', 'super_admin']);
+                    })    
                     ->afterStateUpdated(function ($state, $record) {
                         if ($record->category == 'announcement' || $record->category == 'enrollment') {
                             if ($state) {
@@ -353,6 +342,9 @@ class ArticleResource extends Resource
                     ->label('Sematkan'),
                 Tables\Columns\ToggleColumn::make('is_headline')
                     ->label('Headline')
+                    ->disabled(function () {
+                        return !auth()->user()->hasRole(['admin', 'super_admin']);
+                    }) 
                     ->sortable()
                     ->disabled(function (?Model $record) {
                         $user = auth()->user();
@@ -385,6 +377,9 @@ class ArticleResource extends Resource
                     }),
                 Tables\Columns\ToggleColumn::make('is_published')
                     ->label('Publish')
+                    ->disabled(function () {
+                        return !auth()->user()->hasRole(['admin', 'super_admin']);
+                    }) 
                     ->disabled(function (?Model $record) {
                         $user = auth()->user();
                         

@@ -50,21 +50,8 @@ class Internship extends Page
                     ->native(false)
                     ->options(User::all()->pluck('name', 'id'))
                     ->disabled(function () {
-                        $user = auth()->user();
-                    
-                        // Ambil record PKL (dengan id tetap 1)
-                        $record = ModelsInternship::find(1);
-                    
-                        if ($user->hasRole(['admin', 'super_admin'])) {
-                            return false;
-                        }
-                    
-                        if ($record && $record->user_id === $user->id) {
-                            return true;
-                        }
-                    
-                        return false;
-                    })                    
+                        return !auth()->user()->hasRole(['admin', 'super_admin']);
+                    })                       
                     ->required()
                     ->columnSpan([
                         'default' => 2,
