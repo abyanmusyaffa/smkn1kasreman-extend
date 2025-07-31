@@ -32,9 +32,9 @@ class ArticleDetail extends Component
     public function render()
     {
         return view('livewire.article-detail', [
-            'articles' => $this->articleDetail->category ? Article::where('slug', '!=', $this->articleDetail->slug)->where('category', $this->articleDetail->category)->take(4)->orderBy('updated_at' , 'desc')->get() : [] ,
-            'achievements' => $this->articleDetail->rankings ? Achievement::where('slug', '!=', $this->articleDetail->slug)->take(4)->orderBy('updated_at' , 'desc')->get() : [] ,
-            'jobfairs' => $this->articleDetail->deadline ? Jobfair::where('slug', '!=', $this->articleDetail->slug)->where('show', true)->take(4)->orderBy('updated_at' , 'desc')->get() : [] ,
+            'articles' => $this->articleDetail->category ? Article::where('slug', '!=', $this->articleDetail->slug)->where('is_published', true)->where('category', $this->articleDetail->category)->take(4)->latest()->get() : [] ,
+            'achievements' => $this->articleDetail->rankings ? Achievement::where('slug', '!=', $this->articleDetail->slug)->where('is_published', true)->take(4)->latest()->get() : [] ,
+            'jobfairs' => $this->articleDetail->deadline ? Jobfair::where('slug', '!=', $this->articleDetail->slug)->where('is_published', true)->take(4)->latest()->get() : [] ,
         ])->title($this->articleDetail->title);
     }
 }
