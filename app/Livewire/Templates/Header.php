@@ -23,6 +23,7 @@ class Header extends Component
         return view('livewire.templates.header', [
             'school' => School::select('name', 'logo', 'alias')->first(),
             'osis_slug' => Extracurricular::where('name', 'like', '%osis%')->value('slug'),
+            'osis_name' => Extracurricular::where('name', 'like', '%osis%')->value('name'),
             'webLinks' => Weblink::all(),
         ]);
     }

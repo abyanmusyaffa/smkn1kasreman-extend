@@ -24,7 +24,6 @@ class Article extends Model
         return $this->morphTo();
     }
 
-
     protected static function booted()
     {
         static::deleting(function ($article) {

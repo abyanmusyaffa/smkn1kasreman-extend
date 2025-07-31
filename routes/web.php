@@ -44,7 +44,7 @@ Route::get('/achievement', Achievement::class);
 Route::get('/major', Major::class);
 
 Route::get('/extracurricular', Extracurricular::class);
-Route::get('/student-events', StudentEvents::class);
+Route::get('/student-event', StudentEvents::class);
 
 Route::get('/internship', Internship::class);
 Route::get('/partner', Partner::class);
