@@ -21,7 +21,7 @@ return new class extends Migration
             $table->longText('description');
             $table->json('galleries');
             $table->json('staff')->nullable();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
         });
     }

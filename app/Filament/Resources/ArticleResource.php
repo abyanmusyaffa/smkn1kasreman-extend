@@ -346,19 +346,6 @@ class ArticleResource extends Resource
                         return !auth()->user()->hasRole(['admin', 'super_admin']);
                     }) 
                     ->sortable()
-                    ->disabled(function (?Model $record) {
-                        $user = auth()->user();
-                        
-                        if ($user->hasRole(['admin', 'super_admin'])) {
-                            return false;
-                        }
-                
-                        if ($record && $record->user_id === $user->id) {
-                            return true;
-                        }
-                
-                        return false;
-                    })
                     ->afterStateUpdated(function (bool $state, Article $record) {
                         if ($state) {
                             Article::whereIn('category', ['announcement', 'enrollment'])
@@ -380,19 +367,6 @@ class ArticleResource extends Resource
                     ->disabled(function () {
                         return !auth()->user()->hasRole(['admin', 'super_admin']);
                     }) 
-                    ->disabled(function (?Model $record) {
-                        $user = auth()->user();
-                        
-                        if ($user->hasRole(['admin', 'super_admin'])) {
-                            return false;
-                        }
-                
-                        if ($record && $record->user_id === $user->id) {
-                            return true;
-                        }
-                
-                        return false;
-                    })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('organization.name')
                     ->label('Organisasi')

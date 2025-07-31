@@ -23,7 +23,7 @@ return new class extends Migration
             $table->integer('total_students');
             $table->string('logo');
             $table->json('galleries');
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
         });
     }

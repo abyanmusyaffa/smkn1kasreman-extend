@@ -19,8 +19,8 @@ return new class extends Migration
             $table->datetime('deadline');
             $table->longtext('content');
             $table->json('industry');
-            $table->boolean('show')->default(true);
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->boolean('is_published')->default(true);
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
         });
     }

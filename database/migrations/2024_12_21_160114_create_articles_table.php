@@ -24,7 +24,7 @@ return new class extends Migration
             $table->boolean('is_published')->default(true);
             $table->string('organization_type')->nullable();
             $table->bigInteger('organization_id')->nullable();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
         });
     }

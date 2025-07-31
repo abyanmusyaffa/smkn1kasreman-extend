@@ -86,6 +86,16 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(Jobfair::class);
     }
 
+    public function teaching_factories(): HasMany
+    {
+        return $this->hasMany(TeachingFactory::class);
+    }
+
+    public function business_units(): HasMany
+    {
+        return $this->hasMany(BusinessUnit::class);
+    }
+
     // public function alumnis(): HasOne
     // {
     //     return $this->hasOne(Alumni::class);

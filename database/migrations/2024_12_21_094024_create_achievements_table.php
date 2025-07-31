@@ -20,7 +20,7 @@ return new class extends Migration
             $table->longText('content');
             $table->json('tags');
             $table->boolean('is_pinned')->default(false);
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
         });
     }

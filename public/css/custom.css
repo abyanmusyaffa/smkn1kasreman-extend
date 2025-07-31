@@ -38,3 +38,6 @@ body::-webkit-scrollbar {
     user-select: none;
 }
 
+.attachment__caption {
+  display: none !important;
+}

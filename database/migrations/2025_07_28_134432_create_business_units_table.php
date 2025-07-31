@@ -21,7 +21,7 @@ return new class extends Migration
             $table->json('products')->nullable();
             $table->json('services')->nullable();
             $table->json('galleries')->nullable();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
         });
     }

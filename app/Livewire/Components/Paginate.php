@@ -177,7 +177,7 @@ class Paginate extends Component
 
     private function getJobfairs()
     {
-        return Jobfair::where('show', true)
+        return Jobfair::where('is_published', true)
             ->when($this->search, function ($query) {
                 $query->where('title', 'like', '%' . $this->search . '%');
             })

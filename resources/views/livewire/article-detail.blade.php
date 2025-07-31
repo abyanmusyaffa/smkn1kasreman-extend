@@ -75,6 +75,10 @@
     @script
     <script>
       document.addEventListener("livewire:navigated", function () {
+        document.querySelectorAll(".attachment__caption").forEach(function (caption) {
+            caption.remove();
+        });
+        
         const richContentContainers = document.querySelectorAll('#rich-content');
 
         richContentContainers.forEach(container => {
