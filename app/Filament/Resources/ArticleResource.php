@@ -60,6 +60,21 @@ class ArticleResource extends Resource
                 ->schema([
                     // Forms\Components\Hidden::make('user_id'),
                     // Forms\Components\Hidden::make('id'),
+                    Forms\Components\Select::make('user_id')
+                        ->label('Administrator')
+                        ->searchable()
+                        ->native(false)
+                        ->relationship(name: 'users', titleAttribute: 'name')
+                        ->default(fn () => Auth::id())
+                        ->disabled(function () {
+                            return !auth()->user()->hasRole(['admin', 'super_admin']);
+                        })
+                        ->dehydrated()
+                        ->required()
+                        ->columnSpan([
+                            'default' => 2,
+                            'lg' => 12,
+                        ]),
                     Forms\Components\Toggle::make('is_pinned')
                         ->label('Sematkan')
                         // ->disabled(function (?Model $record) {
@@ -200,19 +215,26 @@ class ArticleResource extends Resource
                         ]),
                     Forms\Components\Select::make('organization_type')
                         ->label('Jenis Organisasi')
-                        ->disabled(function (?Model $record) {
-                            $user = auth()->user();
-                            
-                            if ($user->hasRole(['admin', 'super_admin'])) {
-                                return false;
+                        ->default(function () {
+                            $user = auth()->user()->load(['extracurriculars', 'majors', 'internships']);
+                    
+                            // dd($user);
+                            if(!$user->hasRole(['admin', 'super_admin'])) {
+                                if ($user->extracurriculars->isNotEmpty()) {
+                                    return 'App\Models\Extracurricular';
+                                } elseif ($user->majors->isNotEmpty()) {
+                                    return 'App\Models\Major';
+                                } elseif ($user->internships->isNotEmpty()) {
+                                    return 'App\Models\Internship';
+                                }
                             }
                     
-                            if ($record && $record->user_id === $user->id) {
-                                return true;
-                            }
-                    
-                            return false;
+                            return null;
                         })
+                        ->disabled(function () {
+                            return !auth()->user()->hasRole(['admin', 'super_admin']);
+                        })
+                        ->dehydrated()
                         ->native(false)
                         ->options([
                             '' => 'Umum',
@@ -230,19 +252,21 @@ class ArticleResource extends Resource
                         ]),
                     Forms\Components\Select::make('organization_id')
                         ->label('Organisasi')
-                        ->disabled(function (?Model $record) {
+                        ->default(function (callable $get) {
                             $user = auth()->user();
-                            
-                            if ($user->hasRole(['admin', 'super_admin'])) {
-                                return false;
-                            }
+                            $type = $get('organization_type');
                     
-                            if ($record && $record->user_id === $user->id) {
-                                return true;
-                            }
-                    
-                            return false;
+                            return match($type) {
+                                'App\Models\Extracurricular' => $user->extracurriculars->first()?->id,
+                                'App\Models\Major' => $user->majors->first()?->id,
+                                'App\Models\Internship' => 1,
+                                default => null
+                            };
                         })
+                        ->disabled(function () {
+                            return !auth()->user()->hasRole(['admin', 'super_admin']);
+                        })
+                        ->dehydrated()
                         ->native(false)
                         ->live()
                         ->options(function (callable $get) {
@@ -290,8 +314,8 @@ class ArticleResource extends Resource
                             'default' => 2,
                             'lg' => 4,
                         ]),
-                    Forms\Components\Hidden::make('user_id')
-                        ->default(fn () => Auth::id()),
+                    // Forms\Components\::make('user_id')
+                    //     ->default(fn () => Auth::id()),
                 ])
             ]);
     }
