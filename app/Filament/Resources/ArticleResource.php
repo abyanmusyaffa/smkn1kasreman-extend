@@ -33,7 +33,7 @@ class ArticleResource extends Resource
     protected static ?string $modelLabel = 'Artikel';
     protected static ?string $pluralModelLabel = 'Artikel';
 
-    protected static ?string $navigationGroup = 'Kehumasan';
+    // protected static ?string $navigationGroup = 'Kehumasan';
     protected static ?string $navigationIcon = 'fas-newspaper';
 
     public static function getEloquentQuery(): Builder

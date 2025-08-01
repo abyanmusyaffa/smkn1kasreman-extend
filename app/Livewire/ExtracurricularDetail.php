@@ -18,6 +18,8 @@ class ExtracurricularDetail extends Component
         } else {
             abort(404);
         }
+
+        $this->dispatch('title', title: $this->extracurricularDetail ->name);
     }
 
     public function render()

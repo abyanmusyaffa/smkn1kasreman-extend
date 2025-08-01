@@ -27,7 +27,7 @@
             <p class="text-sm {{ $title === 'Tentang Sekolah' ? 'text-blue-500' : 'text-slate-500' }} group-hover:text-blue-500 whitespace-nowrap">Tentang Sekolah</p>
             <div class="h-[1px] w-full bg-slate-200"></div>
           </a>
-          <a href="/staff" wire:navigate class="flex flex-col gap-1 group">
+          <a href="/oraganizational-structure" wire:navigate class="flex flex-col gap-1 group">
             <p class="text-sm {{ $title === 'Struktur Organisasi' ? 'text-blue-500' : 'text-slate-500' }} group-hover:text-blue-500 whitespace-nowrap">Struktur Organisasi</p>
             <div class="h-[1px] w-full bg-slate-200"></div>
           </a>
@@ -62,7 +62,7 @@
 
       <div class="flex flex-col gap-1 px-2 relative cursor-pointer group/dropdown">
         <div class="flex gap-1 items-center">
-          <p class="text-slate-50">Unit Kerja</p>
+          <p class="text-slate-50 whitespace-nowrap">Unit Kerja</p>
           <span class="icon-[mdi--chevron-down] text-2xl text-slate-50"></span>
         </div>
         <div class="w-full h-0.5 bg-transparent"></div>
@@ -77,7 +77,7 @@
             <div class="h-[1px] w-full bg-slate-200"></div>
             <div class="w-64 h-fit rounded-lg absolute left-20 -top-4 bg-transparent hidden group-hover/dropside:flex ps-12 py-4 transition-all ">
               <div class="size-fit flex flex-col px-4 py-2 gap-2 rounded-lg bg-slate-50 shadow-xl">
-                <a href="/" wire:navigate class="flex flex-col gap-1 group/active">
+                <a href="/d/kurikulum" wire:navigate class="flex flex-col gap-1 group/active">
                   <p class="text-sm whitespace-nowrap {{ $title === 'Kurikulum' ? 'text-blue-500' : 'text-slate-500' }} group-hover/active:text-blue-500">Profil</p>
                   <div class="h-[1px] w-full bg-slate-200"></div>
                 </a>
@@ -101,7 +101,7 @@
             <div class="h-[1px] w-full bg-slate-200"></div>
             <div class="w-64 h-fit rounded-lg absolute left-20 -top-4 bg-transparent hidden group-hover/dropside:flex ps-12 py-4 transition-all">
               <div class="size-fit flex flex-col px-4 py-2 gap-2 rounded-lg bg-slate-50 shadow-xl">
-                <a href="/" wire:navigate class="flex flex-col gap-1 group/active">
+                <a href="/d/kesiswaan" wire:navigate class="flex flex-col gap-1 group/active">
                   <p class="text-sm whitespace-nowrap {{ $title === 'Kesiswaan' ? 'text-blue-500' : 'text-slate-500' }} group-hover/active:text-blue-500">Profil</p>
                   <div class="h-[1px] w-full bg-slate-200"></div>
                 </a>
@@ -129,7 +129,7 @@
             <div class="h-[1px] w-full bg-slate-200"></div>
             <div class="w-64 h-fit rounded-lg absolute left-20 -top-4 bg-transparent hidden group-hover/dropside:flex ps-12 py-4 transition-all">
               <div class="size-fit flex flex-col px-4 py-2 gap-2 rounded-lg bg-slate-50 shadow-xl">
-                <a href="/" wire:navigate class="flex flex-col gap-1 group/active">
+                <a href="/d/humas" wire:navigate class="flex flex-col gap-1 group/active">
                   <p class="text-sm whitespace-nowrap {{ $title === 'Humas' ? 'text-blue-500' : 'text-slate-500' }} group-hover/active:text-blue-500">Profil</p>
                   <div class="h-[1px] w-full bg-slate-200"></div>
                 </a>
@@ -148,19 +148,19 @@
               </div>
             </div>
           </div>
-          <a href="/" wire:navigate class="flex flex-col gap-1 group">
+          <a href="/d/sarpras" wire:navigate class="flex flex-col gap-1 group">
             <p class="text-sm {{ $title === 'Sarpras' ? 'text-blue-500' : 'text-slate-500' }} group-hover:text-blue-500">Sarpras</p>
             <div class="h-[1px] w-full bg-slate-200"></div>
           </a>
-          <a href="/" wire:navigate class="flex flex-col gap-1 group">
-            <p class="text-sm {{ $title === 'BK / BP' ? 'text-blue-500' : 'text-slate-500' }} group-hover:text-blue-500">BK / BP</p>
+          <a href="/d/bimbingan-konseling" wire:navigate class="flex flex-col gap-1 group">
+            <p class="text-sm {{ $title === 'Bimbingan Konseling' ? 'text-blue-500' : 'text-slate-500' }} group-hover:text-blue-500">BK / BP</p>
             <div class="h-[1px] w-full bg-slate-200"></div>
           </a>
-          <a href="/" wire:navigate class="flex flex-col gap-1 group">
+          <a href="/d/perpustakaan" wire:navigate class="flex flex-col gap-1 group">
             <p class="text-sm {{ $title === 'Perpustakaan' ? 'text-blue-500' : 'text-slate-500' }} group-hover:text-blue-500">Perpustakaan</p>
             <div class="h-[1px] w-full bg-slate-200"></div>
           </a>
-          <a href="/" wire:navigate class="flex flex-col gap-1 group">
+          <a href="/d/tata-usaha" wire:navigate class="flex flex-col gap-1 group">
             <p class="text-sm {{ $title === 'Tata Usaha' ? 'text-blue-500' : 'text-slate-500' }} group-hover:text-blue-500">Tata Usaha</p>
             <div class="h-[1px] w-full bg-slate-200"></div>
           </a>
@@ -312,8 +312,8 @@
     <!-- btn menu -->
 
     <!-- menu mobile -->
-    {{-- <div class="flex-col items-center lg:hidden w-full min-h-[calc(100dvh-64px)] bg-gradient-to-b from-blue-500/70 to-blue-700/90 absolute right-full peer-checked:translate-x-full top-16 px-4 py-4 gap-2 flex transition-all duration-700"> --}}
-    <div class="flex-col items-center lg:hidden w-full min-h-[calc(100dvh-64px)] bg-gradient-to-b from-blue-500/70 to-blue-700/90 absolute right-full translate-x-full top-16 px-4 py-4 gap-2 flex transition-all duration-700">
+    <div class="flex-col items-center lg:hidden w-full min-h-[calc(100dvh-64px)] bg-gradient-to-b from-blue-600/80 to-blue-800/90 absolute right-full peer-checked:translate-x-full top-16 px-4 py-4 gap-2 flex transition-all duration-700">
+    {{-- <div class="flex-col items-center lg:hidden w-full min-h-[calc(100dvh-64px)] bg-gradient-to-b from-blue-500/70 to-blue-700/90 absolute right-full translate-x-full top-16 px-4 py-4 gap-2 flex transition-all duration-700"> --}}
       
       <a href="/" wire:navigate class="font-medium text-slate-50 text-xl ">Beranda</a>
 
@@ -326,7 +326,7 @@
         <!-- dropdown -->
         <div class="flex-col w-full gap-2 rounded-lg items-center hidden peer-checked:flex transition-all py-2" id="dropdownMenu">
           <a href="/about" wire:navigate class="text-slate-50 whitespace-nowrap">Tentang Sekolah</a>
-          <a href="/staff" wire:navigate class="text-slate-50 whitespace-nowrap">Struktur Organisasi</a>
+          <a href="/oraganizational-structure" wire:navigate class="text-slate-50 whitespace-nowrap">Struktur Organisasi</a>
           <a href="/staff" wire:navigate class="text-slate-50 whitespace-nowrap">GTK</a>
           <a href="/achievement" wire:navigate class="text-slate-50 whitespace-nowrap">Prestasi</a>
           <a href="/facility" wire:navigate class="text-slate-50 whitespace-nowrap">Sarana Prasarana</a>
@@ -354,7 +354,7 @@
               <span class="icon-[mdi--chevron-down] text-2xl text-slate-50"></span>
             </label>
             <div class="w-full flex-col items-center hidden peer-checked:flex transition-all duration-500">
-              <a href="/" wire:navigate class="text-slate-50 whitespace-nowrap">Profil</a>
+              <a href="/d/kurikulum" wire:navigate class="text-slate-50 whitespace-nowrap">Profil</a>
               <a href="/" wire:navigate class="text-slate-50 whitespace-nowrap">Kalender Akademik</a>
               <a href="/" wire:navigate class="text-slate-50 whitespace-nowrap">Jadwal Pelajaran</a>
             </div>
@@ -366,7 +366,7 @@
               <span class="icon-[mdi--chevron-down] text-2xl text-slate-50"></span>
             </label>
             <div class="w-full flex-col items-center hidden peer-checked:flex transition-all duration-500">
-              <a href="/" wire:navigate class="text-slate-50 whitespace-nowrap">Profil</a>
+              <a href="/d/kesiswaan" wire:navigate class="text-slate-50 whitespace-nowrap">Profil</a>
               <a href="/e/{{ $osis_slug }}" wire:navigate class="text-slate-50 whitespace-nowrap">OSIS</a>
               <a href="/extracurricular" wire:navigate class="text-slate-50 whitespace-nowrap">Ekstrakurikuler</a>
               <a href="/student-events" wire:navigate class="text-slate-50 whitespace-nowrap">Agenda Siswa</a>
@@ -379,16 +379,16 @@
               <span class="icon-[mdi--chevron-down] text-2xl text-slate-50"></span>
             </label>
             <div class="w-full flex-col items-center hidden peer-checked:flex transition-all duration-500">
-              <a href="/" wire:navigate class="text-slate-50 whitespace-nowrap">Profil</a>
+              <a href="/d/humas" wire:navigate class="text-slate-50 whitespace-nowrap">Profil</a>
               <a href="/internship" wire:navigate class="text-slate-50 whitespace-nowrap">PKL</a>
               <a href="/partner" wire:navigate class="text-slate-50 whitespace-nowrap">Mitra DU/DI</a>
               <a href="/alumni" wire:navigate class="text-slate-50 whitespace-nowrap">Cerita Alumni</a>
             </div>
           </div>
-          <a href="/" wire:navigate class="text-slate-50 text-lg whitespace-nowrap">Sarpras</a>
-          <a href="/" wire:navigate class="text-slate-50 text-lg whitespace-nowrap">BK / BP</a>
-          <a href="/" wire:navigate class="text-slate-50 text-lg whitespace-nowrap">Perpustakaan</a>
-          <a href="/" wire:navigate class="text-slate-50 text-lg whitespace-nowrap">Tata Usaha</a>
+          <a href="/d/sarpras" wire:navigate class="text-slate-50 text-lg whitespace-nowrap">Sarpras</a>
+          <a href="/d/bimbingan-konseling" wire:navigate class="text-slate-50 text-lg whitespace-nowrap">BK / BP</a>
+          <a href="/d/perpustakaan" wire:navigate class="text-slate-50 text-lg whitespace-nowrap">Perpustakaan</a>
+          <a href="/d/tata-usaha" wire:navigate class="text-slate-50 text-lg whitespace-nowrap">Tata Usaha</a>
         </div>
         <!-- dropdown -->
       </div>

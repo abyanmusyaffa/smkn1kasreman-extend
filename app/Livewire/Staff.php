@@ -9,20 +9,19 @@ use Livewire\Attributes\Title;
 
 class Staff extends Component
 {
-    #[Title('Struktur Organisasi')]
+    #[Title('Guru & Tenaga Kependidikani')]
     
     public function mount()
     {
-        $this->dispatch('title', title: 'Struktur Organisasi');
+        $this->dispatch('title', title: 'Guru & Tenaga Kependidikan');
     }
 
     public function render()
     {
         return view('livewire.staff', [
-            // 'headMaster' => StaffModel::where('category', 'head-master')->first(), 
-            // 'viceMasters' => StaffModel::where('category', 'vice-master')->get(),
-            // 'headsOfMajor' => StaffModel::where('category', 'head-of-major')->get(),
-            'organizational_structures' => OrganizationalStructure::all(),
+            'head_master' => StaffModel::where('category', 'head-master')->first(), 
+            'vice_masters' => StaffModel::where('category', 'vice-master')->get(),
+            'head_of_majors' => StaffModel::where('category', 'head-of-major')->get(),
             'teachers' => StaffModel::where('category', 'teacher')->orderBy('role')->get(),
             'staff_members' => StaffModel::where('category', 'staff')->orderBy('role')->get(),
         ]);

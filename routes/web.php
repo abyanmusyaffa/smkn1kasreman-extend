@@ -29,6 +29,8 @@ use App\Models\PassingCertificate;
 use Illuminate\Support\Facades\Route;
 use App\Models\SendPassingCertificate;
 use App\Livewire\ExtracurricularDetail;
+use App\Livewire\OrganizationalStructure;
+use App\Livewire\SchoolDepartmentDetail;
 use App\Livewire\TeachingFactoryDetail;
 
 // Route::get('/ls', function () {
@@ -38,6 +40,7 @@ use App\Livewire\TeachingFactoryDetail;
 Route::get('/', Home::class);
 
 Route::get('/about', About::class);
+Route::get('/oraganizational-structure', OrganizationalStructure::class);
 Route::get('/staff', Staff::class);
 Route::get('/facility', Facility::class);
 Route::get('/achievement', Achievement::class);
@@ -74,3 +77,5 @@ Route::get('/m/{alias}', MajorDetail::class);
 Route::get('/t/{slug}', TeachingFactoryDetail::class);
 
 Route::get('/b/{slug}', BusinessUnitDetail::class);
+
+Route::get('/d/{slug}', SchoolDepartmentDetail::class);

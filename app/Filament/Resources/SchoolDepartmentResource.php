@@ -8,24 +8,23 @@ use Filament\Forms\Set;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
-use App\Models\Extracurricular;
+use App\Models\SchoolDepartment;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Section;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\ExtracurricularResource\Pages;
-use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
-use App\Filament\Resources\ExtracurricularResource\RelationManagers;
+use App\Filament\Resources\SchoolDepartmentResource\Pages;
+use App\Filament\Resources\SchoolDepartmentResource\RelationManagers;
 
-class ExtracurricularResource extends Resource // implements HasShieldPermissions
+class SchoolDepartmentResource extends Resource
 {
-    protected static ?string $model = Extracurricular::class;
-    protected static ?string $modelLabel = 'Ekstrakurikuler';
-    protected static ?string $pluralModelLabel = 'Ekstrakurikuler';
+    protected static ?string $model = SchoolDepartment::class;
 
-    protected static ?string $navigationGroup = 'Kesiswaan';
-    protected static ?string $navigationIcon = 'fas-baseball-ball';
+    protected static ?string $modelLabel = 'Unit Kerja';
+    protected static ?string $pluralModelLabel = 'Unit Kerja';
+
+    // protected static ?string $navigationGroup = 'Kesiswaan';
+    protected static ?string $navigationIcon = 'fas-building';
 
     public static function getEloquentQuery(): Builder
     {
@@ -38,18 +37,6 @@ class ExtracurricularResource extends Resource // implements HasShieldPermission
 
         return $query;
     }
-    // public static function getPermissionPrefixes(): array
-    // {
-    //     return [
-    //         'view',
-    //         'view_any',
-    //         'create',
-    //         'update',
-    //         'delete',
-    //         'delete_any',
-    //         'manage'
-    //     ];
-    // }
 
     public static function form(Form $form): Form
     {
@@ -68,7 +55,7 @@ class ExtracurricularResource extends Resource // implements HasShieldPermission
                         ->relationship(name: 'users', titleAttribute: 'name')
                         ->disabled(function () {
                             return !auth()->user()->hasRole(['admin', 'super_admin']);
-                        })    
+                        })
                         ->required()
                         ->columnSpan([
                             'default' => 2,
@@ -86,31 +73,14 @@ class ExtracurricularResource extends Resource // implements HasShieldPermission
                             'lg' => 12,
                         ]),
                     Forms\Components\Hidden::make('slug'),
-                    Forms\Components\FileUpload::make('logo')
-                        ->image()
-                        ->maxSize(512)
-                        ->directory(function ($get) {
-                            $slug = $get('slug');
-                    
-                            return 'extracurriculars/' . ($slug ?: 'temp');
-                        })
-                        ->default('/default/logo.svg')
-                        ->columnSpan([
-                            'default' => 2,
-                            'lg' => 12,
-                        ]),
                     Forms\Components\Repeater::make('contacts')
-                        ->label('Kontak/Media Sosial')
-                        ->addActionLabel('Tambahkan Kontak/Media Sosial')
+                        ->label('Kontak')
+                        ->addActionLabel('Tambahkan Kontak')
                         ->schema([
                             Forms\Components\Select::make('platform')
                                 ->options([
                                     'whatsapp' => 'Whatsapp',
                                     'email' => 'Email',
-                                    'instagram' => 'Instagram',
-                                    'facebook' => 'Facebook',
-                                    'tiktok' => 'Tiktok',
-                                    'youtube' => 'Youtube',
                                 ])
                                 ->native(false)
                                 ->required(),
@@ -136,7 +106,7 @@ class ExtracurricularResource extends Resource // implements HasShieldPermission
                         ->fileAttachmentsDirectory(function ($get) {
                             $slug = $get('slug');
                     
-                            return 'extracurriculars/' . ($slug ?: 'temp') . '/attachments';
+                            return 'school-departments/' . ($slug ?: 'temp') . '/attachments';
                         })
                         ->toolbarButtons([
                             'attachFiles',
@@ -159,22 +129,38 @@ class ExtracurricularResource extends Resource // implements HasShieldPermission
                             'default' => 2,
                             'lg' => 12,
                         ]),
-                    Forms\Components\FileUpload::make('galleries')
+                    Forms\Components\Repeater::make('galleries')
                         ->label('Galeri')
-                        ->hint(fn ($component) => 'Minimal ' . $component->getMinFiles() . ' Foto Rasio Aspek 4:3')
-                        ->directory(function ($get) {
-                            $slug = $get('slug');
-                    
-                            return 'extracurriculars/' . ($slug ?: 'temp') . '/galleries';
-                        })
-                        ->required()
-                        ->image()
-                        ->imageResizeMode('cover')
-                        ->imageCropAspectRatio('4:3')
-                        ->imageResizeTargetWidth('1024')
-                        ->imageResizeTargetHeight('768')
-                        ->multiple()
-                        ->minFiles(2)
+                        ->addActionLabel('Tambahkan Galeri')
+                        // ->minItems(2)
+                        ->schema([
+                            Forms\Components\TextInput::make('caption')
+                                ->label('Keterangan')
+                                ->required()
+                                ->live()
+                                ->hint(fn ($state, $component) => 'Sisa ' . $component->getMaxLength() - strlen($state) . ' Karakter') 
+                                ->maxLength(42)
+                                ->columnSpan([
+                                    'default' => 2,
+                                    'lg' => 12,
+                                ]),
+                            Forms\Components\FileUpload::make('photo')
+                                ->label('Foto')
+                                ->image()
+                                ->imageResizeMode('cover')
+                                ->imageCropAspectRatio('4:3')
+                                ->imageResizeTargetWidth('1024')
+                                ->imageResizeTargetHeight('768')
+                                ->hint('Foto Rasio Aspek 4:3 | Landscape')
+                                ->directory(function ($get) {
+                                    return 'school-departments/' . ($get('../../slug') ?: 'temp') . '/galleries';
+                                })
+                                ->required()
+                                ->columnSpan([
+                                    'default' => 2,
+                                    'lg' => 12,
+                                ]),
+                        ])
                         ->columnSpan([
                             'default' => 2,
                             'lg' => 12,
@@ -205,19 +191,24 @@ class ExtracurricularResource extends Resource // implements HasShieldPermission
                                 ]),
                             Forms\Components\FileUpload::make('photo')
                                 ->label('Foto')
+                                ->hint('Foto Rasio Aspek 4:6 | Potrait')
                                 ->image()
                                 ->imageResizeMode('cover')
                                 ->imageCropAspectRatio('4:6')
                                 ->imageResizeTargetWidth('560')
                                 ->imageResizeTargetHeight('840')
                                 ->directory(function ($get) {
-                                    return 'extracurriculars/' . ($get('../../slug') ?: 'temp') . '/staff';
+                                    return 'school-departments/' . ($get('../../slug') ?: 'temp') . '/staff';
                                 })
                                 ->required()
                                 ->columnSpan([
                                     'default' => 2,
                                     'lg' => 12,
                                 ]),
+                        ])
+                        ->columns([
+                            'default' => 2,
+                            'lg' => 12,
                         ])
                         ->columnSpan([
                             'default' => 2,
@@ -236,19 +227,14 @@ class ExtracurricularResource extends Resource // implements HasShieldPermission
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Dibuat')
-                    ->since()
-                    ->dateTimeTooltip()
+                    ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),   
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->label('Diperbarui')
-                    ->since()
-                    ->dateTimeTooltip()
+                    ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->defaultSort('name')
             ->filters([
                 //
             ])
@@ -273,9 +259,9 @@ class ExtracurricularResource extends Resource // implements HasShieldPermission
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListExtracurriculars::route('/'),
-            'create' => Pages\CreateExtracurricular::route('/create'),
-            'edit' => Pages\EditExtracurricular::route('/{record}/edit'),
+            'index' => Pages\ListSchoolDepartments::route('/'),
+            'create' => Pages\CreateSchoolDepartment::route('/create'),
+            'edit' => Pages\EditSchoolDepartment::route('/{record}/edit'),
         ];
     }
 }

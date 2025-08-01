@@ -1,69 +1,67 @@
 <div class="w-full lg:min-h-[calc(100svh-376px)] min-h-[calc(100svh-512px)] flex flex-col gap-9 lg:gap-12 px-4 pt-20 pb-9 lg:px-16 2xl:px-36 lg:pt-[120px] lg:pb-12 bg-gradient-to-r from-slate-50 to-slate-100">
-  {{-- organizational structure --}}
-  @foreach($organizational_structures as $organizational_structure)
-    {{-- <aside data-aos="fade-right" class="flex w-full flex-col lg:flex-row{{ $index === 0 ? '-reverse' : '' }}  gap-4 items-center lg:justify-between rounded-2xl bg-white p-4 lg:py-6 lg:px-16">
-      <figcaption class="flex flex-col gap-2 lg:gap-4 w-full lg:w-1/3 text-center lg:text-start">
-        <h2 class="text-2xl lg:text-5xl font-medium text-blue-600">{{ $organizational_structure->name }}</h2>
-        <p class="lg:text-xl text-slate-800">{{ $organizational_structure->description }}</p>
-      </figcaption>
-      <figure class="w-full lg:w-3/5">
-        <img class="w-full lg:h-auto" data-fancybox src="storage/{{ $organizational_structure->photo }}" alt="">
-      </figure>
-    </aside> --}}
-    <article class="flex w-full flex-col gap-4 lg:gap-6 items-center">
-      <livewire:components.title-center text="{{ $organizational_structure->name }}"/>
-      <figcaption>
-        <p class="text-center lg:text-xl text-slate-700 prose max-w-none">{{ $organizational_structure->description }}</p>
-      </figcaption>
-      <figure class="p-4 lg:p-6 bg-white rounded-lg lg:rounded-xl shadow-md">
-        <img data-fancybox class="w-full lg:w-auto lg:h-[512px]" src="storage/{{ $organizational_structure->photo }}" alt="">
-      </figure>
-    </article>
-  @endforeach
-  {{-- organizational structure --}}    
-  
+   {{-- @dd($head_master) --}}
     <!-- headmaster-->
-    {{-- @if($headMaster->count() > 0)
-      <article class="flex w-full flex-col gap-4 lg:gap-6 items-center">
-          <livewire:components.title-left text="Kepala" span="Sekolah" />
-        <div class="flex w-full justify-center">
-          <livewire:components.card-staff :photo="$headMaster->photo" :name="$headMaster->name" :role="$headMaster->role" />
+    @if($head_master)
+    <aside data-aos="fade-right" class="flex w-full flex-col lg:flex-row gap-4 items-center lg:justify-between rounded-2xl bg-white p-4 lg:py-6 lg:px-16">
+      <div class="flex flex-col gap-2 lg:gap-4 w-full lg:w-1/3 text-center lg:text-start">
+        <h2 class="text-2xl lg:text-5xl font-medium text-blue-600">Kepala <span class="text-blue-600 font-semibold">Sekolah</span></h2>
+        <p class="lg:text-xl text-slate-800">Pemimpin utama yang menuntun SMKN 1 Kasreman menuju pendidikan yang berkualitas dan berkarakter.</p>
+      </div>
+      <div class="w-full lg:w-3/5 flex justify-center">
+        <div class="flex flex-col w-1/2 sm:w-1/3 2xl:w-1/4">
+          <figure data-fancybox="gallery" data-src="/storage/{{ $head_master->photo }}" data-caption="{{ $head_master->name }} | {{ $head_master->role }}" class="h-44 lg:h-64 w-full rounded-t-3xl lg:border-4 border-2 border-b-0 border-blue-600 bg-cover bg-center bg-no-repeat" style="background-image: url(/storage/{{ $head_master->photo }})">
+          </figure>
+          <div class="w-full h-fit rounded-b-2xl bg-gradient-to-r from-blue-600 to-blue-700 px-2 py-1 text-center">
+            <p class="text-slate-50 text-xs lg:text-sm h-[2lh]">{{ $head_master->name }}</p>
+            <p class="text-slate-50 text-2xs lg:text-xs italic h-[1lh]">{{ $head_master->role }}</p>
+          </div>
         </div>
-      </article>
-    @endif --}}
+      </div>
+    </aside>
+    @endif
     <!-- headmaster-->
      
     <!-- vice-->
-    {{-- @if($viceMasters)
-    <aside data-aos="fade-up" class="flex w-full flex-col gap-4 lg:gap-6 items-center">
-        <livewire:components.title-right text="Wakil Kepala" span="Sekolah" />
-      <div class="flex w-full lg:justify-between pb-1 gap-2 drag-to-scroll cursor-grab active:cursor-grabbing snap-x snap-mandatory overflow-x-scroll">
-        @foreach($viceMasters as $viceMaster )
-            <livewire:components.card-staff wire:key="{{ $viceMaster->id }}" :photo="$viceMaster->photo" :name="$viceMaster->name" :role="$viceMaster->role" />
-        @endforeach
+    @if($vice_masters)
+    <aside data-aos="fade-right" class="flex w-full flex-col lg:flex-row-reverse gap-4 items-center lg:justify-between rounded-2xl bg-white p-4 lg:py-6 lg:px-16">
+      <div class="flex flex-col gap-2 lg:gap-4 w-full lg:w-1/3 text-center lg:text-start">
+        <h2 class="text-2xl lg:text-5xl font-medium text-blue-600">Wakil <br><span class="text-blue-600 font-semibold">Kepala Sekolah</span></h2>
+        <p class="lg:text-xl text-slate-800">Mendampingi kepala sekolah dalam mewujudkan lingkungan belajar yang unggul dan harmonis.</p>
+      </div>
+      <div class="w-full lg:w-3/5 f-carousel " id="viceMastersCarousel">
+        <div class="f-carousel__viewport rounded-2xl grid-cols-2 sm:grid-cols-3 2xl:grid-cols-4">
+          @foreach($vice_masters as $vice_master )
+              <livewire:components.card-staff wire:key="{{ $vice_master->id }}" :photo="$vice_master->photo" :name="$vice_master->name" :role="$vice_master->role" />
+          @endforeach
+        </div>
       </div>
     </aside>
-    @endif --}}
+    @endif
     <!-- vice-->
      
     <!-- head of major-->
-    {{-- @if($headsOfMajor)
-    <aside data-aos="fade-up" class="flex w-full flex-col gap-4 lg:gap-6 items-center">
-        <livewire:components.title-left text="Kakomli" span="" />
-      <div class="flex w-full lg:justify-between pb-1 gap-2 drag-to-scroll cursor-grab active:cursor-grabbing snap-x snap-mandatory overflow-x-scroll">
-        @foreach($headsOfMajor as $headOfMajor )
-            <livewire:components.card-staff wire:key="{{ $headOfMajor->id }}" :photo="$headOfMajor->photo" :name="$headOfMajor->name" :role="$headOfMajor->role" />
-        @endforeach
+    @if($head_of_majors)
+    <aside data-aos="fade-right" class="flex w-full flex-col lg:flex-row gap-4 items-center lg:justify-between rounded-2xl bg-white p-4 lg:py-6 lg:px-16">
+      <div class="flex flex-col gap-2 lg:gap-4 w-full lg:w-1/3 text-center lg:text-start">
+        <h2 class="text-2xl lg:text-5xl font-medium text-blue-600">Kepala <br><span class="text-blue-600 font-semibold">Program Keahlian</span></h2>
+        <p class="lg:text-xl text-slate-800">Pemimpin jurusan yang visioner, memastikan keahlian siswa berkembang sesuai bidangnya.</p>
+      </div>
+      <div class="w-full lg:w-3/5 f-carousel " id="headOfMajorsCarousel">
+        <div class="f-carousel__viewport rounded-2xl grid-cols-2 sm:grid-cols-3 2xl:grid-cols-4">
+          @foreach($head_of_majors as $head_of_major )
+              <livewire:components.card-staff wire:key="{{ $head_of_major->id }}" :photo="$head_of_major->photo" :name="$head_of_major->name" :role="$head_of_major->role" />
+          @endforeach
+        </div>
       </div>
     </aside>
-    @endif --}}
+    @endif
     <!-- head of major-->
 
     <!-- teacher-->
     @if($teachers)
     <aside data-aos="fade-right" class="flex w-full flex-col lg:flex-row-reverse gap-4 items-center lg:justify-between rounded-2xl bg-white p-4 lg:py-6 lg:px-16">
       <div class="flex flex-col gap-2 lg:gap-4 w-full lg:w-1/3 text-center lg:text-start">
-        <h2 class="text-2xl lg:text-5xl font-medium text-blue-600">Daftar <span class="text-blue-600 font-semibold">Guru</span></h2>
+        <h2 class="text-2xl lg:text-5xl font-medium text-blue-600">Guru</span></h2>
         <p class="lg:text-xl text-slate-800">Guru-guru terbaik yang berdedikasi untuk pendidikan dan karakter siswa.</p>
       </div>
       <div class="w-full lg:w-3/5 f-carousel " id="teachersCarousel">
@@ -74,11 +72,6 @@
         </div>
       </div>
     </aside>
-    {{-- <aside data-aos="fade-up" class="flex w-full flex-col gap-4 lg:gap-6 items-center">
-      <livewire:components.title-center text="Guru" span="" />
-      <div class="flex w-full lg:justify-between pb-1 gap-2 drag-to-scroll cursor-grab active:cursor-grabbing snap-x snap-mandatory overflow-x-scroll">
-      </div>
-    </aside> --}}
     @endif
     <!-- teacher-->
 
@@ -97,14 +90,6 @@
         </div>
       </div>
     </aside>
-    {{-- <aside data-aos="fade-up" class="flex w-full flex-col gap-4 lg:gap-6 items-center">
-        <livewire:components.title-center text="Tenaga Kependidikan" />
-      <div class="flex w-full lg:justify-between pb-1 gap-2 drag-to-scroll cursor-grab active:cursor-grabbing snap-x snap-mandatory overflow-x-scroll">
-        @foreach($staff_members as $staff )
-            <livewire:components.card-staff wire:key="{{ $staff->id }}" :photo="$staff->photo" :name="$staff->name" :role="$staff->role" />
-        @endforeach
-      </div>
-    </aside> --}}
     @endif
     <!-- staff-->
 
@@ -129,6 +114,28 @@
           }
         });
         // fancybox
+
+        // viceMasters carousel
+        const viceMastersContainer = document.getElementById("viceMastersCarousel");
+        if (viceMastersContainer && !viceMastersContainer.dataset.initialized) {
+          Carousel(viceMastersContainer, {
+            infinite: true,
+            Autoplay: { showProgressbar: false }
+          }, { Arrows, Autoplay }).init();
+          viceMastersContainer.dataset.initialized = "true";
+        }
+        // viceMasters carousel
+
+        // headOfMajors carousel
+        const headOfMajorsContainer = document.getElementById("headOfMajorsCarousel");
+        if (headOfMajorsContainer && !headOfMajorsContainer.dataset.initialized) {
+          Carousel(headOfMajorsContainer, {
+            infinite: true,
+            Autoplay: { showProgressbar: false }
+          }, { Arrows, Autoplay }).init();
+          headOfMajorsContainer.dataset.initialized = "true";
+        }
+        // headOfMajors carousel
 
         // teachers carousel
         const teachersContainer = document.getElementById("teachersCarousel");
