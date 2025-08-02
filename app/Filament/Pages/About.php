@@ -46,7 +46,7 @@ class About extends Page implements HasForms
                 ->schema([
                     FileUpload::make('logo')
                         ->image()
-                        ->directory('/logo')
+                        ->directory('schools')
                         ->label('Logo')
                         ->required()
                         ->columnSpan([
@@ -91,6 +91,22 @@ class About extends Page implements HasForms
                         ->columnSpan([
                             'default' => 2,
                             'lg' => 4,
+                        ]),
+                    FileUpload::make('hero_photos')
+                        ->label('Foto Hero')
+                        ->hint(fn ($component) => 'Minimal ' . $component->getMinFiles() . ' Foto Rasio Aspek 16:9 | Landscape')
+                        ->directory('schools/hero-photos')
+                        ->required()
+                        ->image()
+                        ->imageResizeMode('cover')
+                        ->imageCropAspectRatio('16:9')
+                        ->imageResizeTargetWidth('1024')
+                        ->imageResizeTargetHeight('576')
+                        ->multiple()
+                        ->minFiles(4)
+                        ->columnSpan([
+                            'default' => 2,
+                            'lg' => 12,
                         ]),
             ]),
             Section::make()

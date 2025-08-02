@@ -1,4 +1,4 @@
-{{-- @dd($articles) --}}
+{{-- @dd($galleries) --}}
 <div class="{{ $announcement_text ? 'pt-20 lg:pt-32' : 'pt-16 lg:pt-24' }} w-full overflow-hidden lg:min-h-[calc(100svh-376px)] min-h-[calc(100svh-512px)] flex flex-col gap-9 lg:gap-12 px-4  pb-9 lg:px-16 2xl:px-36  lg:pb-12 bg-gradient-to-r from-slate-50 to-slate-100">
     <!-- hero -->
     <figure class="relative flex w-full mt-8">
@@ -21,7 +21,7 @@
 
       <div class="w-full relative overflow-hidden h-[480px] lg:h-[560px]">
         <!-- slideshow -->
-        @foreach($heros as $index => $hero)
+        @foreach($school->hero_photos as $index => $hero)
           <div data-slide-hero="{{ $index+1 }}" style="background-image: url(/storage/{{ $hero }})" class="w-full absolute inset-0 {{ $loop->first ? 'opacity-100' : 'opacity-0' }} transition-opacity duration-[2s] h-[480px] lg:h-[560px] rounded-2xl bg-center bg-cover bg-no-repeat"></div>
         @endforeach
       </div>
@@ -145,7 +145,7 @@
       <figure class="grid grid-cols-2 lg:grid-cols-3 grid-rows-6 lg:grid-rows-3 w-full gap-2 lg:gap-4">
         {{-- <iframe class="w-full aspect-video lg:h-full lg:aspect-auto rounded-2xl col-span-2 row-span-2" src="https://www.youtube.com/embed/{{ $video_id }}?si=Hifffx7NdQLbAi2f&amp;controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> --}}
         @foreach($galleries as $index => $galerry)
-          <div data-fancybox="gallery" data-src="/storage/{{ $galerry }}" data-prevent-scroll="true" data-type="image" style="background-image: url(/storage/{{ $galerry }});" 
+          <div data-fancybox="gallery" data-src="/storage/{{ $galerry['photo'] }}" data-prevent-scroll="true" data-type="image" style="background-image: url(/storage/{{ $galerry['photo'] }});" 
             @class([
                 'w-full aspect-video rounded-2xl bg-center bg-no-repeat bg-cover', 
                 'col-span-2 row-span-2' => $index === 0 || $index === 3,

@@ -149,10 +149,6 @@
                   <p class="text-sm whitespace-nowrap {{ $title === 'Praktek Kerja Lapangan'  ? 'text-blue-500' : 'text-slate-500' }} group-hover/active:text-blue-500">PKL</p>
                   <div class="h-[1px] w-full bg-slate-200"></div>
                 </a>
-                <a href="/partner" wire:navigate class="flex flex-col gap-1 group/active">
-                  <p class="text-sm whitespace-nowrap {{ $title === 'Mitra DU/DI' ? 'text-blue-500' : 'text-slate-500' }} group-hover/active:text-blue-500">Mitra DU/DI</p>
-                  <div class="h-[1px] w-full bg-slate-200"></div>
-                </a>
                 <a href="/" wire:navigate class="flex flex-col gap-1 group/active">
                   <p class="text-sm whitespace-nowrap {{ $title === 'Publikasi'  ? 'text-blue-500' : 'text-slate-500' }} group-hover/active:text-blue-500">Publikasi</p>
                   <div class="h-[1px] w-full bg-slate-200"></div>
@@ -382,12 +378,16 @@
             <p class="text-sm {{ $title === 'Pengumuman' ? 'text-blue-500' : 'text-slate-500' }} group-hover:text-blue-500">Pengumuman</p>
             <div class="h-[1px] w-full bg-slate-200"></div>
           </a>
-          <a href="/enrollment" wire:navigate class="flex flex-col gap-1 group">
-            <p class="text-sm {{ $title === 'Informasi SPMB' ? 'text-blue-500' : 'text-slate-500' }} group-hover:text-blue-500">SPMB</p>
+          <a href="/partner" wire:navigate class="flex flex-col gap-1 group">
+            <p class="text-sm {{ $title === 'Mitra DU/DI' ? 'text-blue-500' : 'text-slate-500' }} group-hover:text-blue-500">Mitra DU/DI</p>
             <div class="h-[1px] w-full bg-slate-200"></div>
           </a>
           <a href="/jobfair" wire:navigate class="flex flex-col gap-1 group">
             <p class="text-sm {{ $title === 'Lowongan Pekerjaan' ? 'text-blue-500' : 'text-slate-500' }} group-hover:text-blue-500">Lowongan</p>
+            <div class="h-[1px] w-full bg-slate-200"></div>
+          </a>
+          <a href="/enrollment" wire:navigate class="flex flex-col gap-1 group">
+            <p class="text-sm {{ $title === 'Informasi SPMB' ? 'text-blue-500' : 'text-slate-500' }} group-hover:text-blue-500">SPMB</p>
             <div class="h-[1px] w-full bg-slate-200"></div>
           </a>
         </div>
@@ -418,6 +418,15 @@
     </div>
     <!-- menu web -->
 
+
+
+
+
+
+
+
+
+
     <!-- btn menu -->
     <input type="checkbox" class="peer hidden" id="dropdown-menu"/>
     <label for="dropdown-menu" class="lg:hidden hidden peer-checked:block cursor-pointer">
@@ -427,6 +436,15 @@
       <span class="icon-[mdi--hamburger-menu] text-3xl text-slate-50"></span>
     </label>
     <!-- btn menu -->
+
+
+
+
+
+
+
+
+
 
     <!-- menu mobile -->
     <div class="flex-col items-center lg:hidden w-full min-h-[calc(100dvh-64px)] bg-gradient-to-b from-blue-600/80 to-blue-800/90 absolute right-full peer-checked:translate-x-full top-16 px-4 py-4 gap-2 flex transition-all duration-700">
@@ -501,7 +519,6 @@
             <div class="w-full flex-col items-center hidden peer-checked:flex transition-all duration-500">
               <a href="/d/humas" wire:navigate class="text-slate-50 whitespace-nowrap">Profil</a>
               <a href="/internship" wire:navigate class="text-slate-50 whitespace-nowrap">PKL</a>
-              <a href="/partner" wire:navigate class="text-slate-50 whitespace-nowrap">Mitra DU/DI</a>
               <a href="/" wire:navigate class="text-slate-50 whitespace-nowrap">Publikasi</a>
               <a href="/d" wire:navigate class="text-slate-50 whitespace-nowrap">BKK</a>
               <a href="/alumni" wire:navigate class="text-slate-50 whitespace-nowrap">Cerita Alumni</a>
@@ -626,11 +643,13 @@
         <div class="flex-col w-full gap-2 rounded-lg items-center hidden peer-checked:flex transition-all py-2" id="dropdownMenu">
           <a href="/news" wire:navigate class="text-slate-50 whitespace-nowrap">Berita</a>
           <a href="/announcement" wire:navigate class="text-slate-50 whitespace-nowrap">Pengumuman</a>
-          <a href="/enrollment" wire:navigate class="text-slate-50 whitespace-nowrap">SPMB</a>
           <a href="/jobfair" wire:navigate class="text-slate-50 whitespace-nowrap">Lowongan</a>
+          <a href="/partner" wire:navigate class="text-slate-50 whitespace-nowrap">Mitra DU/DI</a>
+          <a href="/enrollment" wire:navigate class="text-slate-50 whitespace-nowrap">SPMB</a>
         </div>
         <!-- dropdown -->
       </div>
+
       <div class="flex flex-col w-full">
         <input type="checkbox" class="peer hidden" id="weblink-menu" />
         <label for="weblink-menu" class="flex gap-1 items-center justify-center" id="dropdownBtn">

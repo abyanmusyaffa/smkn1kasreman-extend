@@ -7,6 +7,7 @@ use App\Livewire\About;
 use App\Livewire\Major;
 use App\Livewire\Staff;
 use App\Livewire\Alumni;
+use App\Livewire\Gallery;
 use App\Livewire\Jobfair;
 use App\Livewire\Partner;
 use App\Livewire\Download;
@@ -20,18 +21,18 @@ use App\Models\ScoreCategory;
 use App\Livewire\Announcement;
 use App\Livewire\BusinessUnit;
 use App\Livewire\ArticleDetail;
-use App\Livewire\BusinessUnitDetail;
 use App\Livewire\StudentEvents;
 use App\Livewire\StudentCouncil;
 use App\Livewire\Extracurricular;
 use App\Livewire\TeachingFactory;
 use App\Models\PassingCertificate;
+use App\Livewire\BusinessUnitDetail;
 use Illuminate\Support\Facades\Route;
 use App\Models\SendPassingCertificate;
 use App\Livewire\ExtracurricularDetail;
-use App\Livewire\OrganizationalStructure;
-use App\Livewire\SchoolDepartmentDetail;
 use App\Livewire\TeachingFactoryDetail;
+use App\Livewire\SchoolDepartmentDetail;
+use App\Livewire\OrganizationalStructure;
 
 // Route::get('/ls', function () {
 //     Artisan::call('storage:link');
@@ -44,6 +45,8 @@ Route::get('/oraganizational-structure', OrganizationalStructure::class);
 Route::get('/staff', Staff::class);
 Route::get('/facility', Facility::class);
 Route::get('/achievement', Achievement::class);
+Route::get('/gallery', Gallery::class);
+
 Route::get('/major', Major::class);
 
 Route::get('/extracurricular', Extracurricular::class);

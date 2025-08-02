@@ -10,6 +10,7 @@ use App\Models\Article;
 use App\Models\Partner;
 use Livewire\Component;
 use App\Models\Achievement;
+use App\Models\Gallery;
 use App\Models\Testimonial;
 use Livewire\Attributes\Title;
 
@@ -52,12 +53,10 @@ class Home extends Component
             'summary' => $this->getFirstParagraph(),
             'welcome_video_id' => $this->getYoutubeVideoId($school->url_video_welcome),
             'head_master' => Staff::where('category', 'head-master')->value('name'),
-            'heros' => Photo::where('type', 'hero')->value('photo'),
-            'galleries' => Photo::where('type', 'gallery')->value('photo'),
+            'galleries' => collect(Gallery::value('galleries') ?? [])->take(6),
             'partners' => Partner::where('logo', 'NOT LIKE', '%default%')->pluck('logo'),
             'achievements' => Achievement::latest()->take(4)->get(['id', 'photo', 'slug', 'rankings', 'title', 'created_at']),
             'latest_article' => Article::latest()->take(1)->value('updated_at'),
-            // 'testimonials' => Testimonial::with('alumnis')->where('show', true)->latest()->take(6)->get(),
             'articles' => Article::where('is_published', true)->latest()->take(6)->get(['id', 'photo', 'slug', 'category', 'title', 'created_at']),
         ]);        
     }

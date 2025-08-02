@@ -2,7 +2,6 @@
 
 namespace App\Livewire;
 
-use App\Models\Download as DownloadModel;
 use Livewire\Component;
 use Livewire\Attributes\Title;
 
@@ -17,8 +16,6 @@ class Download extends Component
 
     public function render()
     {
-        return view('livewire.download', [
-            'download' => DownloadModel::first(),
-        ]);
+        return view('livewire.download');
     }
 }

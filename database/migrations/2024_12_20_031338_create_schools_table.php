@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('alias');
             $table->string('logo');
             $table->string('motto');
+            $table->json('hero_photos');
             $table->text('vision');
             $table->text('mission');
             $table->string('url_video_profile');
