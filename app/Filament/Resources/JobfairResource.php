@@ -23,8 +23,8 @@ use App\Filament\Resources\JobfairResource\RelationManagers;
 class JobfairResource extends Resource
 {
     protected static ?string $model = Jobfair::class;
-    protected static ?string $modelLabel = 'Bursa Kerja Khusus';
-    protected static ?string $pluralModelLabel = 'Bursa Kerja Khusus';
+    protected static ?string $modelLabel = 'Lowongan Pekerjaan';
+    protected static ?string $pluralModelLabel = 'Lowongan Pekerjaan';
 
     protected static ?string $navigationGroup = 'Kehumasan';
     protected static ?string $navigationIcon = 'fas-briefcase';

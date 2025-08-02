@@ -7,11 +7,11 @@ use Livewire\Attributes\Title;
 
 class Jobfair extends Component
 {
-    #[Title('Bursa Kerja Khusus')]
+    #[Title('Lowongan Pekerjaan')]
     
     public function mount()
     {
-        $this->dispatch('title', title: 'Bursa Kerja Khusus');
+        $this->dispatch('title', title: 'Lowongan Pekerjaan');
     }
     
     public function render()

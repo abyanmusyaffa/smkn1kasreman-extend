@@ -18,6 +18,8 @@ class TeachingFactoryDetail extends Component
         } else {
             abort(404);
         }
+
+        $this->dispatch('title', title: $this->teachingFactoryDetail->name);
     }
 
     public function render()
