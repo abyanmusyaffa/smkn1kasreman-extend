@@ -12,5 +12,5 @@
         </div>
         @endif
     </article>
-    <!-- alumni -->
+    <!-- alumnii -->
 </div>
