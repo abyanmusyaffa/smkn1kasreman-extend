@@ -13,6 +13,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Copy .env
+        run: cp .env.example .env
+      
+      - name: Create SQLite DB dummy
+        run: mkdir -p database && touch database/database.sqlite
+        
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
