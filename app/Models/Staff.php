@@ -4,10 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Staff extends Model
 {
     protected $guarded = ['id'];
+
+    public function lesson_timetables(): HasMany
+    {
+        return $this->hasMany(LessonTimetable::class);
+    }
 
     protected static function booted()
     {

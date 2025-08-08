@@ -49,6 +49,7 @@ class AdminPanelProvider extends PanelProvider
                 'Program Sekolah',
                 'Siswa',
                 'Data Akademik',
+                'Jadwal Pelajaran',
                 'Preferensi',
                 'Manajemen Admin',
             ])

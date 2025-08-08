@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('subjects', function (Blueprint $table) {
+        Schema::create('lesson_sessions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('score_category_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('major_id')->nullable()->constrained()->nullOnDelete();
-            $table->string('name');
-            $table->string('code')->unique();
+            $table->string('number');
+            $table->time('start_time');
+            $table->time('end_time');
+            $table->enum('type', ['monday', 'tuesday-thursday', 'friday']);
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('subjects');
+        Schema::dropIfExists('lesson_sessions');
     }
 };

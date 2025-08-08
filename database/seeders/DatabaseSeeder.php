@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Alumni;
+use App\Models\LessonSession;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Major;
 use App\Models\Weblink;
@@ -23,7 +24,6 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             SchoolSeeder::class,
             MajorSeeder::class,
-            PhotoSeeder::class,
             PartnerSeeder::class,
             AchievementSeeder::class,
             GroupSeeder::class,
@@ -33,13 +33,13 @@ class DatabaseSeeder extends Seeder
             FacilitySeeder::class,
             StaffSeeder::class,
             ExtracurricularSeeder::class,
-            DownloadSeeder::class,
             WeblinkSeeder::class,
             JobfairSeeder::class,
             OrganizationalStructureSeeder::class,
             ScoreSeeder::class,
             PassingCertificateSeeder::class,
             ShieldSeeder::class,
+            LessonSessionSeeder::class,
         ]);
     }
 }

@@ -4,12 +4,16 @@ namespace App\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Tables;
+use App\Models\Major;
 use App\Models\Subject;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\ScoreCategory;
 use Filament\Resources\Resource;
 use Filament\Tables\Grouping\Group;
+use Filament\Forms\Components\Section;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Columns\TextInputColumn;
 use App\Filament\Resources\SubjectResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\SubjectResource\RelationManagers;
@@ -20,21 +24,54 @@ class SubjectResource extends Resource
     protected static ?string $modelLabel = 'Mata Pelajaran';
     protected static ?string $pluralModelLabel = 'Mata Pelajaran';
 
-    protected static ?string $navigationGroup = 'Data Akademik';
+    protected static ?string $navigationGroup = 'Jadwal Pelajaran';
     protected static ?string $navigationIcon = 'fas-book-open';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('score_category_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('major_id')
-                    ->numeric(),
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
+                Section::make()
+                ->columns([
+                    'default' => 2,
+                    'lg' => 12,
+                ])
+                ->schema([
+                    Forms\Components\Select::make('score_category_id')
+                        ->label('Kategori')
+                        ->native(false)
+                        ->relationship(name: 'score_categories', titleAttribute: 'name')
+                        ->required()
+                        ->columnSpan([
+                            'default' => 2,
+                            'lg' => 6,
+                        ]),
+                    Forms\Components\Select::make('major_id')
+                        ->label('Program Keahlian')
+                        ->native(false)
+                        ->relationship(name: 'majors', titleAttribute: 'expertise_concentration')
+                        ->columnSpan([
+                            'default' => 2,
+                            'lg' => 6,
+                        ]),
+                    Forms\Components\TextInput::make('name')
+                        ->label('Nama Mata Pelajaran')
+                        ->required()
+                        ->maxLength(255)
+                        ->columnSpan([
+                            'default' => 2,
+                            'lg' => 8,
+                        ]),
+                    Forms\Components\TextInput::make('code')
+                        ->label('Kode')
+                        ->unique(ignoreRecord: true)
+                        ->required()
+                        ->maxLength(255)
+                        ->columnSpan([
+                            'default' => 2,
+                            'lg' => 4,
+                        ]),
+                ])
             ]);
     }
 
@@ -53,8 +90,13 @@ class SubjectResource extends Resource
                 //     ->label('Kategori')
                 //     ->numeric()
                 //     ->sortable(),
-                Tables\Columns\TextColumn::make('id')
-                    ->numeric()
+                // Tables\Columns\TextColumn::make('id')
+                //     ->numeric()
+                //     ->sortable(),
+                Tables\Columns\TextColumn::make('code')
+                    ->label('Kode')
+                    // ->rules(['required', 'max:255'])
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->label('Mata Pelajaran')

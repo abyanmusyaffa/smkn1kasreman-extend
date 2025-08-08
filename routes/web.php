@@ -1,5 +1,6 @@
 <?php
 
+use App\Filament\Resources\LessonTimetableResource\Pages\LessonTimetableByGroup;
 use App\Models\Score;
 use App\Livewire\Home;
 use App\Livewire\News;
@@ -30,6 +31,7 @@ use App\Livewire\BusinessUnitDetail;
 use Illuminate\Support\Facades\Route;
 use App\Models\SendPassingCertificate;
 use App\Livewire\ExtracurricularDetail;
+use App\Livewire\LessonTimetable;
 use App\Livewire\TeachingFactoryDetail;
 use App\Livewire\SchoolDepartmentDetail;
 use App\Livewire\OrganizationalStructure;
@@ -56,6 +58,8 @@ Route::get('/internship', Internship::class);
 Route::get('/partner', Partner::class);
 Route::get('/jobfair', Jobfair::class);
 Route::get('/alumni', Alumni::class);
+
+Route::get('/lesson-timetable', LessonTimetable::class);
 
 Route::get('/teaching-factory', TeachingFactory::class);
 Route::get('/business-unit', BusinessUnit::class);

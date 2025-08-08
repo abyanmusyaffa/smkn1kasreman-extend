@@ -8,11 +8,11 @@ use Livewire\Attributes\Title;
 
 class Alumni extends Component
 {
-    #[Title('Cerita Alumni')]
+    #[Title('Tracer Study')]
     
     public function mount()
     {
-        $this->dispatch('title', title: 'Cerita Alumni');
+        $this->dispatch('title', title: 'Tracer Study');
     }
     
     public function render()

@@ -28,4 +28,9 @@ class Group extends Model
     {
         return $this->hasone(StudentPhoto::class);
     }
+
+    public function lesson_timetables(): HasMany
+    {
+        return $this->hasMany(LessonTimetable::class);
+    }
 }

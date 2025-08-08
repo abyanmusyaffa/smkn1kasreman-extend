@@ -2,33 +2,46 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ScoreCategoryResource\Pages;
-use App\Filament\Resources\ScoreCategoryResource\RelationManagers;
-use App\Models\ScoreCategory;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\ScoreCategory;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Section;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\ScoreCategoryResource\Pages;
+use App\Filament\Resources\ScoreCategoryResource\RelationManagers;
 
 class ScoreCategoryResource extends Resource
 {
     protected static ?string $model = ScoreCategory::class;
-    protected static ?string $modelLabel = 'Kategori Nilai';
-    protected static ?string $pluralModelLabel = 'Kategori Nilai';
+    protected static ?string $modelLabel = 'Kategori Mata Pelajaran';
+    protected static ?string $pluralModelLabel = 'Kategori Mata Pelajaran';
 
-    protected static ?string $navigationGroup = 'Data Akademik';
+    protected static ?string $navigationGroup = 'Jadwal Pelajaran';
     protected static ?string $navigationIcon = 'fas-list';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
+                Section::make()
+                ->columns([
+                    'default' => 2,
+                    'lg' => 12,
+                ])
+                ->schema([
+                    Forms\Components\TextInput::make('name')
+                        ->label('Nama')
+                        ->required()
+                        ->maxLength(255)
+                        ->columnSpan([
+                            'default' => 2,
+                            'lg' => 12,
+                        ]),
+                ])
             ]);
     }
 

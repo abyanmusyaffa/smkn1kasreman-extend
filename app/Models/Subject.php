@@ -27,4 +27,9 @@ class Subject extends Model
     {
         return $this->belongsTo(Major::class, 'major_id');
     }
+
+    public function lesson_timetables(): HasMany
+    {
+        return $this->hasMany(LessonTimetable::class);
+    }
 }
