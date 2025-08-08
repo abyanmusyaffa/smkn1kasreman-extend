@@ -13,19 +13,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Copy .env
-        run: cp .env.example .env
+      # - name: Copy .env
+      #   run: cp .env.example .env
       
-      - name: Create SQLite DB dummy
-        run: mkdir -p database && touch database/database.sqlite
+      # - name: Create SQLite DB dummy
+      #   run: mkdir -p database && touch database/database.sqlite
         
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
+      # - name: Setup PHP
+      #   uses: shivammathur/setup-php@v2
+      #   with:
+      #     php-version: '8.2'
     
-      - name: Install Composer dependencies
-        run: composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+      # - name: Install Composer dependencies
+      #   run: composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
         
       # - name: Set up Node.js
       #   uses: actions/setup-node@v3
