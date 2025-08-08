@@ -25,16 +25,16 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        $school = School::first();
+        // $school = School::first();
 
         return $panel
             ->default()
             ->id('admin')
             ->path('admin')
-            ->brandName('SMK N ' . $school->name)
-            ->brandLogo(asset('/storage/' . $school->logo))
+            // ->brandName('SMK N ' . $school->name)
+            // ->brandLogo(asset('/storage/' . $school->logo))
             ->brandLogoHeight('2.5rem')
-            ->favicon(asset('/storage/' . $school->logo))
+            // ->favicon(asset('/storage/' . $school->logo))
             ->defaultThemeMode(ThemeMode::Dark)
             ->font('Poppins')
             ->spa()
