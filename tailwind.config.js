@@ -6,7 +6,7 @@ const { addDynamicIconSelectors } = require("@iconify/tailwind");
 export default {
     presets: [
         preset,
-        "./vendor/wireui/wireui/tailwind.config.js",
+        require("./vendor/wireui/wireui/tailwind.config.js"),
     ],
     content: [
         "./vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php",
@@ -18,6 +18,10 @@ export default {
         './vendor/rappasoft/laravel-livewire-tables/resources/views/**/*.blade.php',
         './app/Livewire/*.php',
         './app/Livewire/**/*.php',
+        "./vendor/wireui/wireui/src/*.php",
+        "./vendor/wireui/wireui/ts/**/*.ts",
+        "./vendor/wireui/wireui/src/WireUi/**/*.php",
+        "./vendor/wireui/wireui/src/Components/**/*.php",
     ],
     theme: {
         extend: {

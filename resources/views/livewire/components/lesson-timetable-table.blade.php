@@ -1,8 +1,7 @@
-{{-- @dd($lessonSessions) --}}
+{{-- @dd($groups) --}}
 <div class="bg-white w-full p-4 flex flex-col gap-6">
     <!-- Filters -->
     <div class="flex flex-col w-full lg:w-96 gap-4 self-end">
-        {{-- Filter Kelas --}}
         <x-select
             label="Pilih Kelas"
             placeholder="Pilih Kelas"
@@ -10,12 +9,10 @@
             :options="$groups"
             option-label="name"
             option-value="id"
-            clearable
-            searchable
+            :clearable="true"
+            :searchable="true"
         />
-    
-
-        {{-- Filter Guru --}}
+        
         <x-select
             label="Pilih Guru"
             placeholder="Semua Guru"
@@ -23,8 +20,8 @@
             :options="$teachers"
             option-label="name"
             option-value="id"
-            clearable
-            searchable
+            :clearable="true"
+            :searchable="true"
         />
     </div>
 

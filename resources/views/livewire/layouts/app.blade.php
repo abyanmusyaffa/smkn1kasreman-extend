@@ -25,7 +25,8 @@
         <script src="/js/carousel.umd.js"></script> --}}
         @filamentStyles
         @vite('resources/css/app.css')
-        <wireui:scripts />
+        @wireUiScripts
+        {{-- <script src="//unpkg.com/alpinejs" defer></script> --}}
     </head>
  
     <body class="antialiased font-poppins">
