@@ -36,6 +36,7 @@
           </div>
       </article>
       @endif
+      @if($schoolDepartmentDetail->galleries)
       <article class=" flex flex-col bg-white rounded-2xl w-full p-4 lg:p-8 gap-4 items-center lg:justify-between">
         <h3 class="text-xl font-semibold text-slate-800 text-center">Galeri</h3>
         <div class="w-full f-carousel" id="galleriesCarousel">
@@ -51,6 +52,7 @@
           </div>
         </div>
       </article>
+      @endif
       @if($schoolDepartmentDetail->articles->count() > 0)
       <article class=" flex flex-col bg-white rounded-2xl w-full p-4 lg:p-8 gap-4 items-center lg:justify-between">
         <h3 class="text-xl font-semibold text-slate-800 text-center">Informasi</h3>
@@ -75,9 +77,9 @@
     @script
     <script>
       document.addEventListener("livewire:navigated", function () {
-        document.querySelectorAll(".attachment__caption").forEach(function (caption) {
-            caption.remove();
-        });
+        // document.querySelectorAll(".attachment__caption").forEach(function (caption) {
+        //     caption.remove();
+        // });
   
         // Fancybox re-bind
         Fancybox.destroy(); // clear binding

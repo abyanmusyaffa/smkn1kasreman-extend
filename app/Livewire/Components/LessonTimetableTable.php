@@ -56,7 +56,7 @@ class LessonTimetableTable extends Component
 
     public function updatedSelectedGroup()
     {
-        $this->selectedTeacher = null; // Reset teacher filter when group changes
+        // $this->selectedTeacher = null; // Reset teacher filter when group changes
         $this->loadSchedules();
         $this->dispatch('schedule-updated');
     }
@@ -70,7 +70,7 @@ class LessonTimetableTable extends Component
     public function filterByGroup($groupId)
     {
         $this->selectedGroup = $groupId;
-        $this->selectedTeacher = null;
+        // $this->selectedTeacher = null;
         $this->loadSchedules();
     }
 

@@ -71,9 +71,9 @@
   @script
   <script>
     document.addEventListener("livewire:navigated", function () {
-      document.querySelectorAll(".attachment__caption").forEach(function (caption) {
-          caption.remove();
-      });
+      // document.querySelectorAll(".attachment__caption").forEach(function (caption) {
+      //     caption.remove();
+      // });
 
       // Fancybox re-bind
       Fancybox.destroy(); // clear binding

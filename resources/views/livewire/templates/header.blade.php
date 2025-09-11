@@ -117,7 +117,7 @@
                   <p class="text-sm whitespace-nowrap {{ $title === 'Ekstrakurikuler' ? 'text-blue-500' : 'text-slate-500' }} group-hover/active:text-blue-500">Ekstrakurikuler</p>
                   <div class="h-[1px] w-full bg-slate-200"></div>
                 </a>
-                <a href="/" wire:navigate class="flex flex-col gap-1 group/active">
+                <a href="/student-regulation" wire:navigate class="flex flex-col gap-1 group/active">
                   <p class="text-sm whitespace-nowrap {{ $title === 'Tata Tertib' ? 'text-blue-500' : 'text-slate-500' }} group-hover/active:text-blue-500">Tata Tertib</p>
                   <div class="h-[1px] w-full bg-slate-200"></div>
                 </a>
@@ -153,7 +153,7 @@
                   <p class="text-sm whitespace-nowrap {{ $title === 'Publikasi'  ? 'text-blue-500' : 'text-slate-500' }} group-hover/active:text-blue-500">Publikasi</p>
                   <div class="h-[1px] w-full bg-slate-200"></div>
                 </a>
-                <a href="/d/" wire:navigate class="flex flex-col gap-1 group/active">
+                <a href="/d/bursa-kerja-khusus" wire:navigate class="flex flex-col gap-1 group/active">
                   <p class="text-sm whitespace-nowrap {{ $title === 'Bursa Kerja Khusus'  ? 'text-blue-500' : 'text-slate-500' }} group-hover/active:text-blue-500">BKK</p>
                   <div class="h-[1px] w-full bg-slate-200"></div>
                 </a>
@@ -181,7 +181,7 @@
                   <p class="text-sm whitespace-nowrap {{ $title === 'Lab & Begkel'  ? 'text-blue-500' : 'text-slate-500' }} group-hover/active:text-blue-500">Lab & Bengkel</p>
                   <div class="h-[1px] w-full bg-slate-200"></div>
                 </a>
-                <a href="/" wire:navigate class="flex flex-col gap-1 group/active">
+                <a href="/d/ict" wire:navigate class="flex flex-col gap-1 group/active">
                   <p class="text-sm whitespace-nowrap {{ $title === 'ICT'  ? 'text-blue-500' : 'text-slate-500' }} group-hover/active:text-blue-500">ICT</p>
                   <div class="h-[1px] w-full bg-slate-200"></div>
                 </a>
@@ -275,6 +275,10 @@
           </a>
           <a href="/" wire:navigate class="flex flex-col gap-1 group">
             <p class="text-sm {{ $title === '' ? 'text-blue-500' : 'text-slate-500' }} group-hover:text-blue-500">Adiwiyata</p>
+            <div class="h-[1px] w-full bg-slate-200"></div>
+          </a>
+          <a href="/" wire:navigate class="flex flex-col gap-1 group">
+            <p class="text-sm {{ $title === '' ? 'text-blue-500' : 'text-slate-500' }} group-hover:text-blue-500">Mikrotik Academy</p>
             <div class="h-[1px] w-full bg-slate-200"></div>
           </a>
         </div>
@@ -505,7 +509,7 @@
               <a href="/d/kesiswaan" wire:navigate class="text-slate-50 whitespace-nowrap">Profil</a>
               <a href="/e/{{ $osis_slug }}" wire:navigate class="text-slate-50 whitespace-nowrap">OSIS</a>
               <a href="/extracurricular" wire:navigate class="text-slate-50 whitespace-nowrap">Ekstrakurikuler</a>
-              <a href="/" wire:navigate class="text-slate-50 whitespace-nowrap">Tata tertib</a>
+              <a href="/student-regulation" wire:navigate class="text-slate-50 whitespace-nowrap">Tata tertib</a>
               <a href="/d/bimbingan-konseling" wire:navigate class="text-slate-50 whitespace-nowrap">BK / BP</a>
               <a href="/student-events" wire:navigate class="text-slate-50 whitespace-nowrap">Agenda Siswa</a>
             </div>
@@ -520,7 +524,7 @@
               <a href="/d/humas" wire:navigate class="text-slate-50 whitespace-nowrap">Profil</a>
               <a href="/internship" wire:navigate class="text-slate-50 whitespace-nowrap">PKL</a>
               <a href="/" wire:navigate class="text-slate-50 whitespace-nowrap">Publikasi</a>
-              <a href="/d" wire:navigate class="text-slate-50 whitespace-nowrap">BKK</a>
+              <a href="/d/bursa-kerja-khusus" wire:navigate class="text-slate-50 whitespace-nowrap">BKK</a>
               <a href="/alumni" wire:navigate class="text-slate-50 whitespace-nowrap">Tracer Study</a>
             </div>
           </div>
@@ -533,7 +537,7 @@
             <div class="w-full flex-col items-center hidden peer-checked:flex transition-all duration-500">
               <a href="/d/sarpras" wire:navigate class="text-slate-50 whitespace-nowrap">Profil</a>
               <a href="/" wire:navigate class="text-slate-50 whitespace-nowrap">Lab & Bengkel</a>
-              <a href="/" wire:navigate class="text-slate-50 whitespace-nowrap">ICT</a>
+              <a href="/d/ict" wire:navigate class="text-slate-50 whitespace-nowrap">ICT</a>
             </div>
           </div>
           {{-- <a href="/d/sarpras" wire:navigate class="text-slate-50 text-lg whitespace-nowrap">Sarpras</a>
@@ -628,6 +632,7 @@
           <a href="/" wire:navigate class="text-slate-50 text-lg whitespace-nowrap">Pusat Keunggulan</a>
           <a href="/" wire:navigate class="text-slate-50 text-lg whitespace-nowrap">BLUD</a>
           <a href="/" wire:navigate class="text-slate-50 text-lg whitespace-nowrap">Adiwiyata</a>
+          <a href="/" wire:navigate class="text-slate-50 text-lg whitespace-nowrap">Mikrotik Academy</a>
         </div>
         <!-- dropdown -->
       </div>

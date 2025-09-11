@@ -35,6 +35,7 @@ use App\Livewire\LessonTimetable;
 use App\Livewire\TeachingFactoryDetail;
 use App\Livewire\SchoolDepartmentDetail;
 use App\Livewire\OrganizationalStructure;
+use App\Livewire\StudentRegulation;
 
 // Route::get('/ls', function () {
 //     Artisan::call('storage:link');
@@ -53,6 +54,7 @@ Route::get('/major', Major::class);
 
 Route::get('/extracurricular', Extracurricular::class);
 Route::get('/student-event', StudentEvents::class);
+Route::get('/student-regulation', StudentRegulation::class);
 
 Route::get('/internship', Internship::class);
 Route::get('/partner', Partner::class);

@@ -33,7 +33,7 @@ class ArticleDetail extends Component
     {
         return view('livewire.article-detail', [
             'articles' => $this->articleDetail->category ? Article::where('slug', '!=', $this->articleDetail->slug)->where('is_published', true)->where('category', $this->articleDetail->category)->take(4)->latest()->get() : [] ,
-            'achievements' => $this->articleDetail->rankings ? Achievement::where('slug', '!=', $this->articleDetail->slug)->where('is_published', true)->take(4)->latest()->get() : [] ,
+            'achievements' => $this->articleDetail->rankings ? Achievement::where('slug', '!=', $this->articleDetail->slug)->take(4)->latest()->get() : [] ,
             'jobfairs' => $this->articleDetail->deadline ? Jobfair::where('slug', '!=', $this->articleDetail->slug)->where('is_published', true)->take(4)->latest()->get() : [] ,
         ])->title($this->articleDetail->title);
     }

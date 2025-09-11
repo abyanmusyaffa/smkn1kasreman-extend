@@ -20,8 +20,8 @@ class SchoolDepartmentResource extends Resource
 {
     protected static ?string $model = SchoolDepartment::class;
 
-    protected static ?string $modelLabel = 'Unit Kerja';
-    protected static ?string $pluralModelLabel = 'Unit Kerja';
+    protected static ?string $modelLabel = 'Departemen';
+    protected static ?string $pluralModelLabel = 'Departemen';
 
     // protected static ?string $navigationGroup = 'Kesiswaan';
     protected static ?string $navigationIcon = 'fas-building';
