@@ -85,7 +85,7 @@
                   <p class="text-sm whitespace-nowrap {{ $title === 'Perpustakaan' ? 'text-blue-500' : 'text-slate-500' }} group-hover/active:text-blue-500">Perpustakaan</p>
                   <div class="h-[1px] w-full bg-slate-200"></div>
                 </a>
-                <a href="/" wire:navigate class="flex flex-col gap-1 group/active">
+                <a href="/academic-calendar" wire:navigate class="flex flex-col gap-1 group/active">
                   <p class="text-sm whitespace-nowrap {{ $title === 'Kalender Akademik' ? 'text-blue-500' : 'text-slate-500' }} group-hover/active:text-blue-500">Kalender Akademik</p>
                   <div class="h-[1px] w-full bg-slate-200"></div>
                 </a>
@@ -98,7 +98,7 @@
           </div>
 
           <div class="flex flex-col gap-1 group group/dropside relative">
-            <div class="flex gap-1 items-center text-sm {{ $title === 'Kesiswaan' || $title === $osis_name || $title === 'Ekstrakurikuler' || $title === 'Tata tertib' || $title === 'Bimbingan Konseling' || $title === 'Agenda Siswa' ? 'text-blue-500' : 'text-slate-500' }} group-hover:text-blue-500">
+            <div class="flex gap-1 items-center text-sm {{ $title === 'Kesiswaan' || $title === $osis_name || $title === 'Ekstrakurikuler' || $title === 'Tata Tertib' || $title === 'Bimbingan Konseling' || $title === 'Agenda Siswa' ? 'text-blue-500' : 'text-slate-500' }} group-hover:text-blue-500">
               <p>Kesiswaan</p>
               <span class="icon-[mdi--chevron-right]"></span>
             </div>
@@ -149,7 +149,7 @@
                   <p class="text-sm whitespace-nowrap {{ $title === 'Praktek Kerja Lapangan'  ? 'text-blue-500' : 'text-slate-500' }} group-hover/active:text-blue-500">PKL</p>
                   <div class="h-[1px] w-full bg-slate-200"></div>
                 </a>
-                <a href="/" wire:navigate class="flex flex-col gap-1 group/active">
+                <a href="/publication" wire:navigate class="flex flex-col gap-1 group/active">
                   <p class="text-sm whitespace-nowrap {{ $title === 'Publikasi'  ? 'text-blue-500' : 'text-slate-500' }} group-hover/active:text-blue-500">Publikasi</p>
                   <div class="h-[1px] w-full bg-slate-200"></div>
                 </a>
@@ -166,7 +166,7 @@
           </div>
           
           <div class="flex flex-col gap-1 group group/dropside relative">
-            <div class="flex gap-1 items-center text-sm {{ $title === 'Sarpras' || $title === 'Lab & Begkel' || $title === 'ICT' ? 'text-blue-500' : 'text-slate-500' }} group-hover:text-blue-500">
+            <div class="flex gap-1 items-center text-sm {{ $title === 'Sarpras' || $title === 'Lab & Bengkel' || $title === 'ICT' ? 'text-blue-500' : 'text-slate-500' }} group-hover:text-blue-500">
               <p>Sarpras</p>
               <span class="icon-[mdi--chevron-right]"></span>
             </div>
@@ -177,8 +177,8 @@
                   <p class="text-sm whitespace-nowrap {{ $title === 'Sarpras' ? 'text-blue-500' : 'text-slate-500' }} group-hover/active:text-blue-500">Profil</p>
                   <div class="h-[1px] w-full bg-slate-200"></div>
                 </a>
-                <a href="/" wire:navigate class="flex flex-col gap-1 group/active">
-                  <p class="text-sm whitespace-nowrap {{ $title === 'Lab & Begkel'  ? 'text-blue-500' : 'text-slate-500' }} group-hover/active:text-blue-500">Lab & Bengkel</p>
+                <a href="/lab-workshop" wire:navigate class="flex flex-col gap-1 group/active">
+                  <p class="text-sm whitespace-nowrap {{ $title === 'Lab & Bengkel'  ? 'text-blue-500' : 'text-slate-500' }} group-hover/active:text-blue-500">Lab & Bengkel</p>
                   <div class="h-[1px] w-full bg-slate-200"></div>
                 </a>
                 <a href="/d/ict" wire:navigate class="flex flex-col gap-1 group/active">
@@ -495,7 +495,7 @@
             <div class="w-full flex-col items-center hidden peer-checked:flex transition-all duration-500">
               <a href="/d/kurikulum" wire:navigate class="text-slate-50 whitespace-nowrap">Profil</a>
               <a href="/d/perpustakaan" wire:navigate class="text-slate-50 whitespace-nowrap">Perpustakaan</a>
-              <a href="/" wire:navigate class="text-slate-50 whitespace-nowrap">Kalender Akademik</a>
+              <a href="/academic-calendar" wire:navigate class="text-slate-50 whitespace-nowrap">Kalender Akademik</a>
               <a href="/lesson-timetable" wire:navigate class="text-slate-50 whitespace-nowrap">Jadwal Pelajaran</a>
             </div>
           </div>
@@ -523,7 +523,7 @@
             <div class="w-full flex-col items-center hidden peer-checked:flex transition-all duration-500">
               <a href="/d/humas" wire:navigate class="text-slate-50 whitespace-nowrap">Profil</a>
               <a href="/internship" wire:navigate class="text-slate-50 whitespace-nowrap">PKL</a>
-              <a href="/" wire:navigate class="text-slate-50 whitespace-nowrap">Publikasi</a>
+              <a href="/publication" wire:navigate class="text-slate-50 whitespace-nowrap">Publikasi</a>
               <a href="/d/bursa-kerja-khusus" wire:navigate class="text-slate-50 whitespace-nowrap">BKK</a>
               <a href="/alumni" wire:navigate class="text-slate-50 whitespace-nowrap">Tracer Study</a>
             </div>
@@ -536,7 +536,7 @@
             </label>
             <div class="w-full flex-col items-center hidden peer-checked:flex transition-all duration-500">
               <a href="/d/sarpras" wire:navigate class="text-slate-50 whitespace-nowrap">Profil</a>
-              <a href="/" wire:navigate class="text-slate-50 whitespace-nowrap">Lab & Bengkel</a>
+              <a href="/lab-workshop" wire:navigate class="text-slate-50 whitespace-nowrap">Lab & Bengkel</a>
               <a href="/d/ict" wire:navigate class="text-slate-50 whitespace-nowrap">ICT</a>
             </div>
           </div>
