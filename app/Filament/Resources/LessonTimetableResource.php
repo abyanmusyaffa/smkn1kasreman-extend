@@ -31,7 +31,7 @@ class LessonTimetableResource extends Resource
     protected static ?string $modelLabel = 'Jadwal Pelajaran';
     protected static ?string $pluralModelLabel = 'Jadwal Pelajaran';
 
-    protected static ?string $navigationGroup = 'Jadwal Pelajaran';
+    protected static ?string $navigationGroup = 'Kurikulum';
     protected static ?string $navigationIcon = 'fas-calendar-alt';
 
     // public static function form(Form $form): Form

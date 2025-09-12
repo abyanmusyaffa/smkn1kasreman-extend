@@ -216,7 +216,7 @@ class ArticleResource extends Resource
                     Forms\Components\Select::make('organization_type')
                         ->label('Jenis Organisasi')
                         ->default(function () {
-                            $user = auth()->user()->load(['extracurriculars', 'majors', 'internships']);
+                            $user = auth()->user()->load(['extracurriculars', 'majors', 'internships', 'school_departments', 'units']);
                     
                             // dd($user);
                             if(!$user->hasRole(['admin', 'super_admin'])) {
@@ -226,6 +226,10 @@ class ArticleResource extends Resource
                                     return 'App\Models\Major';
                                 } elseif ($user->internships->isNotEmpty()) {
                                     return 'App\Models\Internship';
+                                } elseif ($user->school_departments->isNotEmpty()) {
+                                    return 'App\Models\SchoolDepartment';
+                                } elseif ($user->units->isNotEmpty()) {
+                                    return 'App\Models\Unit';
                                 }
                             }
                     
@@ -241,6 +245,8 @@ class ArticleResource extends Resource
                             'App\Models\Extracurricular' => 'Ekstrakurikuler',
                             'App\Models\Major' => 'Program Keahlian',
                             'App\Models\Internship' => 'PKL',
+                            'App\Models\SchoolDepartment' => 'Departemen',
+                            'App\Models\Unit' => 'Unit Kerja',
                         ])
                         ->live()
                         ->afterStateUpdated(fn($set, $state) => $set('organization_id', 
@@ -259,6 +265,8 @@ class ArticleResource extends Resource
                             return match($type) {
                                 'App\Models\Extracurricular' => $user->extracurriculars->first()?->id,
                                 'App\Models\Major' => $user->majors->first()?->id,
+                                'App\Models\SchoolDepartment' => $user->school_departments->first()?->id,
+                                'App\Models\Unit' => $user->units->first()?->id,
                                 'App\Models\Internship' => 1,
                                 default => null
                             };
@@ -277,12 +285,14 @@ class ArticleResource extends Resource
                             return match($type) {
                                 'App\Models\Major' => $type::pluck('expertise_concentration', 'id')->toArray(),
                                 'App\Models\Extracurricular' => $type::pluck('name', 'id')->toArray(),
+                                'App\Models\SchoolDepartment' => $type::pluck('name', 'id')->toArray(),
+                                'App\Models\Unit' => $type::pluck('name', 'id')->toArray(),
                                 default => []
                             };
                         })
                         ->searchable()
-                        ->required(fn($get) => in_array($get('organization_type'), ['App\Models\Extracurricular', 'App\Models\Major']))
-                        ->visible(fn($get) => in_array($get('organization_type'), ['App\Models\Extracurricular', 'App\Models\Major']))
+                        ->required(fn($get) => in_array($get('organization_type'), ['App\Models\Extracurricular', 'App\Models\Major', 'App\Models\SchoolDepartment', 'App\Models\Unit']))
+                        ->visible(fn($get) => in_array($get('organization_type'), ['App\Models\Extracurricular', 'App\Models\Major', 'App\Models\SchoolDepartment', 'App\Models\Unit']))
                         ->columnSpan([
                             'default' => 2, 
                             'lg' => 6

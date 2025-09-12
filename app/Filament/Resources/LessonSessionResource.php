@@ -22,7 +22,7 @@ class LessonSessionResource extends Resource
     protected static ?string $modelLabel = 'Sesi Pelajaran';
     protected static ?string $pluralModelLabel = 'Sesi Pelajaran';
 
-    protected static ?string $navigationGroup = 'Jadwal Pelajaran';
+    protected static ?string $navigationGroup = 'Kurikulum';
     protected static ?string $navigationIcon = 'fas-clock';
 
     public static function form(Form $form): Form

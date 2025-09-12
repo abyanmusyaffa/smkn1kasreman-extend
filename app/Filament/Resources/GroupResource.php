@@ -18,7 +18,7 @@ class GroupResource extends Resource
     protected static ?string $modelLabel = 'Kelas';
     protected static ?string $pluralModelLabel = 'Kelas';
 
-    protected static ?string $navigationGroup = 'Data Akademik';
+    protected static ?string $navigationGroup = 'Kurikulum';
     protected static ?string $navigationIcon = 'fas-building';
 
     public static function form(Form $form): Form

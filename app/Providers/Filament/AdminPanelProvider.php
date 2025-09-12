@@ -45,12 +45,13 @@ class AdminPanelProvider extends PanelProvider
             ->navigationGroups([
                 'Sekolah',
                 'Unit Kerja',
-                'Kehumasan',
+                'Kurikulum',
                 'Kesiswaan',
+                'Humas',
+                'Sarpras',
                 'Program Sekolah',
                 'Siswa',
-                'Data Akademik',
-                'Jadwal Pelajaran',
+                'Mata Pelajaran',
                 'Preferensi',
                 'Manajemen Admin',
             ])

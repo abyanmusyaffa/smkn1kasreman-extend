@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Unit extends Model
 {
@@ -24,6 +25,11 @@ class Unit extends Model
     public function school_departments(): BelongsTo
     {
         return $this->belongsTo(SchoolDepartment::class, 'school_department_id');
+    }
+
+    public function articles(): MorphMany
+    {
+        return $this->morphMany(Article::class, 'organization');
     }
 
     protected static function booted()

@@ -23,7 +23,7 @@ class PartnerResource extends Resource
     protected static ?string $modelLabel = 'Mitra DU/DI';
     protected static ?string $pluralModelLabel = 'Mitra DU/DI';
 
-    protected static ?string $navigationGroup = 'Kehumasan';
+    protected static ?string $navigationGroup = 'Humas';
     protected static ?string $navigationIcon = 'fas-building-circle-check';
 
     public static function form(Form $form): Form

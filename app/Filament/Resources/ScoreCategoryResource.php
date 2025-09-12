@@ -20,7 +20,7 @@ class ScoreCategoryResource extends Resource
     protected static ?string $modelLabel = 'Kategori Mata Pelajaran';
     protected static ?string $pluralModelLabel = 'Kategori Mata Pelajaran';
 
-    protected static ?string $navigationGroup = 'Jadwal Pelajaran';
+    protected static ?string $navigationGroup = 'Mata Pelajaran';
     protected static ?string $navigationIcon = 'fas-list';
 
     public static function form(Form $form): Form

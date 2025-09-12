@@ -25,7 +25,7 @@ class Internship extends Page
 
     protected static ?string $title = 'PKL';
 
-    protected static ?string $navigationGroup = 'Kehumasan';
+    protected static ?string $navigationGroup = 'Humas';
     protected static ?string $navigationIcon = 'heroicon-s-briefcase';
 
     protected static string $view = 'filament.pages.internship';
