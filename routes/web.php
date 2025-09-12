@@ -38,7 +38,9 @@ use App\Livewire\TeachingFactoryDetail;
 use App\Livewire\SchoolDepartmentDetail;
 use App\Livewire\OrganizationalStructure;
 use App\Livewire\Publication;
+use App\Livewire\SchoolProgramDetail;
 use App\Livewire\StudentRegulation;
+use App\Livewire\UnitDetail;
 
 // Route::get('/ls', function () {
 //     Artisan::call('storage:link');
@@ -62,6 +64,7 @@ Route::get('/m/{alias}', MajorDetail::class);
 
 // Unit Kerja
 Route::get('/d/{slug}', SchoolDepartmentDetail::class);
+Route::get('/u/{slug}', UnitDetail::class);
 
 // Kurikulum
 Route::get('/student-regulation', StudentRegulation::class);
@@ -82,8 +85,9 @@ Route::get('/alumni', Alumni::class);
 Route::get('/lab-workshop', LabWorkshop::class);
 
 // Program Sekolah
-Route::get('/teaching-factory', TeachingFactory::class);
-Route::get('/business-unit', BusinessUnit::class);
+// Route::get('/teaching-factory', TeachingFactory::class);
+// Route::get('/business-unit', BusinessUnit::class);
+Route::get('/p/{slug}', SchoolProgramDetail::class);
 Route::get('/t/{slug}', TeachingFactoryDetail::class);
 Route::get('/b/{slug}', BusinessUnitDetail::class);
 

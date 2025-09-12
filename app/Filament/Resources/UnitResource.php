@@ -3,28 +3,28 @@
 namespace App\Filament\Resources;
 
 use Filament\Forms;
+use App\Models\Unit;
 use Filament\Tables;
 use Filament\Forms\Set;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
-use App\Models\SchoolDepartment;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Section;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\UnitResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\SchoolDepartmentResource\Pages;
-use App\Filament\Resources\SchoolDepartmentResource\RelationManagers;
+use App\Filament\Resources\UnitResource\RelationManagers;
 
-class SchoolDepartmentResource extends Resource
+class UnitResource extends Resource
 {
-    protected static ?string $model = SchoolDepartment::class;
+    protected static ?string $model = Unit::class;
 
-    protected static ?string $modelLabel = 'Departemen';
-    protected static ?string $pluralModelLabel = 'Departemen';
+    protected static ?string $modelLabel = 'Unit';
+    protected static ?string $pluralModelLabel = 'Unit';
 
     protected static ?string $navigationGroup = 'Unit Kerja';
-    protected static ?string $navigationIcon = 'fas-building';
+    protected static ?string $navigationIcon = 'fas-sign-hanging';
 
     public static function getEloquentQuery(): Builder
     {
@@ -56,6 +56,19 @@ class SchoolDepartmentResource extends Resource
                         ->disabled(function () {
                             return !auth()->user()->hasRole(['admin', 'super_admin']);
                         })
+                        ->required()
+                        ->columnSpan([
+                            'default' => 2,
+                            'lg' => 12,
+                        ]),
+                    Forms\Components\Select::make('school_department_id')
+                        ->label('Departemen')
+                        // ->searchable()
+                        ->native(false)
+                        ->relationship(name: 'school_departments', titleAttribute: 'name')
+                        // ->disabled(function () {
+                        //     return !auth()->user()->hasRole(['admin', 'super_admin']);
+                        // })
                         ->required()
                         ->columnSpan([
                             'default' => 2,
@@ -226,6 +239,17 @@ class SchoolDepartmentResource extends Resource
                     ->label('Nama')
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('school_departments.name')
+                    ->label('Departemen')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'Kurikulum' => 'info',
+                        'Kesiswaan' => 'warning',
+                        'Humas' => 'danger',
+                        'Sarpras' => 'success',
+                    })
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -259,9 +283,9 @@ class SchoolDepartmentResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListSchoolDepartments::route('/'),
-            'create' => Pages\CreateSchoolDepartment::route('/create'),
-            'edit' => Pages\EditSchoolDepartment::route('/{record}/edit'),
+            'index' => Pages\ListUnits::route('/'),
+            'create' => Pages\CreateUnit::route('/create'),
+            'edit' => Pages\EditUnit::route('/{record}/edit'),
         ];
     }
 }

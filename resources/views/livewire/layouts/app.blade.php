@@ -32,7 +32,7 @@
     <body class="antialiased font-poppins">
         {{-- <livewire:components.loading-overlay/> --}}
 
-        <livewire:templates.header />
+        <livewire:templates.header :title="$title"/>
         <main>
             {{ $slot }}
         </main>

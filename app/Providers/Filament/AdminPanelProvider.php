@@ -44,6 +44,7 @@ class AdminPanelProvider extends PanelProvider
             // ->topNavigation()
             ->navigationGroups([
                 'Sekolah',
+                'Unit Kerja',
                 'Kehumasan',
                 'Kesiswaan',
                 'Program Sekolah',
