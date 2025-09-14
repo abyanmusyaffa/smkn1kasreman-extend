@@ -8,6 +8,7 @@ use App\Models\Group;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Forms\Components\Section;
 use App\Filament\Resources\GroupResource\Pages;
 use Filament\Tables\Grouping\Group as GroupFil;
 
@@ -25,15 +26,29 @@ class GroupResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->label('Kelas')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Select::make('major_id')
-                    ->label('Jurusan')
-                    ->required()
-                    ->native(false)
-                    ->relationship(name: 'majors', titleAttribute: 'name'),
+                Section::make()
+                ->columns([
+                    'default' => 2,
+                    'lg' => 12,
+                ])
+                ->schema([
+                    Forms\Components\TextInput::make('name')
+                        ->label('Kelas')
+                        ->required()
+                        ->columnSpan([
+                            'default' => 2,
+                            'lg' => 12,
+                        ]),
+                    Forms\Components\Select::make('major_id')
+                        ->label('Jurusan')
+                        ->required()
+                        ->native(false)
+                        ->relationship(name: 'majors', titleAttribute: 'expertise_concentration')
+                        ->columnSpan([
+                            'default' => 2,
+                            'lg' => 12,
+                        ]),
+                ])
             ]);
     }
 
