@@ -48,19 +48,6 @@ class Unit extends Model
                 Storage::disk('public')->delete($file);
             }
 
-            // Hapus photo staff yang dihapus
-            $originalStaff = $unit->getOriginal('staff') ?? [];
-            $newStaff = $unit->staff ?? [];
-
-            $originalPhotos = collect($originalStaff)->pluck('photo')->filter()->toArray();
-            $newPhotos = collect($newStaff)->pluck('photo')->filter()->toArray();
-
-            $filesToDelete = array_diff($originalPhotos, $newPhotos);
-
-            foreach ($filesToDelete as $file) {
-                Storage::disk('public')->delete($file);
-            }
-
             // Hapus attachment yang dihapus dari description
             $originalDescription = $unit->getOriginal('description');
             $newDescription = $unit->description;
@@ -81,15 +68,6 @@ class Unit extends Model
                 foreach ($unit->galleries as $galleries) {
                     if (!empty($galleries['photo'])) {
                         Storage::disk('public')->delete($galleries['photo']);
-                    }
-                }
-            }
-
-            // Hapus semua photo staff
-            if ($unit->staff) {
-                foreach ($unit->staff as $staff) {
-                    if (!empty($staff['photo'])) {
-                        Storage::disk('public')->delete($staff['photo']);
                     }
                 }
             }

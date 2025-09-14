@@ -48,19 +48,6 @@ class Extracurricular extends Model
                 Storage::disk('public')->delete($file);
             }
 
-            // Hapus photo staff yang dihapus
-            $originalStaff = $extracurricular->getOriginal('staff') ?? [];
-            $newStaff = $extracurricular->staff ?? [];
-
-            $originalPhotos = collect($originalStaff)->pluck('photo')->filter()->toArray();
-            $newPhotos = collect($newStaff)->pluck('photo')->filter()->toArray();
-
-            $filesToDelete = array_diff($originalPhotos, $newPhotos);
-
-            foreach ($filesToDelete as $file) {
-                Storage::disk('public')->delete($file);
-            }
-
             // Hapus attachment yang dihapus dari description
             $originalDescription = $extracurricular->getOriginal('description');
             $newDescription = $extracurricular->description;
@@ -85,15 +72,6 @@ class Extracurricular extends Model
             if ($extracurricular->galleries) {
                 foreach ($extracurricular->galleries as $file) {
                     Storage::disk('public')->delete($file);
-                }
-            }
-
-            // Hapus semua photo staff
-            if ($extracurricular->staff) {
-                foreach ($extracurricular->staff as $staff) {
-                    if (!empty($staff['photo'])) {
-                        Storage::disk('public')->delete($staff['photo']);
-                    }
                 }
             }
 

@@ -49,19 +49,6 @@ class SchoolDepartment extends Model
                 Storage::disk('public')->delete($file);
             }
 
-            // Hapus photo staff yang dihapus
-            $originalStaff = $schoolDepartment->getOriginal('staff') ?? [];
-            $newStaff = $schoolDepartment->staff ?? [];
-
-            $originalPhotos = collect($originalStaff)->pluck('photo')->filter()->toArray();
-            $newPhotos = collect($newStaff)->pluck('photo')->filter()->toArray();
-
-            $filesToDelete = array_diff($originalPhotos, $newPhotos);
-
-            foreach ($filesToDelete as $file) {
-                Storage::disk('public')->delete($file);
-            }
-
             // Hapus attachment yang dihapus dari description
             $originalDescription = $schoolDepartment->getOriginal('description');
             $newDescription = $schoolDepartment->description;
@@ -82,15 +69,6 @@ class SchoolDepartment extends Model
                 foreach ($schoolDepartment->galleries as $galleries) {
                     if (!empty($galleries['photo'])) {
                         Storage::disk('public')->delete($galleries['photo']);
-                    }
-                }
-            }
-
-            // Hapus semua photo staff
-            if ($schoolDepartment->staff) {
-                foreach ($schoolDepartment->staff as $staff) {
-                    if (!empty($staff['photo'])) {
-                        Storage::disk('public')->delete($staff['photo']);
                     }
                 }
             }

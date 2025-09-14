@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Tables;
+use App\Models\Staff;
 use Filament\Forms\Set;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
@@ -169,46 +170,28 @@ class SchoolDepartmentResource extends Resource
                         ->label('Pengurus')
                         ->addActionLabel('Tambahkan Pengurus')
                         ->schema([
-                            Forms\Components\TextInput::make('name')
-                                ->label('Nama')
-                                ->required()
+                            Forms\Components\Select::make('staff_id')
+                                ->label('Pilih Staff')
+                                ->options(Staff::pluck('name', 'id'))
+                                ->searchable()
+                                ->native(false)
                                 ->live()
-                                ->hint(fn ($state, $component) => 'Sisa ' . $component->getMaxLength() - strlen($state) . ' Karakter') 
-                                ->maxLength(42)
-                                ->columnSpan([
-                                    'default' => 2,
-                                    'lg' => 8,
-                                ]),
+                                ->afterStateUpdated(function ($state, callable $set) {
+                                    $staff = Staff::find($state);
+                                    if ($staff) {
+                                        $set('name', $staff->name);
+                                        $set('photo', $staff->photo);
+                                    }
+                                })
+                                ->required(),
+                            Forms\Components\Hidden::make('name'),
+                            Forms\Components\Hidden::make('photo'),
                             Forms\Components\TextInput::make('role')
                                 ->label('Jabatan')
                                 ->required()
                                 ->live()
                                 ->hint(fn ($state, $component) => 'Sisa ' . $component->getMaxLength() - strlen($state) . ' Karakter')
-                                ->maxLength(24)
-                                ->columnSpan([
-                                    'default' => 2,
-                                    'lg' => 4,
-                                ]),
-                            Forms\Components\FileUpload::make('photo')
-                                ->label('Foto')
-                                ->hint('Foto Rasio Aspek 4:6 | Potrait')
-                                ->image()
-                                ->imageResizeMode('cover')
-                                ->imageCropAspectRatio('4:6')
-                                ->imageResizeTargetWidth('560')
-                                ->imageResizeTargetHeight('840')
-                                ->directory(function ($get) {
-                                    return 'school-departments/' . ($get('../../slug') ?: 'temp') . '/staff';
-                                })
-                                ->required()
-                                ->columnSpan([
-                                    'default' => 2,
-                                    'lg' => 12,
-                                ]),
-                        ])
-                        ->columns([
-                            'default' => 2,
-                            'lg' => 12,
+                                ->maxLength(24),
                         ])
                         ->columnSpan([
                             'default' => 2,
