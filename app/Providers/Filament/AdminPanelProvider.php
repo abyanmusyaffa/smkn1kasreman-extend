@@ -2,14 +2,13 @@
 
 namespace App\Providers\Filament;
 
-use App\Models\School;
+use App\Filament\Widgets\AcademicCalendarWidget;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\Widgets;
 use Filament\PanelProvider;
 use Filament\Enums\ThemeMode;
 use Filament\Support\Colors\Color;
-use Filament\Navigation\NavigationGroup;
 use Filament\Http\Middleware\Authenticate;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -25,16 +24,16 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        $school = School::first();
+        // $school = School::first();
 
         return $panel
             ->default()
             ->id('admin')
             ->path('admin')
-            ->brandName('SMK N ' . $school->name)
-            ->brandLogo(asset('/storage/' . $school->logo))
+            ->brandName('SMKN 1 Kasreman')
+            ->brandLogo(asset('/storage/logo/01JTDJ0KR8F39EZP159R8GDY2R.png'))
             ->brandLogoHeight('2.5rem')
-            ->favicon(asset('/storage/' . $school->logo))
+            ->favicon(asset('/storage/logo/01JTDJ0KR8F39EZP159R8GDY2R.png'))
             ->defaultThemeMode(ThemeMode::Dark)
             ->font('Poppins')
             ->spa()
@@ -61,13 +60,14 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
-            // ->pages([
-            //     Pages\Dashboard::class,
-            // ])
+            ->pages([
+                Pages\Dashboard::class,
+            ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                // AcademicCalendarWidget::class,
+                // Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

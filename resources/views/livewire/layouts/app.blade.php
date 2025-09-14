@@ -21,6 +21,7 @@
         <link rel="stylesheet" href="/css/custom.css">
         <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
         <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+        {{-- <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.19/index.global.min.js'></script> --}}
         {{-- <script src="/js/fancybox.umd.js"></script>
         <script src="/js/carousel.umd.js"></script> --}}
         @filamentStyles

@@ -1,5 +1,5 @@
 {{-- @dd($groups) --}}
-<div class="bg-white w-full p-4 flex flex-col gap-6">
+<div class="bg-white w-full p-4 flex flex-col gap-6 rounded-xl">
     <!-- Filters -->
     <div class="flex flex-col w-full lg:w-96 gap-4 self-end">
         <x-select

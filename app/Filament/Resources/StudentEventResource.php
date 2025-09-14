@@ -131,11 +131,11 @@ class StudentEventResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('start_date')
                     ->label('Tanggal Mulai')
-                    ->date()
+                    ->formatStateUsing(fn ($state) => Carbon::parse($state)->translatedFormat('l, d F Y'))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('end_date')
                     ->label('Tanggal Selesai')
-                    ->date()
+                    ->formatStateUsing(fn ($state) => Carbon::parse($state)->translatedFormat('l, d F Y'))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
