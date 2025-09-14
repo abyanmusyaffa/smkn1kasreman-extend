@@ -79,7 +79,10 @@ class RoomResource extends Resource
                             'lg' => 12,
                         ]),
                     Forms\Components\Textarea::make('description')
-                        ->rows(6)
+                        ->rows(2)
+                        ->live()
+                        ->hint(fn ($state, $component) => 'Sisa ' . $component->getMaxLength() - strlen($state) . ' Karakter')
+                        ->maxLength(144)
                         ->columnSpan([
                             'default' => 2,
                             'lg' => 12,
