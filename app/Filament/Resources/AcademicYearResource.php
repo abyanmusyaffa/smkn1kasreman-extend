@@ -4,23 +4,25 @@ namespace App\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Tables;
-use App\Models\Group;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\AcademicYear;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Section;
-use App\Filament\Resources\GroupResource\Pages;
-use Filament\Tables\Grouping\Group as GroupFil;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\AcademicYearResource\Pages;
+use App\Filament\Resources\AcademicYearResource\RelationManagers;
 
-class GroupResource extends Resource
+class AcademicYearResource extends Resource
 {
-    protected static ?string $model = Group::class;
+    protected static ?string $model = AcademicYear::class;
 
-    protected static ?string $modelLabel = 'Kelas';
-    protected static ?string $pluralModelLabel = 'Kelas';
+    protected static ?string $modelLabel = 'Tahun Ajar';
+    protected static ?string $pluralModelLabel = 'Tahun Ajar';
 
     protected static ?string $navigationGroup = 'Siswa';
-    protected static ?string $navigationIcon = 'fas-building';
+    protected static ?string $navigationIcon = 'fas-calendar-week';
 
     public static function form(Form $form): Form
     {
@@ -33,17 +35,28 @@ class GroupResource extends Resource
                 ])
                 ->schema([
                     Forms\Components\TextInput::make('name')
-                        ->label('Kelas')
+                        ->label('Tahun Ajar')
+                        ->placeholder('2025/2026')
                         ->required()
+                        ->maxLength(255)
                         ->columnSpan([
                             'default' => 2,
-                            'lg' => 12,
+                            'lg' => 8,
                         ]),
-                    Forms\Components\Select::make('major_id')
-                        ->label('Jurusan')
+                    Forms\Components\Select::make('semester')
                         ->required()
                         ->native(false)
-                        ->relationship(name: 'majors', titleAttribute: 'expertise_concentration')
+                        ->options([
+                            '1' => '1 (Ganjil)',
+                            '2' => '2 (Genap)',
+                        ])
+                        ->columnSpan([
+                            'default' => 2,
+                            'lg' => 4,
+                        ]),
+                    Forms\Components\Toggle::make('is_active')
+                        ->label('Aktif')
+                        ->required()
                         ->columnSpan([
                             'default' => 2,
                             'lg' => 12,
@@ -55,32 +68,29 @@ class GroupResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->groups([
-                GroupFil::make('majors.alias')
-                    ->label('Jurusan'),
-                ])
-            ->defaultGroup(
-                'majors.alias')
-            ->groupingSettingsHidden()
             ->columns([
-                Tables\Columns\TextColumn::make('id')
-                    ->sortable()
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Tahun Ajar')
                     ->sortable()
-                    ->label('Kelas')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('majors.alias')
-                    ->searchable()
-                    ->badge()
+                Tables\Columns\TextColumn::make('semester')
+                    ->sortable()
                     ->color(fn (string $state): string => match ($state) {
-                        'TKJ' => 'danger',
-                        'AKL' => 'warning',
-                        'KL' => 'success',
-                        'DPB' => 'info',
+                        '1' => 'info',
+                        '2' => 'success',
                     })
-                    ->label('Jurusan')
-                    ->sortable(),
+                    ->badge()
+                    ->formatStateUsing(function (string $state) {
+                        return match ($state) {
+                            '1' => '1 (Ganjil)',
+                            '2' => '2 (Genap)',
+                            default => ucfirst($state),
+                        };
+                    }),
+                Tables\Columns\IconColumn::make('is_active')
+                    ->alignCenter()
+                    ->label('Aktif')
+                    ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -94,8 +104,8 @@ class GroupResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\DeleteAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -114,9 +124,9 @@ class GroupResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListGroups::route('/'),
-            'create' => Pages\CreateGroup::route('/create'),
-            'edit' => Pages\EditGroup::route('/{record}/edit'),
+            'index' => Pages\ListAcademicYears::route('/'),
+            'create' => Pages\CreateAcademicYear::route('/create'),
+            'edit' => Pages\EditAcademicYear::route('/{record}/edit'),
         ];
     }
 }

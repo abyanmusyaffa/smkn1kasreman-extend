@@ -36,8 +36,8 @@ use Filament\Actions\Exports\Enums\ExportFormat;
 class AlumniResource extends Resource
 {
     protected static ?string $model = Alumni::class;
-    protected static ?string $modelLabel = 'Siswa';
-    protected static ?string $pluralModelLabel = 'Siswa';
+    protected static ?string $modelLabel = 'Siswa (Deprecated)';
+    protected static ?string $pluralModelLabel = 'Siswa (Deprecated)';
 
     protected static ?string $navigationGroup = 'Siswa';
     protected static ?string $navigationIcon = 'fas-user-graduate';

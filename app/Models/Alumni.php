@@ -32,10 +32,10 @@ class Alumni extends Model
         return $this->hasOne(SendPassingCertificate::class);
     }
 
-    public function groups(): BelongsTo
-    {
-        return $this->belongsTo(Group::class, 'group_id');
-    }
+    // public function groups(): BelongsTo
+    // {
+    //     return $this->belongsTo(Group::class, 'group_id');
+    // }
 
     public function scores(): HasMany
     {

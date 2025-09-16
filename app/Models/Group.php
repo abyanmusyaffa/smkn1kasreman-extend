@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\StudentHistory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -14,9 +15,13 @@ class Group extends Model
     
     protected $guarded = ['id'];
 
-    public function alumnis(): HasMany
+    // public function alumnis(): HasMany
+    // {
+    //     return $this->hasMany(Alumni::class);
+    // }
+    public function student_histories(): HasMany
     {
-        return $this->hasMany(Alumni::class);
+        return $this->hasMany(StudentHistory::class);
     }
     
     public function majors(): BelongsTo
