@@ -23,6 +23,11 @@ class Group extends Model
     {
         return $this->hasMany(StudentHistory::class);
     }
+
+    public function group_guardians(): HasMany
+    {
+        return $this->hasMany(GroupGuardian::class);
+    }
     
     public function majors(): BelongsTo
     {

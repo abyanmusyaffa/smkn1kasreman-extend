@@ -22,12 +22,12 @@ class ListStaff extends ListRecords
     public function getTabs(): array
     {
         return [
-            'head-master' => Tab::make('Kepala Sekolah')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('category', 'head-master')),
-            'vice-master' => Tab::make('Wakil Kepala Sekolah')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('category', 'vice-master')),
-            'head-of-major' => Tab::make('Kakomli')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('category', 'head-of-major')),
+            // 'head-master' => Tab::make('Kepala Sekolah')
+            //     ->modifyQueryUsing(fn (Builder $query) => $query->where('category', 'head-master')),
+            // 'vice-master' => Tab::make('Wakil Kepala Sekolah')
+            //     ->modifyQueryUsing(fn (Builder $query) => $query->where('category', 'vice-master')),
+            // 'head-of-major' => Tab::make('Kakomli')
+            //     ->modifyQueryUsing(fn (Builder $query) => $query->where('category', 'head-of-major')),
             'teacher' => Tab::make('Guru')
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('category', 'teacher')),
             'staff' => Tab::make('Tenaga Kependidikan')

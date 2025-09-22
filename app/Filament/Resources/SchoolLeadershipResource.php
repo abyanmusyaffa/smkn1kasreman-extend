@@ -4,26 +4,25 @@ namespace App\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Tables;
-use App\Models\Staff;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\SchoolLeadership;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Section;
-use Filament\Support\Enums\ActionSize;
-use Filament\Tables\Actions\ActionGroup;
 use Illuminate\Database\Eloquent\Builder;
-use App\Filament\Resources\StaffResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\StaffResource\RelationManagers;
+use App\Filament\Resources\SchoolLeadershipResource\Pages;
+use App\Filament\Resources\SchoolLeadershipResource\RelationManagers;
 
-class StaffResource extends Resource
+class SchoolLeadershipResource extends Resource
 {
-    protected static ?string $model = Staff::class;
-    protected static ?string $modelLabel = 'GTK';
-    protected static ?string $pluralModelLabel = 'GTK';
+    protected static ?string $model = SchoolLeadership::class;
+
+    protected static ?string $modelLabel = 'Pimpinan Sekolah';
+    protected static ?string $pluralModelLabel = 'Pimpinan Sekolah';
 
     protected static ?string $navigationGroup = 'Sekolah';
-    protected static ?string $navigationIcon = 'fas-chalkboard-teacher';
+    protected static ?string $navigationIcon = 'fas-people-line';
 
     public static function form(Form $form): Form
     {
@@ -35,29 +34,21 @@ class StaffResource extends Resource
                     'lg' => 12,
                 ])
                 ->schema([
-                    Forms\Components\TextInput::make('name')
-                        ->label('Nama')
+                    
+                    Forms\Components\Select::make('staff_id')
+                        ->label('GTK')
+                        ->relationship('staff', 'name')
                         ->required()
-                        ->live()
-                        ->hint(fn ($state, $component) => 'Sisa ' . $component->getMaxLength() - strlen($state) . ' Karakter')
-                        ->maxLength(42)
-                        ->columnSpan([
-                            'default' => 2,
-                            'lg' => 12,
-                        ]),
-                    Forms\Components\FileUpload::make('photo')
-                        ->label('Foto')
-                        ->image()
-                        ->directory('/staff')
-                        ->default('/default/staff-male.svg')
+                        ->searchable()
+                        ->native(false)
                         ->columnSpan([
                             'default' => 2,
                             'lg' => 12,
                         ]),
                     Forms\Components\TextInput::make('role')
-                        ->placeholder('Guru Bahasa Indonesia')
                         ->label('Jabatan')
                         ->required()
+                        ->maxLength(255)
                         ->live()
                         ->hint(fn ($state, $component) => 'Sisa ' . $component->getMaxLength() - strlen($state) . ' Karakter')
                         ->maxLength(24)
@@ -68,8 +59,9 @@ class StaffResource extends Resource
                     Forms\Components\Select::make('category')
                         ->label('Kategori')
                         ->options([
-                            'teacher' => 'Guru',
-                            'staff' => 'Tenaga Kependidikan',
+                            'head-master' => 'Kepala Sekolah',
+                            'vice-master' => 'Wakil Kepala Sekolah',
+                            'head-of-major' => 'Kakomli',
                         ])
                         ->native(false)
                         ->required()
@@ -85,37 +77,28 @@ class StaffResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('staff.name')
                     ->label('Nama')
-                    ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('role')
                     ->label('Jabatan')
-                    ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Dibuat')
-                    ->since()
-                    ->dateTimeTooltip()
+                    ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->label('Diperbarui')
-                    ->since()
-                    ->dateTimeTooltip()
+                    ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->defaultSort('name')
             ->filters([
                 //
             ])
             ->actions([
-                ActionGroup::make([
-                    Tables\Actions\ViewAction::make(),
-                    Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make(),
-                ])->size(ActionSize::Large)
+                Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -134,9 +117,9 @@ class StaffResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListStaff::route('/'),
-            'create' => Pages\CreateStaff::route('/create'),
-            'edit' => Pages\EditStaff::route('/{record}/edit'),
+            'index' => Pages\ListSchoolLeaderships::route('/'),
+            'create' => Pages\CreateSchoolLeadership::route('/create'),
+            'edit' => Pages\EditSchoolLeadership::route('/{record}/edit'),
         ];
     }
 }

@@ -9,10 +9,10 @@
       </div>
       <div class="w-full lg:w-3/5 flex justify-center">
         <div class="flex flex-col w-1/2 sm:w-1/3 2xl:w-1/4">
-          <figure data-fancybox="gallery" data-src="/storage/{{ $head_master->photo }}" data-caption="{{ $head_master->name }} | {{ $head_master->role }}" class="h-44 lg:h-64 w-full rounded-t-3xl lg:border-4 border-2 border-b-0 border-blue-600 bg-cover bg-center bg-no-repeat" style="background-image: url(/storage/{{ $head_master->photo }})">
+          <figure data-fancybox="gallery" data-src="/storage/{{ $head_master->staff->photo }}" data-caption="{{ $head_master->staff->name }} | {{ $head_master->role }}" class="h-44 lg:h-64 w-full rounded-t-3xl lg:border-4 border-2 border-b-0 border-blue-600 bg-cover bg-center bg-no-repeat" style="background-image: url(/storage/{{ $head_master->staff->photo }})">
           </figure>
           <div class="w-full h-fit rounded-b-2xl bg-gradient-to-r from-blue-600 to-blue-700 px-2 py-1 text-center">
-            <p class="text-slate-50 text-xs lg:text-sm h-[2lh]">{{ $head_master->name }}</p>
+            <p class="text-slate-50 text-xs lg:text-sm h-[2lh]">{{ $head_master->staff->name }}</p>
             <p class="text-slate-50 text-2xs lg:text-xs italic h-[1lh]">{{ $head_master->role }}</p>
           </div>
         </div>
@@ -31,7 +31,7 @@
       <div class="w-full lg:w-3/5 f-carousel " id="viceMastersCarousel">
         <div class="f-carousel__viewport rounded-2xl grid-cols-2 sm:grid-cols-3 2xl:grid-cols-4">
           @foreach($vice_masters as $vice_master )
-              <livewire:components.card-staff wire:key="{{ $vice_master->id }}" :photo="$vice_master->photo" :name="$vice_master->name" :role="$vice_master->role" />
+              <livewire:components.card-staff wire:key="{{ $vice_master->id }}" :photo="$vice_master->staff->photo" :name="$vice_master->staff->name" :role="$vice_master->role" />
           @endforeach
         </div>
       </div>
@@ -49,7 +49,7 @@
       <div class="w-full lg:w-3/5 f-carousel " id="headOfMajorsCarousel">
         <div class="f-carousel__viewport rounded-2xl grid-cols-2 sm:grid-cols-3 2xl:grid-cols-4">
           @foreach($head_of_majors as $head_of_major )
-              <livewire:components.card-staff wire:key="{{ $head_of_major->id }}" :photo="$head_of_major->photo" :name="$head_of_major->name" :role="$head_of_major->role" />
+              <livewire:components.card-staff wire:key="{{ $head_of_major->id }}" :photo="$head_of_major->staff->photo" :name="$head_of_major->staff->name" :role="$head_of_major->role" />
           @endforeach
         </div>
       </div>

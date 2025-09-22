@@ -2,7 +2,6 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Widgets\AcademicCalendarWidget;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\Widgets;
@@ -10,7 +9,9 @@ use Filament\PanelProvider;
 use Filament\Enums\ThemeMode;
 use Filament\Support\Colors\Color;
 use Filament\Http\Middleware\Authenticate;
+use App\Filament\Pages\AttendanceDetailPage;
 use Illuminate\Session\Middleware\StartSession;
+use App\Filament\Widgets\AcademicCalendarWidget;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Filament\Http\Middleware\AuthenticateSession;
 use Illuminate\Routing\Middleware\SubstituteBindings;
@@ -43,14 +44,15 @@ class AdminPanelProvider extends PanelProvider
             // ->topNavigation()
             ->navigationGroups([
                 'Sekolah',
+                'Siswa',
+                'Presensi',
+                'Mata Pelajaran',
                 'Unit Kerja',
                 'Kurikulum',
                 'Kesiswaan',
                 'Humas',
                 'Sarpras',
                 'Program Sekolah',
-                'Siswa',
-                'Mata Pelajaran',
                 'Preferensi',
                 'Manajemen Admin',
             ])
@@ -62,6 +64,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 Pages\Dashboard::class,
+                // AttendanceDetailPage::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([

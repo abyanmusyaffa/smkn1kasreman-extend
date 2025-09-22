@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('staff', function (Blueprint $table) {
+        Schema::create('school_leaderships', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('photo')->nullable()->default('/default/staff-male.svg');
+            $table->foreignId('staff_id')->constrained()->cascadeOnDelete();
             $table->string('role');
-            $table->enum('category', ['teacher', 'staff']);
-            // $table->enum('category', ['head-master', 'vice-master', 'head-of-major', 'teacher', 'staff']);
+            $table->enum('category', ['head-master', 'vice-master', 'head-of-major']);
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('staff');
+        Schema::dropIfExists('school_leaderships');
     }
 };

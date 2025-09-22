@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\GroupGuardian;
 use App\Models\StudentHistory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,6 +14,11 @@ class AcademicYear extends Model
     public function student_histories(): HasMany
     {
         return $this->hasMany(StudentHistory::class);
+    }
+
+    public function group_guardians(): HasMany
+    {
+        return $this->hasMany(GroupGuardian::class);
     }
 
     protected static function booted()

@@ -397,6 +397,10 @@ class StudentResource extends Resource
             // ])
             // ->defaultGroup('groups.name')
             ->columns([
+                Tables\Columns\TextColumn::make('card_uid')
+                    ->label('UID')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('nis')
                     ->label('NIS')
                     ->sortable()

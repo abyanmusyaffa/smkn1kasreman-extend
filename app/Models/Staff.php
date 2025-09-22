@@ -15,6 +15,16 @@ class Staff extends Model
         return $this->hasMany(LessonTimetable::class);
     }
 
+    public function school_leaderships(): HasMany
+    {
+        return $this->hasMany(SchoolLeadership::class);
+    }
+
+    public function group_guardians(): HasMany
+    {
+        return $this->hasMany(GroupGuardian::class);
+    }
+
     protected static function booted()
     {
         static::deleting(function ($staff) {

@@ -104,3 +104,13 @@ Route::get('/enrollment/{slug}', ArticleDetail::class);
 
 // Weblink
 Route::get('/download', Download::class);
+
+
+
+
+Route::middleware(['auth'])->prefix('admin')->group(function () {
+    Route::get('/attendance', App\Filament\Pages\AttendancePage::class)->name('filament.admin.pages.attendance');
+    Route::get('/attendance/detail/{student_history}', App\Filament\Pages\AttendanceDetailPage::class)->name('filament.admin.pages.attendance-detail');
+    Route::get('/attendance/create/{student_history?}', App\Filament\Pages\CreateAttendancePage::class)->name('filament.admin.pages.create-attendance');
+    Route::get('/attendance/create-class', App\Filament\Pages\CreateClassAttendancePage::class)->name('filament.admin.pages.create-class-attendance');
+});

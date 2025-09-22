@@ -3,16 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class StudentHistory extends Model
+class GroupGuardian extends Model
 {
     protected $guarded = ['id'];
-
-    public function students(): BelongsTo
+    
+    public function staff(): BelongsTo
     {
-        return $this->belongsTo(Student::class, 'student_id');
+        return $this->belongsTo(Staff::class, 'staff_id');
     }
 
     public function groups(): BelongsTo
@@ -24,10 +23,4 @@ class StudentHistory extends Model
     {
         return $this->belongsTo(AcademicYear::class, 'academic_year_id');
     }
-
-    public function attendances(): HasMany
-    {
-        return $this->hasMany(Attendance::class);
-    }
-
 }

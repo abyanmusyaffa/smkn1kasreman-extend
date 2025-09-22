@@ -63,6 +63,9 @@ return [
 
         'pages' => [
             'Dashboard',
+            'AttendanceDetailPage',
+            'CreateAttendancePage',
+            'CreateClassAttendancePage',
         ],
 
         'widgets' => [
