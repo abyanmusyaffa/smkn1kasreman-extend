@@ -10,7 +10,7 @@ use Livewire\Attributes\Title;
 
 class Staff extends Component
 {
-    #[Title('Guru & Tenaga Kependidikani')]
+    #[Title('Guru & Tenaga Kependidikan')]
     
     public function mount()
     {

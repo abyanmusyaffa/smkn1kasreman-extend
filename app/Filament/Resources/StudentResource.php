@@ -53,11 +53,13 @@ class StudentResource extends Resource
                         ]),
                     Forms\Components\FileUpload::make('photo')
                         ->label('Foto')
+                        ->hint('Foto Rasio Aspek 4:6 | Potrait')
+                        ->directory('students')
                         ->image()
                         ->imageResizeMode('cover')
-                        ->imageCropAspectRatio('3:4')
-                        ->imageResizeTargetWidth('600')
-                        ->imageResizeTargetHeight('800')
+                        ->imageCropAspectRatio('4:6')
+                        ->imageResizeTargetWidth('512')
+                        ->imageResizeTargetHeight('768')
                         ->columnSpan([
                             'default' => 2,
                             'lg' => 12,
@@ -102,6 +104,7 @@ class StudentResource extends Resource
                         ]),
                     Forms\Components\TextInput::make('card_uid')
                         ->label('UID Kartu Pelajar')
+                        ->unique(ignoreRecord: true )
                         ->maxLength(255)
                         ->columnSpan([
                             'default' => 2,

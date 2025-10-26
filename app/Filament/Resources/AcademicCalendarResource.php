@@ -10,7 +10,9 @@ use Filament\Tables\Table;
 use App\Models\AcademicCalendar;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Section;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\AcademicCalendarResource\Pages;
 use App\Filament\Resources\AcademicCalendarResource\RelationManagers;
@@ -24,6 +26,7 @@ class AcademicCalendarResource extends Resource
 
     protected static ?string $navigationGroup = 'Kurikulum';
     protected static ?string $navigationIcon = 'fas-calendar-check';
+
 
     public static function form(Form $form): Form
     {

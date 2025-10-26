@@ -59,14 +59,14 @@ class Internship extends Page
                     ]),
                 FileUpload::make('galleries')
                     ->label('Galeri')
-                    ->hint(fn ($component) => 'Minimal ' . $component->getMinFiles() . ' Foto')
+                    ->hint(fn ($component) => 'Minimal ' . $component->getMinFiles() . ' Foto Rasio Aspek 4:3 | Landscape')
                     ->directory('/internships/galleries')
                     ->required()
                     ->image()
                     ->imageResizeMode('cover')
                     ->imageCropAspectRatio('4:3')
-                    ->imageResizeTargetWidth('1024')
-                    ->imageResizeTargetHeight('768')
+                    ->imageResizeTargetWidth('512')
+                    ->imageResizeTargetHeight('384')
                     ->multiple()
                     ->minFiles(2)
                     ->columnSpan([

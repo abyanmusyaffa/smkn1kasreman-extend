@@ -46,6 +46,10 @@ class TrainingResource extends Resource
                     ->hint('Rasio Aspek 16:9 | Landscape')
                     ->required()
                     ->image()
+                    ->imageResizeMode('cover')
+                    ->imageCropAspectRatio('16:9')
+                    ->imageResizeTargetWidth('768')
+                    ->imageResizeTargetHeight('432')
                     ->maxSize(512)
                     ->directory('/trainings')
                     ->columnSpan([

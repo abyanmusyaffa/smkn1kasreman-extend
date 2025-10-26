@@ -47,8 +47,13 @@ class StaffResource extends Resource
                         ]),
                     Forms\Components\FileUpload::make('photo')
                         ->label('Foto')
+                        ->hint('Foto Rasio Aspek 4:6 | Potrait')
                         ->image()
-                        ->directory('/staff')
+                        ->imageResizeMode('cover')
+                        ->imageCropAspectRatio('4:6')
+                        ->imageResizeTargetWidth('512')
+                        ->imageResizeTargetHeight('768')
+                        ->directory('staff')
                         ->default('/default/staff-male.svg')
                         ->columnSpan([
                             'default' => 2,

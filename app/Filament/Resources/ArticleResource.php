@@ -183,7 +183,12 @@ class ArticleResource extends Resource
                     Forms\Components\Hidden::make('slug'),
                     Forms\Components\FileUpload::make('photo')
                         ->label('Foto')
+                        ->hint('Foto Rasio Aspek 4:3 | Landscape')
                         ->image()
+                        ->imageResizeMode('cover')
+                        ->imageCropAspectRatio('4:3')
+                        ->imageResizeTargetWidth('512')
+                        ->imageResizeTargetHeight('384')
                         ->directory('/articles')
                         ->required()
                         ->columnSpan([

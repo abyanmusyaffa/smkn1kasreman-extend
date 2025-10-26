@@ -162,7 +162,7 @@ class ExtracurricularResource extends Resource // implements HasShieldPermission
                         ]),
                     Forms\Components\FileUpload::make('galleries')
                         ->label('Galeri')
-                        ->hint(fn ($component) => 'Minimal ' . $component->getMinFiles() . ' Foto Rasio Aspek 4:3')
+                        ->hint(fn ($component) => 'Minimal ' . $component->getMinFiles() . ' Foto Rasio Aspek 4:3 | Landscape')
                         ->directory(function ($get) {
                             $slug = $get('slug');
                     
@@ -172,8 +172,8 @@ class ExtracurricularResource extends Resource // implements HasShieldPermission
                         ->image()
                         ->imageResizeMode('cover')
                         ->imageCropAspectRatio('4:3')
-                        ->imageResizeTargetWidth('1024')
-                        ->imageResizeTargetHeight('768')
+                        ->imageResizeTargetWidth('512')
+                        ->imageResizeTargetHeight('384')
                         ->multiple()
                         ->minFiles(2)
                         ->columnSpan([

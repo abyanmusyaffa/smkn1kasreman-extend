@@ -66,13 +66,19 @@ return [
             'AttendanceDetailPage',
             'CreateAttendancePage',
             'CreateClassAttendancePage',
+            'PassingCertificate',
         ],
 
         'widgets' => [
             'AccountWidget', 'FilamentInfoWidget',
         ],
 
-        'resources' => [],
+        'resources' => [
+            'AlumniResource',
+            'SendPassingCertificateResource',
+            'StudentPhotoResource',
+            'TrainingResource',
+        ],
     ],
 
     'discovery' => [

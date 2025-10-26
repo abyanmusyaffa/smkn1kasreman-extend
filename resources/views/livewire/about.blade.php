@@ -4,10 +4,10 @@
     <article class="flex w-full flex-col rounded-2xl outline-4 outline outline-slate-200 p-4 lg:p-6 gap-2 lg:gap-6">
       <div class="flex flex-col lg:flex-row items-center lg:justify-between w-full gap-4">
         <div class="flex flex-col lg:min-w-48 min-w-36">
-            <figure data-fancybox data-src="/storage/{{ $head_master->photo }}" class="h-44 lg:h-64 w-full flex flex-col items-center justify-end rounded-t-3xl lg:border-4 border-2 border-b-0 border-blue-600 bg-cover bg-center bg-no-repeat" style="background-image: url(/storage/{{ $head_master->photo }})">
+            <figure data-fancybox data-src="/storage/{{ $head_master->staff->photo }}" class="h-44 lg:h-64 w-full flex flex-col items-center justify-end rounded-t-3xl lg:border-4 border-2 border-b-0 border-blue-600 bg-cover bg-center bg-no-repeat" style="background-image: url(/storage/{{ $head_master->staff->photo }})">
             </figure>
             <div class="w-full h-fit rounded-b-2xl bg-gradient-to-r from-blue-600 to-blue-700 px-2 py-1 text-center">
-              <p class="text-slate-50 text-xs lg:text-sm">{{ $head_master->name }}</p>
+              <p class="text-slate-50 text-xs lg:text-sm">{{ $head_master->staff->name }}</p>
               <p class="text-slate-50 text-2xs lg:text-xs italic">{{ $head_master->role }}</p>
             </div>
         </div>

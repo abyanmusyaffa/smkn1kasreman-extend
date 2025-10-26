@@ -100,8 +100,8 @@ class About extends Page implements HasForms
                         ->image()
                         ->imageResizeMode('cover')
                         ->imageCropAspectRatio('16:9')
-                        ->imageResizeTargetWidth('1024')
-                        ->imageResizeTargetHeight('576')
+                        ->imageResizeTargetWidth('768')
+                        ->imageResizeTargetHeight('432')
                         ->multiple()
                         ->minFiles(4)
                         ->columnSpan([

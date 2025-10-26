@@ -9,6 +9,7 @@ use Livewire\Component;
 use App\Models\Facility;
 use Livewire\Attributes\Title;
 use App\Models\Extracurricular;
+use App\Models\SchoolLeadership;
 
 class About extends Component
 {
@@ -23,7 +24,7 @@ class About extends Component
     public function render()
     {
         return view('livewire.about', [
-            'head_master' => Staff::where('category', 'head-master')->first(),
+            'head_master' => SchoolLeadership::with('staff')->where('category', 'head-master')->first(),
             'school' => $school = School::first(),
             'profile_video_id' => $this->getYoutubeVideoId($school->url_video_profile),
             'total_students' => Major::sum('total_students'),

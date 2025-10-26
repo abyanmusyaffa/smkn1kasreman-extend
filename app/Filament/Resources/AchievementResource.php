@@ -68,7 +68,12 @@ class AchievementResource extends Resource
                             'lg' => 3,
                         ]),
                     Forms\Components\FileUpload::make('photo')
+                        ->hint('Foto Rasio Aspek 4:3 | Landscape')
                         ->image()
+                        ->imageResizeMode('cover')
+                        ->imageCropAspectRatio('4:3')
+                        ->imageResizeTargetWidth('512')
+                        ->imageResizeTargetHeight('384')
                         ->label('Foto')
                         ->required()
                         ->directory('/achievements')

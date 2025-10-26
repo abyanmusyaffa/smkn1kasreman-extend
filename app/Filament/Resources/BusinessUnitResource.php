@@ -143,7 +143,7 @@ class BusinessUnitResource extends Resource
                         ]),
                     Forms\Components\FileUpload::make('galleries')
                         ->label('Galeri')
-                        ->hint(fn ($component) => $component->getMinFiles() . ' Foto Rasio Aspek 4:3')
+                        ->hint(fn ($component) => $component->getMinFiles() . ' Foto Rasio Aspek 4:3 | Landscape')
                         ->directory(function ($get) {
                             $slug = $get('slug');
                     
@@ -154,8 +154,8 @@ class BusinessUnitResource extends Resource
                         ->image()
                         ->imageResizeMode('cover')
                         ->imageCropAspectRatio('4:3')
-                        ->imageResizeTargetWidth('1024')
-                        ->imageResizeTargetHeight('768')
+                        ->imageResizeTargetWidth('512')
+                        ->imageResizeTargetHeight('384')
                         ->multiple()
                         ->minFiles(6)
                         ->maxFiles(6)

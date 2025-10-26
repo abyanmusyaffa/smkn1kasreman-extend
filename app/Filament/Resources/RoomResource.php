@@ -72,8 +72,8 @@ class RoomResource extends Resource
                         ->image()
                         ->imageResizeMode('cover')
                         ->imageCropAspectRatio('4:3')
-                        ->imageResizeTargetWidth('768')
-                        ->imageResizeTargetHeight('576')
+                        ->imageResizeTargetWidth('512')
+                        ->imageResizeTargetHeight('384')
                         ->columnSpan([
                             'default' => 2,
                             'lg' => 12,

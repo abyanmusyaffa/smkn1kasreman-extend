@@ -150,8 +150,8 @@ class SchoolDepartmentResource extends Resource
                                 ->image()
                                 ->imageResizeMode('cover')
                                 ->imageCropAspectRatio('4:3')
-                                ->imageResizeTargetWidth('1024')
-                                ->imageResizeTargetHeight('768')
+                                ->imageResizeTargetWidth('512')
+                                ->imageResizeTargetHeight('384')
                                 ->hint('Foto Rasio Aspek 4:3 | Landscape')
                                 ->directory(function ($get) {
                                     return 'school-departments/' . ($get('../../slug') ?: 'temp') . '/galleries';

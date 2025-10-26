@@ -7,12 +7,13 @@ use App\Models\Photo;
 use App\Models\Staff;
 use App\Models\School;
 use App\Models\Article;
+use App\Models\Gallery;
 use App\Models\Partner;
 use Livewire\Component;
 use App\Models\Achievement;
-use App\Models\Gallery;
 use App\Models\Testimonial;
 use Livewire\Attributes\Title;
+use App\Models\SchoolLeadership;
 
 class Home extends Component
 {
@@ -52,7 +53,7 @@ class Home extends Component
             'school' => $school = School::first(),
             'summary' => $this->getFirstParagraph(),
             'welcome_video_id' => $this->getYoutubeVideoId($school->url_video_welcome),
-            'head_master' => Staff::where('category', 'head-master')->value('name'),
+            'head_master' => SchoolLeadership::with('staff')->where('category', 'head-master')->first()?->staff?->name,
             'galleries' => collect(Gallery::value('galleries') ?? [])->take(6),
             'partners' => Partner::where('logo', 'NOT LIKE', '%default%')->pluck('logo'),
             'achievements' => Achievement::latest()->take(4)->get(['id', 'photo', 'slug', 'rankings', 'title', 'created_at']),

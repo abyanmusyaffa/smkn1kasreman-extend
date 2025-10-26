@@ -38,6 +38,7 @@ class AdminPanelProvider extends PanelProvider
             ->defaultThemeMode(ThemeMode::Dark)
             ->font('Poppins')
             ->spa()
+            ->globalSearch()
             ->databaseNotifications()
             ->unsavedChangesAlerts()
             ->login()

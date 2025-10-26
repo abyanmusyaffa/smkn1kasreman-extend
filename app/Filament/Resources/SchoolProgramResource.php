@@ -98,12 +98,12 @@ class SchoolProgramResource extends Resource
                                     ]),
                                 Forms\Components\FileUpload::make('photo')
                                     ->label('Foto')
+                                    ->hint('Foto Rasio Aspek 4:3 | Landscape')
                                     ->image()
                                     ->imageResizeMode('cover')
                                     ->imageCropAspectRatio('4:3')
-                                    ->imageResizeTargetWidth('1024')
-                                    ->imageResizeTargetHeight('768')
-                                    ->hint('Foto Rasio Aspek 4:3 | Landscape')
+                                    ->imageResizeTargetWidth('512')
+                                    ->imageResizeTargetHeight('384')
                                     ->directory(function ($get) {
                                         return 'school-departments/' . ($get('../../slug') ?: 'temp') . '/galleries';
                                     })

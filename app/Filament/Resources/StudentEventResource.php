@@ -50,6 +50,8 @@ class StudentEventResource extends Resource
                         ->hint('Rasio Aspek 3:4 | Potrait')
                         ->required()
                         ->image()
+                        ->imageResizeMode('cover')
+                        ->imageCropAspectRatio('3:4')
                         ->maxSize(512)
                         ->directory('/student-events')
                         ->columnSpan([

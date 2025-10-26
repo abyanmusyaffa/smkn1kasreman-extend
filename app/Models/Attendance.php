@@ -9,6 +9,11 @@ class Attendance extends Model
 {
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'check_in_time' => 'datetime',
+        'check_out_time' => 'datetime',
+    ];
+
     public function student_histories(): BelongsTo
     {
         return $this->belongsTo(StudentHistory::class, 'student_history_id');

@@ -56,7 +56,7 @@
         @foreach($school_departments as $school_department)
         <div class="flex flex-col gap-1 group group/dropside relative">
           <div class="flex gap-1 items-center text-sm  {{ $title === $school_department->name || $school_department->units->contains('name', $title) || ($school_department->name === 'Kurikulum' && in_array($title, ['Kalender Akademik', 'Jadwal Pelajaran'])) || ($school_department->name === 'Kesiswaan' && in_array($title, [$osis_name, 'Ekstrakurikuler', 'Tata Tertib', 'Agenda Siswa'])) || ($school_department->name === 'Humas' && in_array($title, ['Praktek Kerja Lapangan', 'Tracer Study'])) || ($school_department->name === 'Sarpras' && in_array($title, ['Lab & Bengkel'])) ? 'text-blue-500' : 'text-slate-500' }}  group-hover:text-blue-500">
-            <p>{{ $school_department->name }}</p>
+            <p class="whitespace-nowrap">{{ $school_department->name }}</p>
             <span class="icon-[mdi--chevron-right]"></span>
           </div>
           <div class="h-[1px] w-full bg-slate-200"></div>
