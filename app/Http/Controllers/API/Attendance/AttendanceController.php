@@ -33,8 +33,7 @@ class AttendanceController extends Controller
             $sortDirection = $request->get('sort_direction', 'desc');
             
             // Date range filters
-            $dateFrom = $request->get('date_from');
-            $dateTo = $request->get('date_to');
+            $date = $request->get('date');
             
             // Status filter
             $statusFilter = $request->get('status');
@@ -91,11 +90,8 @@ class AttendanceController extends Controller
             }
 
             // Date range filter
-            if ($dateFrom) {
-                $query->whereDate('check_in_time', '>=', Carbon::parse($dateFrom)->startOfDay());
-            }
-            if ($dateTo) {
-                $query->whereDate('check_in_time', '<=', Carbon::parse($dateTo)->endOfDay());
+            if ($date) {
+                $query->whereDate('check_in_time', '=', Carbon::parse($date)->startOfDay());
             }
 
             // Global search (name, nis, card_uid, note)
@@ -105,9 +101,7 @@ class AttendanceController extends Controller
                         $sq->where('name', 'LIKE', "%{$search}%")
                            ->orWhere('nis', 'LIKE', "%{$search}%")
                            ->orWhere('card_uid', 'LIKE', "%{$search}%");
-                    })
-                    ->orWhere('note', 'LIKE', "%{$search}%")
-                    ->orWhere('reason', 'LIKE', "%{$search}%");
+                    });
                 });
             }
 
@@ -146,8 +140,6 @@ class AttendanceController extends Controller
                         'nisn' => $student->nisn,
                         'card_uid' => $student->card_uid,
                         'photo' => $student->photo,
-                        'phone' => $student->phone,
-                        'email' => $student->email,
                     ] : null,
                     'group' => $group ? [
                         'id' => $group->id,
@@ -171,10 +163,10 @@ class AttendanceController extends Controller
                     'status' => $attendance->status,
                     // 'status_label' => $this->getStatusLabel($attendance->status),
                     // 'status_color' => $this->getStatusColor($attendance->status),
-                    'reason' => $attendance->reason,
-                    'file' => $attendance->file,
-                    'is_approved' => (bool) $attendance->is_approved,
-                    'note' => $attendance->note,
+                    // 'reason' => $attendance->reason,
+                    // 'file' => $attendance->file,
+                    // 'is_approved' => (bool) $attendance->is_approved,
+                    // 'note' => $attendance->note,
                     'created_at' => $attendance->created_at 
                         ? Carbon::parse($attendance->created_at)->timezone('Asia/Jakarta')->toDateTimeString() 
                         : null,
@@ -189,39 +181,24 @@ class AttendanceController extends Controller
                 // 'total_active' => StudentHistory::where('academic_year_id', $currentAcademicYear->id)
                 //     ->where('status', 'active')
                 //     ->count(),
-                'total_present' => Attendance::when($dateFrom, function($q) use ($dateFrom) {
-                        $q->whereDate('check_in_time', '>=', $dateFrom);
-                    })
-                    ->when($dateTo, function($q) use ($dateTo) {
-                        $q->whereDate('check_in_time', '<=', $dateTo);
+                'total_present' => Attendance::when($date, function($q) use ($date) {
+                        $q->whereDate('check_in_time', '=', $date);
                     })
                     ->where('status', 'present')->count(),
-                'total_late' => Attendance::when($dateFrom, function($q) use ($dateFrom) {
-                        $q->whereDate('check_in_time', '>=', $dateFrom);
-                    })
-                    ->when($dateTo, function($q) use ($dateTo) {
-                        $q->whereDate('check_in_time', '<=', $dateTo);
+                'total_late' => Attendance::when($date, function($q) use ($date) {
+                        $q->whereDate('check_in_time', '=', $date);
                     })
                     ->where('status', 'late')->count(),
-                'total_missing' => Attendance::when($dateFrom, function($q) use ($dateFrom) {
-                        $q->whereDate('check_in_time', '>=', $dateFrom);
-                    })
-                    ->when($dateTo, function($q) use ($dateTo) {
-                        $q->whereDate('check_in_time', '<=', $dateTo);
+                'total_missing' => Attendance::when($date, function($q) use ($date) {
+                        $q->whereDate('check_in_time', '=', $date);
                     })
                     ->where('status', 'missing')->count(),
-                'total_sick' => Attendance::when($dateFrom, function($q) use ($dateFrom) {
-                        $q->whereDate('check_in_time', '>=', $dateFrom);
-                    })
-                    ->when($dateTo, function($q) use ($dateTo) {
-                        $q->whereDate('check_in_time', '<=', $dateTo);
+                'total_sick' => Attendance::when($date, function($q) use ($date) {
+                        $q->whereDate('check_in_time', '=', $date);
                     })
                     ->where('status', 'sick')->count(),
-                'total_excused' => Attendance::when($dateFrom, function($q) use ($dateFrom) {
-                        $q->whereDate('check_in_time', '>=', $dateFrom);
-                    })
-                    ->when($dateTo, function($q) use ($dateTo) {
-                        $q->whereDate('check_in_time', '<=', $dateTo);
+                'total_excused' => Attendance::when($date, function($q) use ($date) {
+                        $q->whereDate('check_in_time', '=', $date);
                     })
                     ->where('status', 'excused')->count(),
             ];
@@ -234,9 +211,7 @@ class AttendanceController extends Controller
                     'academic_year_id' => $academicYearId,
                     'group_id' => $groupId,
                     'status' => $statusFilter,
-                    'is_approved' => $isApproved,
-                    'date_from' => $dateFrom,
-                    'date_to' => $dateTo,
+                    'date' => $date,
                     'search' => $search,
                     'sort_field' => $sortField,
                     'sort_direction' => $sortDirection,
@@ -308,95 +283,95 @@ class AttendanceController extends Controller
         }
     }
 
-    public function getSummary(Request $request)
-    {
-        try {
-            $dateFrom = $request->get('date_from', Carbon::now()->startOfMonth());
-            $dateTo = $request->get('date_to', Carbon::now()->endOfMonth());
-            $academicYearId = $request->get('academic_year_id');
-            $groupId = $request->get('group_id');
+    // public function getSummary(Request $request)
+    // {
+    //     try {
+    //         $dateFrom = $request->get('date_from', Carbon::now()->startOfMonth());
+    //         $dateTo = $request->get('date_to', Carbon::now()->endOfMonth());
+    //         $academicYearId = $request->get('academic_year_id');
+    //         $groupId = $request->get('group_id');
 
-            $query = Attendance::query();
+    //         $query = Attendance::query();
 
-            // Date range
-            $query->whereBetween('check_in_time', [
-                Carbon::parse($dateFrom)->startOfDay(),
-                Carbon::parse($dateTo)->endOfDay()
-            ]);
+    //         // Date range
+    //         $query->whereBetween('check_in_time', [
+    //             Carbon::parse($dateFrom)->startOfDay(),
+    //             Carbon::parse($dateTo)->endOfDay()
+    //         ]);
 
-            // Filters
-            if ($academicYearId) {
-                $query->whereHas('student_histories', function($q) use ($academicYearId) {
-                    $q->where('academic_year_id', $academicYearId);
-                });
-            }
+    //         // Filters
+    //         if ($academicYearId) {
+    //             $query->whereHas('student_histories', function($q) use ($academicYearId) {
+    //                 $q->where('academic_year_id', $academicYearId);
+    //             });
+    //         }
 
-            if ($groupId) {
-                $query->whereHas('student_histories', function($q) use ($groupId) {
-                    $q->where('group_id', $groupId);
-                });
-            }
+    //         if ($groupId) {
+    //             $query->whereHas('student_histories', function($q) use ($groupId) {
+    //                 $q->where('group_id', $groupId);
+    //             });
+    //         }
 
-            $summary = [
-                'total_attendances' => $query->count(),
-                'total_present' => (clone $query)->where('status', 'present')->count(),
-                'total_late' => (clone $query)->where('status', 'late')->count(),
-                'total_missing' => (clone $query)->where('status', 'missing')->count(),
-                'total_sick' => (clone $query)->where('status', 'sick')->count(),
-                'total_excused' => (clone $query)->where('status', 'excused')->count(),
-                'total_with_checkout' => (clone $query)->whereNotNull('check_out_time')->count(),
-                'total_without_checkout' => (clone $query)->whereNull('check_out_time')
-                    ->whereNotIn('status', ['sick', 'excused'])->count(),
-                'attendance_rate' => 0,
-            ];
+    //         $summary = [
+    //             'total_attendances' => $query->count(),
+    //             'total_present' => (clone $query)->where('status', 'present')->count(),
+    //             'total_late' => (clone $query)->where('status', 'late')->count(),
+    //             'total_missing' => (clone $query)->where('status', 'missing')->count(),
+    //             'total_sick' => (clone $query)->where('status', 'sick')->count(),
+    //             'total_excused' => (clone $query)->where('status', 'excused')->count(),
+    //             'total_with_checkout' => (clone $query)->whereNotNull('check_out_time')->count(),
+    //             'total_without_checkout' => (clone $query)->whereNull('check_out_time')
+    //                 ->whereNotIn('status', ['sick', 'excused'])->count(),
+    //             'attendance_rate' => 0,
+    //         ];
 
-            // Calculate attendance rate
-            $totalValid = $summary['total_present'] + $summary['total_late'];
-            $totalAll = $summary['total_attendances'];
-            if ($totalAll > 0) {
-                $summary['attendance_rate'] = round(($totalValid / $totalAll) * 100, 2);
-            }
+    //         // Calculate attendance rate
+    //         $totalValid = $summary['total_present'] + $summary['total_late'];
+    //         $totalAll = $summary['total_attendances'];
+    //         if ($totalAll > 0) {
+    //             $summary['attendance_rate'] = round(($totalValid / $totalAll) * 100, 2);
+    //         }
 
-            // Daily statistics
-            $dailyStats = Attendance::selectRaw('DATE(check_in_time) as date, status, COUNT(*) as count')
-                ->whereBetween('check_in_time', [
-                    Carbon::parse($dateFrom)->startOfDay(),
-                    Carbon::parse($dateTo)->endOfDay()
-                ])
-                ->when($academicYearId, function($q) use ($academicYearId) {
-                    $q->whereHas('student_histories', function($sq) use ($academicYearId) {
-                        $sq->where('academic_year_id', $academicYearId);
-                    });
-                })
-                ->when($groupId, function($q) use ($groupId) {
-                    $q->whereHas('student_histories', function($sq) use ($groupId) {
-                        $sq->where('group_id', $groupId);
-                    });
-                })
-                ->groupBy('date', 'status')
-                ->orderBy('date', 'desc')
-                ->get()
-                ->groupBy('date');
+    //         // Daily statistics
+    //         $dailyStats = Attendance::selectRaw('DATE(check_in_time) as date, status, COUNT(*) as count')
+    //             ->whereBetween('check_in_time', [
+    //                 Carbon::parse($dateFrom)->startOfDay(),
+    //                 Carbon::parse($dateTo)->endOfDay()
+    //             ])
+    //             ->when($academicYearId, function($q) use ($academicYearId) {
+    //                 $q->whereHas('student_histories', function($sq) use ($academicYearId) {
+    //                     $sq->where('academic_year_id', $academicYearId);
+    //                 });
+    //             })
+    //             ->when($groupId, function($q) use ($groupId) {
+    //                 $q->whereHas('student_histories', function($sq) use ($groupId) {
+    //                     $sq->where('group_id', $groupId);
+    //                 });
+    //             })
+    //             ->groupBy('date', 'status')
+    //             ->orderBy('date', 'desc')
+    //             ->get()
+    //             ->groupBy('date');
 
-            return response()->json([
-                'status' => 'success',
-                'data' => [
-                    'summary' => $summary,
-                    'daily_stats' => $dailyStats,
-                    'period' => [
-                        'from' => Carbon::parse($dateFrom)->format('Y-m-d'),
-                        'to' => Carbon::parse($dateTo)->format('Y-m-d'),
-                    ]
-                ]
-            ]);
+    //         return response()->json([
+    //             'status' => 'success',
+    //             'data' => [
+    //                 'summary' => $summary,
+    //                 'daily_stats' => $dailyStats,
+    //                 'period' => [
+    //                     'from' => Carbon::parse($dateFrom)->format('Y-m-d'),
+    //                     'to' => Carbon::parse($dateTo)->format('Y-m-d'),
+    //                 ]
+    //             ]
+    //         ]);
 
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Gagal mengambil summary: ' . $e->getMessage()
-            ], 500);
-        }
-    }
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'status' => 'error',
+    //             'message' => 'Gagal mengambil summary: ' . $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
 
     public function approve($id)
     {
@@ -576,92 +551,92 @@ class AttendanceController extends Controller
         }
     }
 
-    public function export(Request $request)
-    {
-        try {
-            $format = $request->get('format', 'xlsx');
-            $ids = $request->get('ids'); // Untuk export selected
+    // public function export(Request $request)
+    // {
+    //     try {
+    //         $format = $request->get('format', 'xlsx');
+    //         $ids = $request->get('ids'); // Untuk export selected
             
-            // Filters
-            $dateFrom = $request->get('date_from');
-            $dateTo = $request->get('date_to');
-            $status = $request->get('status');
-            $academicYearId = $request->get('academic_year_id');
-            $groupId = $request->get('group_id');
-            $search = $request->get('search');
+    //         // Filters
+    //         $dateFrom = $request->get('date_from');
+    //         $dateTo = $request->get('date_to');
+    //         $status = $request->get('status');
+    //         $academicYearId = $request->get('academic_year_id');
+    //         $groupId = $request->get('group_id');
+    //         $search = $request->get('search');
 
-            $query = Attendance::with(['student_histories.students', 'student_histories.groups']);
+    //         $query = Attendance::with(['student_histories.students', 'student_histories.groups']);
 
-            // If specific IDs provided (export selected)
-            if ($ids) {
-                $idsArray = is_array($ids) ? $ids : explode(',', $ids);
-                $query->whereIn('id', $idsArray);
-            } else {
-                // Apply filters
-                if ($dateFrom) {
-                    $query->whereDate('check_in_time', '>=', Carbon::parse($dateFrom)->startOfDay());
-                }
-                if ($dateTo) {
-                    $query->whereDate('check_in_time', '<=', Carbon::parse($dateTo)->endOfDay());
-                }
-                if ($status) {
-                    $query->where('status', $status);
-                }
-                if ($academicYearId) {
-                    $query->whereHas('student_histories', function($q) use ($academicYearId) {
-                        $q->where('academic_year_id', $academicYearId);
-                    });
-                }
-                if ($groupId) {
-                    $query->whereHas('student_histories', function($q) use ($groupId) {
-                        $q->where('group_id', $groupId);
-                    });
-                }
-                if ($search) {
-                    $query->where(function($q) use ($search) {
-                        $q->whereHas('student_histories.students', function($sq) use ($search) {
-                            $sq->where('name', 'LIKE', "%{$search}%")
-                               ->orWhere('nis', 'LIKE', "%{$search}%");
-                        });
-                    });
-                }
-            }
+    //         // If specific IDs provided (export selected)
+    //         if ($ids) {
+    //             $idsArray = is_array($ids) ? $ids : explode(',', $ids);
+    //             $query->whereIn('id', $idsArray);
+    //         } else {
+    //             // Apply filters
+    //             if ($dateFrom) {
+    //                 $query->whereDate('check_in_time', '>=', Carbon::parse($dateFrom)->startOfDay());
+    //             }
+    //             if ($dateTo) {
+    //                 $query->whereDate('check_in_time', '<=', Carbon::parse($dateTo)->endOfDay());
+    //             }
+    //             if ($status) {
+    //                 $query->where('status', $status);
+    //             }
+    //             if ($academicYearId) {
+    //                 $query->whereHas('student_histories', function($q) use ($academicYearId) {
+    //                     $q->where('academic_year_id', $academicYearId);
+    //                 });
+    //             }
+    //             if ($groupId) {
+    //                 $query->whereHas('student_histories', function($q) use ($groupId) {
+    //                     $q->where('group_id', $groupId);
+    //                 });
+    //             }
+    //             if ($search) {
+    //                 $query->where(function($q) use ($search) {
+    //                     $q->whereHas('student_histories.students', function($sq) use ($search) {
+    //                         $sq->where('name', 'LIKE', "%{$search}%")
+    //                            ->orWhere('nis', 'LIKE', "%{$search}%");
+    //                     });
+    //                 });
+    //             }
+    //         }
 
-            $attendances = $query->orderBy('check_in_time', 'desc')->get();
+    //         $attendances = $query->orderBy('check_in_time', 'desc')->get();
 
-            // Prepare data for export
-            $exportData = [];
-            $exportData[] = ['No', 'Nama', 'NIS', 'Kelas', 'Tanggal', 'Jam Masuk', 'Jam Pulang', 'Status', 'Keterangan'];
+    //         // Prepare data for export
+    //         $exportData = [];
+    //         $exportData[] = ['No', 'Nama', 'NIS', 'Kelas', 'Tanggal', 'Jam Masuk', 'Jam Pulang', 'Status', 'Keterangan'];
 
-            foreach ($attendances as $index => $attendance) {
-                $exportData[] = [
-                    $index + 1,
-                    $attendance->student_histories->students->name ?? '-',
-                    $attendance->student_histories->students->nis ?? '-',
-                    $attendance->student_histories->groups->name ?? '-',
-                    Carbon::parse($attendance->check_in_time)->format('Y-m-d'),
-                    Carbon::parse($attendance->check_in_time)->format('H:i:s'),
-                    $attendance->check_out_time ? Carbon::parse($attendance->check_out_time)->format('H:i:s') : '-',
-                    // $this->getStatusLabel($attendance->status),
-                    $attendance->note ?? '-'
-                ];
-            }
+    //         foreach ($attendances as $index => $attendance) {
+    //             $exportData[] = [
+    //                 $index + 1,
+    //                 $attendance->student_histories->students->name ?? '-',
+    //                 $attendance->student_histories->students->nis ?? '-',
+    //                 $attendance->student_histories->groups->name ?? '-',
+    //                 Carbon::parse($attendance->check_in_time)->format('Y-m-d'),
+    //                 Carbon::parse($attendance->check_in_time)->format('H:i:s'),
+    //                 $attendance->check_out_time ? Carbon::parse($attendance->check_out_time)->format('H:i:s') : '-',
+    //                 // $this->getStatusLabel($attendance->status),
+    //                 $attendance->note ?? '-'
+    //             ];
+    //         }
 
-            $filename = 'presensi_' . date('Y-m-d_His');
+    //         $filename = 'presensi_' . date('Y-m-d_His');
 
-            if ($format === 'csv') {
-                return $this->exportToCsv($exportData, $filename);
-            } else {
-                return $this->exportToExcel($exportData, $filename);
-            }
+    //         if ($format === 'csv') {
+    //             return $this->exportToCsv($exportData, $filename);
+    //         } else {
+    //             return $this->exportToExcel($exportData, $filename);
+    //         }
 
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Gagal export: ' . $e->getMessage()
-            ], 500);
-        }
-    }
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'status' => 'error',
+    //             'message' => 'Gagal export: ' . $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
 
     private function exportToCsv($data, $filename)
     {

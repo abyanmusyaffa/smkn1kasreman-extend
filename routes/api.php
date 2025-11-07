@@ -27,64 +27,56 @@ Route::prefix('v1')->group(function () {
 
 
 Route::middleware(['auth:sanctum'])->prefix('attendance')->group(function () {
-    // Dashboard Statistics
     Route::get('/statistics', [DashboardController::class, 'getTodayStatistics']);
-    
-    // Attendance List with filters
     Route::get('/today', [AttendanceController::class, 'getTodayAttendances']);
-    
-    // Manual Attendance
-    // Route::post('/manual', [AttendanceController::class, 'manualAttendance']);
-    Route::post('/manual/sick-excused', [AttendanceController::class, 'manualSickExcused']);
-    
-    // RFID Attendance
-    Route::post('/rfid', [AttendanceController::class, 'rfidAttendance']);
-    
-    // NIS-based Attendance
-    Route::post('/nis', [AttendanceController::class, 'nisBased']);
-    
-    // Student search for attendance
-    Route::get('/students/search', [StudentController::class, 'searchForAttendance']);
-    
-    // Current attendance info (untuk display saat RFID tap)
-    Route::get('/current-student/{cardUid}', [AttendanceController::class, 'getCurrentStudentInfo']);
-
-    // Generate status endpoints (Manual trigger)
-    Route::post('/generate-status', [AttendanceController::class, 'generateStatus']);
-
-    // Index - Get all with filters, pagination, sorting
     Route::get('/', [AttendanceController::class, 'index']);
     
-    // Show single
-    Route::get('/detail/{id}', [AttendanceController::class, 'show']);
-    
-    // Update single
-    Route::put('/{id}', [AttendanceController::class, 'update']);
-    Route::patch('/{id}', [AttendanceController::class, 'update']);
-    
-    // Delete single
-    Route::delete('/{id}', [AttendanceController::class, 'destroy']);
-    
-    // Approve single
-    Route::post('/{id}/approve', [AttendanceController::class, 'approve']);
+    Route::post('/rfid', [AttendanceController::class, 'rfidAttendance']);
+    Route::post('/nis', [AttendanceController::class, 'nisBased']);
 
-    // Bulk Approve
-    Route::post('/bulk-approve', [AttendanceController::class, 'bulkApprove']);
+    Route::post('/generate-status', [AttendanceController::class, 'generateStatus']);
 
-    // Bulk Delete
-    Route::post('/bulk-delete', [AttendanceController::class, 'bulkDelete']);
-    
-    // Bulk Update Status
-    Route::post('/bulk-update-status', [AttendanceController::class, 'bulkUpdateStatus']);
 
-    // Get filter options (for dropdowns)
     Route::get('/filter', [AttendanceController::class, 'getFilterOptions']);
+
+    Route::get('/current-student/{cardUid}', [AttendanceController::class, 'getCurrentStudentInfo']);
+
+    // Manual Attendance
+    // Route::post('/manual', [AttendanceController::class, 'manualAttendance']);
+    // Route::post('/manual/sick-excused', [AttendanceController::class, 'manualSickExcused']);
     
-    // Get summary statistics
-    Route::get('/summary', [AttendanceController::class, 'getSummary']);
     
-    // Export to Excel/CSV
-    Route::get('/export', [AttendanceController::class, 'export']);
+    // // Student search for attendance
+    // Route::get('/students/search', [StudentController::class, 'searchForAttendance']);
+
+    
+    // // Show single
+    // Route::get('/detail/{id}', [AttendanceController::class, 'show']);
+    
+    // // Update single
+    // Route::put('/{id}', [AttendanceController::class, 'update']);
+    // Route::patch('/{id}', [AttendanceController::class, 'update']);
+    
+    // // Delete single
+    // Route::delete('/{id}', [AttendanceController::class, 'destroy']);
+    
+    // // Approve single
+    // Route::post('/{id}/approve', [AttendanceController::class, 'approve']);
+
+    // // Bulk Approve
+    // Route::post('/bulk-approve', [AttendanceController::class, 'bulkApprove']);
+
+    // // Bulk Delete
+    // Route::post('/bulk-delete', [AttendanceController::class, 'bulkDelete']);
+    
+    // // Bulk Update Status
+    // Route::post('/bulk-update-status', [AttendanceController::class, 'bulkUpdateStatus']);
+
+    // // Get summary statistics
+    // // Route::get('/summary', [AttendanceController::class, 'getSummary']);
+    
+    // // Export to Excel/CSV
+    // Route::get('/export', [AttendanceController::class, 'export']);
 });
 
 
