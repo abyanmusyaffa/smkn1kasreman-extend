@@ -783,7 +783,7 @@ class AttendanceController extends Controller
             $today = Carbon::now('Asia/Jakarta')->startOfDay();
             $search = $request->get('search', '');
             $sortField = $request->get('sort_field', 'check_in_time');
-            $sortDirection = $request->get('sort_direction', 'desc');
+            $sortDirection = $request->get('sort_direction', 'asc');
             $perPage = $request->get('per_page', 10);
 
             $currentAcademicYear = AcademicYear::where('is_active', true)->first();
@@ -793,6 +793,10 @@ class AttendanceController extends Controller
                     'message' => 'Tahun akademik aktif tidak ditemukan'
                 ], 400);
             }
+
+            $todayAttendances = Attendance::whereDate('check_in_time', $today)
+                ->with('student_histories')
+                ->get();
 
             $query = Attendance::with(['student_histories.students', 'student_histories.groups'])
                 ->whereDate('check_in_time', $today)
@@ -804,24 +808,36 @@ class AttendanceController extends Controller
 
             // Search filter
             if ($search) {
-                $query->whereHas('student_histories.students', function($q) use ($search) {
-                    $q->where('name', 'LIKE', "%{$search}%")
-                      ->orWhere('nis', 'LIKE', "%{$search}%")
-                      ->orWhere('card_uid', 'LIKE', "%{$search}%");
+                $query->where(function ($query) use ($search) {
+                    $query->where('status', 'LIKE', "%{$search}%")
+                        ->orWhereHas('student_histories.students', function($q) use ($search) {
+                            $q->where('name', 'LIKE', "%{$search}%")
+                              ->orWhere('nis', 'LIKE', "%{$search}%")
+                              ->orWhere('card_uid', 'LIKE', "%{$search}%");
+                        })
+                        ->orWhereHas('student_histories.groups', function($q) use ($search) {
+                            $q->where('name', 'LIKE', "%{$search}%");
+                        });
                 });
             }
 
             // Sorting
-            $allowedSortFields = [
-                'check_in_time',
-                'check_out_time',
-                'status',
-            ];
-
-            if (in_array($sortField, $allowedSortFields)) {
+            if (in_array($sortField, ['check_in_time', 'check_out_time', 'status'])) {
                 $query->orderBy($sortField, $sortDirection);
-            } else {
-                $query->orderBy('check_in_time', 'desc');
+            }
+            
+            if ($sortField === 'name') {
+                $query->join('student_histories', 'student_histories.id', '=', 'attendances.student_history_id')
+                    ->join('students', 'students.id', '=', 'student_histories.student_id')
+                    ->orderBy('students.name', $sortDirection)
+                    ->select('attendances.*');
+            }
+            
+            if ($sortField === 'group') {
+                $query->join('student_histories', 'student_histories.id', '=', 'attendances.student_history_id')
+                    ->join('groups', 'groups.id', '=', 'student_histories.group_id')
+                    ->orderBy('groups.name', $sortDirection)
+                    ->select('attendances.*');
             }
 
             // Hitung total data untuk mendapatkan last page
@@ -846,7 +862,7 @@ class AttendanceController extends Controller
                         'name' => $attendance->student_histories->students->name,
                         'nis' => $attendance->student_histories->students->nis,
                         'photo' => $attendance->student_histories->students->photo,
-                        'group' => $attendance->student_histories->groups->name ?? '-'
+                        'class' => $attendance->student_histories->groups->name ?? '-'
                     ],
                     'check_in_time' => $attendance->check_in_time 
                         ? Carbon::parse($attendance->check_in_time)->timezone('Asia/Jakarta')->toDateTimeString() 
@@ -861,7 +877,11 @@ class AttendanceController extends Controller
             });
 
             $meta = [
-
+                'total_active_students' => StudentHistory::where('academic_year_id', $currentAcademicYear->id)->where('status', 'active')->count(),
+                'total_present_in' => Attendance::whereDate('check_in_time', $today)->whereNotNull('check_in_time')->count(),
+                'total_present_out' => Attendance::whereDate('check_in_time', $today)->whereNotNull('check_out_time')->count(),
+                'total_late' => Attendance::whereDate('check_in_time', $today)->where('status', 'late')->count(),
+                'total_sick_excused' => Attendance::whereDate('check_in_time', $today)->whereIn('status', ['sick', 'excused'])->count(),
             ];
             
             return response()->json([
@@ -882,87 +902,6 @@ class AttendanceController extends Controller
             ], 500);
         }
     }
-    // public function getTodayAttendances(Request $request)
-    // {
-    //     try {
-    //         // Gunakan timezone WIB
-    //         $today = Carbon::now('Asia/Jakarta')->startOfDay();
-    //         $search = $request->get('search', '');
-    //         $status = $request->get('status', '');
-    //         $perPage = $request->get('per_page', 3);
-
-    //         $currentAcademicYear = AcademicYear::where('is_active', true)->first();
-    //         if (!$currentAcademicYear) {
-    //             return response()->json([
-    //                 'status' => 'error',
-    //                 'message' => 'Tahun akademik aktif tidak ditemukan'
-    //             ], 400);
-    //         }
-
-    //         $query = Attendance::with(['student_histories.students', 'student_histories.groups'])
-    //             ->whereDate('check_in_time', $today)
-    //             ->whereHas('student_histories', function($q) use ($currentAcademicYear) {
-    //                 $q->where('academic_year_id', $currentAcademicYear->id)
-    //                   ->where('status', 'active');
-    //             });
-
-    //         // Search filter
-    //         if ($search) {
-    //             $query->whereHas('student_histories.students', function($q) use ($search) {
-    //                 $q->where('name', 'LIKE', "%{$search}%")
-    //                   ->orWhere('nis', 'LIKE', "%{$search}%")
-    //                   ->orWhere('card_uid', 'LIKE', "%{$search}%");
-    //             });
-    //         }
-
-    //         // Status filter
-    //         if ($status) {
-    //             $query->where('status', $status);
-    //         }
-
-    //         $attendances = $query->orderBy('check_in_time')
-    //                             ->orderBy('created_at')
-    //                             ->paginate($perPage);
-   
-
-    //         // Transform data untuk response
-    //         $attendances->getCollection()->transform(function ($attendance) {
-    //             return [
-    //                 'id' => $attendance->id,
-    //                 'student' => [
-    //                     'id' => $attendance->student_histories->students->id,
-    //                     'name' => $attendance->student_histories->students->name,
-    //                     'nis' => $attendance->student_histories->students->nis,
-    //                     'photo' => $attendance->student_histories->students->photo,
-    //                     'class' => $attendance->student_histories->groups->name ?? '-'
-    //                 ],
-    //                 'check_in_time' => $attendance->check_in_time 
-    //                     ? Carbon::parse($attendance->check_in_time)->timezone('Asia/Jakarta')->toDateTimeString() 
-    //                     : null,
-    //                 'check_out_time' => $attendance->check_out_time 
-    //                     ? Carbon::parse($attendance->check_out_time)->timezone('Asia/Jakarta')->toDateTimeString() 
-    //                     : null,
-    //                 'status' => $attendance->status,
-    //                 'reason' => $attendance->reason,
-    //                 'file' => $attendance->file,
-    //                 'is_approved' => $attendance->is_approved,
-    //                 'note' => $attendance->note,
-    //                 'created_at' => $attendance->created_at,
-    //             ];
-    //         });
-
-    //         return response()->json([
-    //             'status' => 'success',
-    //             'data' => $attendances
-    //         ]);
-
-    //     } catch (\Exception $e) {
-    //         return response()->json([
-    //             'status' => 'error',
-    //             'message' => 'Gagal mengambil data presensi: ' . $e->getMessage()
-    //         ], 500);
-    //     }
-    // }
 
     public function rfidAttendance(Request $request)
     {
