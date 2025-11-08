@@ -26,8 +26,7 @@ class AttendanceController extends Controller
     public function index(Request $request)
     {
         try {
-            // Parameters
-            $perPage = $request->get('per_page', 15);
+            $perPage = $request->get('per_page', 10);
             $search = $request->get('search', '');
             $sortField = $request->get('sort_field', 'check_in_time');
             $sortDirection = $request->get('sort_direction', 'desc');
@@ -110,8 +109,6 @@ class AttendanceController extends Controller
                 'check_in_time',
                 'check_out_time',
                 'status',
-                'is_approved',
-                'created_at'
             ];
 
             if (in_array($sortField, $allowedSortFields)) {
@@ -137,7 +134,6 @@ class AttendanceController extends Controller
                         'id' => $student->id,
                         'name' => $student->name,
                         'nis' => $student->nis,
-                        'nisn' => $student->nisn,
                         'card_uid' => $student->card_uid,
                         'photo' => $student->photo,
                     ] : null,
@@ -161,12 +157,6 @@ class AttendanceController extends Controller
                         ? Carbon::parse($attendance->check_out_time)->timezone('Asia/Jakarta')->format('H:i:s') 
                         : null,
                     'status' => $attendance->status,
-                    // 'status_label' => $this->getStatusLabel($attendance->status),
-                    // 'status_color' => $this->getStatusColor($attendance->status),
-                    // 'reason' => $attendance->reason,
-                    // 'file' => $attendance->file,
-                    // 'is_approved' => (bool) $attendance->is_approved,
-                    // 'note' => $attendance->note,
                     'created_at' => $attendance->created_at 
                         ? Carbon::parse($attendance->created_at)->timezone('Asia/Jakarta')->toDateTimeString() 
                         : null,
@@ -638,51 +628,51 @@ class AttendanceController extends Controller
     //     }
     // }
 
-    private function exportToCsv($data, $filename)
-    {
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => "attachment; filename=\"{$filename}.csv\"",
-        ];
+    // private function exportToCsv($data, $filename)
+    // {
+    //     $headers = [
+    //         'Content-Type' => 'text/csv',
+    //         'Content-Disposition' => "attachment; filename=\"{$filename}.csv\"",
+    //     ];
 
-        $callback = function() use ($data) {
-            $file = fopen('php://output', 'w');
+    //     $callback = function() use ($data) {
+    //         $file = fopen('php://output', 'w');
             
-            foreach ($data as $row) {
-                fputcsv($file, $row);
-            }
+    //         foreach ($data as $row) {
+    //             fputcsv($file, $row);
+    //         }
             
-            fclose($file);
-        };
+    //         fclose($file);
+    //     };
 
-        return response()->stream($callback, 200, $headers);
-    }
+    //     return response()->stream($callback, 200, $headers);
+    // }
 
-    private function exportToExcel($data, $filename)
-    {
-        // Untuk Excel yang lebih baik, install: composer require phpoffice/phpspreadsheet
-        // Ini versi simple HTML table yang bisa dibuka Excel
+    // private function exportToExcel($data, $filename)
+    // {
+    //     // Untuk Excel yang lebih baik, install: composer require phpoffice/phpspreadsheet
+    //     // Ini versi simple HTML table yang bisa dibuka Excel
         
-        $html = '<html><head><meta charset="utf-8"></head><body>';
-        $html .= '<table border="1">';
+    //     $html = '<html><head><meta charset="utf-8"></head><body>';
+    //     $html .= '<table border="1">';
         
-        foreach ($data as $row) {
-            $html .= '<tr>';
-            foreach ($row as $cell) {
-                $html .= '<td>' . htmlspecialchars($cell) . '</td>';
-            }
-            $html .= '</tr>';
-        }
+    //     foreach ($data as $row) {
+    //         $html .= '<tr>';
+    //         foreach ($row as $cell) {
+    //             $html .= '<td>' . htmlspecialchars($cell) . '</td>';
+    //         }
+    //         $html .= '</tr>';
+    //     }
         
-        $html .= '</table></body></html>';
+    //     $html .= '</table></body></html>';
 
-        $headers = [
-            'Content-Type' => 'application/vnd.ms-excel',
-            'Content-Disposition' => "attachment; filename=\"{$filename}.xls\"",
-        ];
+    //     $headers = [
+    //         'Content-Type' => 'application/vnd.ms-excel',
+    //         'Content-Disposition' => "attachment; filename=\"{$filename}.xls\"",
+    //     ];
 
-        return response($html, 200, $headers);
-    }
+    //     return response($html, 200, $headers);
+    // }
 
     public function update(Request $request, $id)
     {
@@ -790,11 +780,11 @@ class AttendanceController extends Controller
     public function getTodayAttendances(Request $request)
     {
         try {
-            // Gunakan timezone WIB
             $today = Carbon::now('Asia/Jakarta')->startOfDay();
             $search = $request->get('search', '');
-            $status = $request->get('status', '');
-            $perPage = $request->get('per_page', 50);
+            $sortField = $request->get('sort_field', 'check_in_time');
+            $sortDirection = $request->get('sort_direction', 'desc');
+            $perPage = $request->get('per_page', 10);
 
             $currentAcademicYear = AcademicYear::where('is_active', true)->first();
             if (!$currentAcademicYear) {
@@ -811,6 +801,7 @@ class AttendanceController extends Controller
                       ->where('status', 'active');
                 });
 
+
             // Search filter
             if ($search) {
                 $query->whereHas('student_histories.students', function($q) use ($search) {
@@ -820,9 +811,17 @@ class AttendanceController extends Controller
                 });
             }
 
-            // Status filter
-            if ($status) {
-                $query->where('status', $status);
+            // Sorting
+            $allowedSortFields = [
+                'check_in_time',
+                'check_out_time',
+                'status',
+            ];
+
+            if (in_array($sortField, $allowedSortFields)) {
+                $query->orderBy($sortField, $sortDirection);
+            } else {
+                $query->orderBy('check_in_time', 'desc');
             }
 
             // Hitung total data untuk mendapatkan last page
@@ -847,7 +846,7 @@ class AttendanceController extends Controller
                         'name' => $attendance->student_histories->students->name,
                         'nis' => $attendance->student_histories->students->nis,
                         'photo' => $attendance->student_histories->students->photo,
-                        'class' => $attendance->student_histories->groups->name ?? '-'
+                        'group' => $attendance->student_histories->groups->name ?? '-'
                     ],
                     'check_in_time' => $attendance->check_in_time 
                         ? Carbon::parse($attendance->check_in_time)->timezone('Asia/Jakarta')->toDateTimeString() 
@@ -856,17 +855,24 @@ class AttendanceController extends Controller
                         ? Carbon::parse($attendance->check_out_time)->timezone('Asia/Jakarta')->toDateTimeString() 
                         : null,
                     'status' => $attendance->status,
-                    'reason' => $attendance->reason,
-                    'file' => $attendance->file,
-                    'is_approved' => $attendance->is_approved,
-                    'note' => $attendance->note,
                     'created_at' => $attendance->created_at,
+                    'updated_at' => $attendance->updated_at,
                 ];
             });
 
+            $meta = [
+
+            ];
+            
             return response()->json([
                 'status' => 'success',
-                'data' => $attendances
+                'data' => $attendances,
+                'meta' => $meta,
+                'filters' => [
+                    'search' => $search,
+                    'sort_field' => $sortField,
+                    'sort_direction' => $sortDirection,
+                ]
             ]);
 
         } catch (\Exception $e) {
