@@ -54,10 +54,9 @@ class AttendanceController extends Controller
     public function index(Request $request)
     {
         try {
-            // 1️⃣ Ambil parameter
             $search = $request->get('search', '');
-            $sortField = $request->get('sort_field', 'check_in_time');
-            $sortDirection = $request->get('sort_direction', 'desc');
+            $sortField = $request->get('sort_field', 'name');
+            $sortDirection = $request->get('sort_direction', 'asc');
             $perPage = $request->integer('per_page', 10);
             $date = $request->get('date');
             $statusFilter = $request->get('status');
@@ -65,15 +64,12 @@ class AttendanceController extends Controller
             $academicYearId = $request->get('academic_year_id');
             $isApproved = $request->get('is_approved');
 
-            // 2️⃣ Ambil tahun akademik aktif kalau belum di-filter
             $currentAcademicYear = $academicYearId
                 ? AcademicYear::find($academicYearId)
                 : AcademicYear::where('is_active', true)->first();
 
-            // 3️⃣ Base query
             $query = Attendance::with(['student_histories.students', 'student_histories.groups']);
 
-            // 4️⃣ Filter dinamis
             $query->when($currentAcademicYear, fn($q) => 
                 $q->whereHas('student_histories', fn($sq) => 
                     $sq->where('academic_year_id', $currentAcademicYear->id)));
@@ -84,33 +80,31 @@ class AttendanceController extends Controller
             $query->when($statusFilter, fn($q) => 
                 is_array($statusFilter) ? $q->whereIn('status', $statusFilter) : $q->where('status', $statusFilter));
 
-            $query->when($isApproved !== null, fn($q) => $q->where('is_approved', $isApproved));
-
             $query->when($date, fn($q) => $q->whereDate('check_in_time', '=', Carbon::parse($date)->startOfDay()));
 
             $query->when($search, function ($q) use ($search) {
                 $q->whereHas('student_histories.students', function ($sq) use ($search) {
                     $sq->where('name', 'LIKE', "%{$search}%")
-                    ->orWhere('nis', 'LIKE', "%{$search}%")
-                    ->orWhere('card_uid', 'LIKE', "%{$search}%");
+                    ->orWhere('nis', 'LIKE', "%{$search}%");
                 });
             });
 
-            // 5️⃣ Sorting
             $allowedSortFields = ['check_in_time', 'check_out_time', 'status'];
             if (in_array($sortField, $allowedSortFields)) {
                 $query->orderBy($sortField, $sortDirection);
+            } elseif ($sortField === 'name') {
+                $query->join('student_histories', 'student_histories.id', '=', 'attendances.student_history_id')
+                    ->join('students', 'students.id', '=', 'student_histories.student_id')
+                    ->orderBy('students.name', $sortDirection)
+                    ->select('attendances.*');
             } else {
                 $query->orderBy('check_in_time', 'desc');
             }
 
-            // 6️⃣ Pagination
             $attendances = $query->paginate($perPage);
 
-            // 7️⃣ Transform data
             $attendances->getCollection()->transform(fn($a) => $this->transformAttendance($a));
 
-            // 8️⃣ Meta data
             $meta = [
                 'total_present' => Attendance::when($date, fn($q) => $q->whereDate('check_in_time', '=', $date))
                     ->where('status', 'present')->count(),
@@ -124,7 +118,6 @@ class AttendanceController extends Controller
                     ->where('status', 'excused')->count(),
             ];
 
-            // 9️⃣ Response
             return response()->json([
                 'status' => 'success',
                 'data' => $attendances,
@@ -142,198 +135,212 @@ class AttendanceController extends Controller
             ], 500);
         }
     }
-    // public function index(Request $request)
-    // {
-    //     try {
-    //         $perPage = $request->get('per_page', 10);
-    //         $search = $request->get('search', '');
-    //         $sortField = $request->get('sort_field', 'check_in_time');
-    //         $sortDirection = $request->get('sort_direction', 'desc');
-            
-    //         // Date range filters
-    //         $date = $request->get('date');
-            
-    //         // Status filter
-    //         $statusFilter = $request->get('status');
-            
-    //         // Academic year filter
-    //         $academicYearId = $request->get('academic_year_id');
-            
-    //         // Group/Class filter
-    //         $groupId = $request->get('group_id');
-            
-    //         // Approved filter
-    //         $isApproved = $request->get('is_approved');
 
-    //         // Get current academic year jika tidak di-filter
-    //         $currentAcademicYear = null;
-    //         if (!$academicYearId) {
-    //             $currentAcademicYear = AcademicYear::where('is_active', true)->first();
-    //             $academicYearId = $currentAcademicYear?->id;
-    //         }
+    public function getGroupAttendances(Request $request)
+    {
+        try {
+            $academicYearId = $request->get('academic_year_id');
+            $groupId = $request->get('group_id');
+            $search = $request->get('search', '');
+            $sortField = $request->get('sort_field', 'name');
+            $sortDirection = $request->get('sort_direction', 'asc');
+            $perPage = $request->integer('per_page', 10);
 
-    //         // Base query dengan relations
-    //         $query = Attendance::with([
-    //             'student_histories' => function($q) {
-    //                 $q->with(['students', 'groups']);
-    //             }
-    //         ]);
+            $currentAcademicYear = $academicYearId
+                ? AcademicYear::find($academicYearId)
+                : AcademicYear::where('is_active', true)->first();
 
-    //         // Filter by academic year
-    //         if ($academicYearId) {
-    //             $query->whereHas('student_histories', function($q) use ($academicYearId) {
-    //                 $q->where('academic_year_id', $academicYearId);
-    //             });
-    //         }
+            $currentGroup = $groupId
+                ? Group::find($groupId)
+                : Group::first();
 
-    //         // Filter by group/class
-    //         if ($groupId) {
-    //             $query->whereHas('student_histories', function($q) use ($groupId) {
-    //                 $q->where('group_id', $groupId);
-    //             });
-    //         }
+            if (!$currentAcademicYear || !$currentGroup) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Tahun ajaran atau kelas tidak ditemukan.',
+                ], 404);
+            }
 
-    //         // Filter by status
-    //         if ($statusFilter) {
-    //             if (is_array($statusFilter)) {
-    //                 $query->whereIn('status', $statusFilter);
-    //             } else {
-    //                 $query->where('status', $statusFilter);
-    //             }
-    //         }
+            $query = StudentHistory::query()
+                ->with('students')
+                ->where('academic_year_id', $currentAcademicYear->id)
+                ->where('group_id', $currentGroup->id)
+                ->when($search, function ($q) use ($search) {
+                    $q->whereHas('students', function ($sq) use ($search) {
+                        $sq->where('name', 'LIKE', "%{$search}%")
+                        ->orWhere('nis', 'LIKE', "%{$search}%");
+                    });
+                })
+                ->select('student_histories.*');
 
-    //         // Filter by is_approved
-    //         if ($isApproved !== null) {
-    //             $query->where('is_approved', $isApproved);
-    //         }
+            $histories = $query->paginate($perPage);
 
-    //         // Date range filter
-    //         if ($date) {
-    //             $query->whereDate('check_in_time', '=', Carbon::parse($date)->startOfDay());
-    //         }
+            $studentHistoryIds = $histories->pluck('id');
 
-    //         // Global search (name, nis, card_uid, note)
-    //         if ($search) {
-    //             $query->where(function($q) use ($search) {
-    //                 $q->whereHas('student_histories.students', function($sq) use ($search) {
-    //                     $sq->where('name', 'LIKE', "%{$search}%")
-    //                        ->orWhere('nis', 'LIKE', "%{$search}%")
-    //                        ->orWhere('card_uid', 'LIKE', "%{$search}%");
-    //                 });
-    //             });
-    //         }
+            $attendances = Attendance::whereIn('student_history_id', $studentHistoryIds)
+                ->get()
+                ->groupBy('student_history_id');
 
-    //         // Sorting
-    //         $allowedSortFields = [
-    //             'check_in_time',
-    //             'check_out_time',
-    //             'status',
-    //         ];
+            $data = $histories->getCollection()->map(function ($studentHistory) use ($attendances) {
+                $records = $attendances->get($studentHistory->id, collect());
+                $total = $records->count() ?: 1;
 
-    //         if (in_array($sortField, $allowedSortFields)) {
-    //             $query->orderBy($sortField, $sortDirection);
-    //         } else {
-    //             // Default sorting
-    //             $query->orderBy('check_in_time', 'desc');
-    //         }
+                $statusCounts = [
+                    'present' => $records->where('status', 'present')->count(),
+                    'late' => $records->where('status', 'late')->count(),
+                    'missing' => $records->where('status', 'missing')->count(),
+                    'sick' => $records->where('status', 'sick')->count(),
+                    'excused' => $records->where('status', 'excused')->count(),
+                ];
 
-    //         // Paginate
-    //         $attendances = $query->paginate($perPage);
+                $presentCount = $statusCounts['present'] + $statusCounts['late'];
+                $attendancePercentage = round(($presentCount / $total) * 100, 2);
 
-    //         // Transform data untuk response
-    //         $attendances->getCollection()->transform(function ($attendance) {
-    //             $studentHistory = $attendance->student_histories;
-    //             $student = $studentHistory->students ?? null;
-    //             $group = $studentHistory->groups ?? null;
+                return [
+                    'student_id' => $studentHistory->students->id ?? null,
+                    'name' => $studentHistory->students->name ?? '-',
+                    'nis' => $studentHistory->students->nis ?? '-',
+                    'status_counts' => $statusCounts,
+                    'attendance_percentage' => $attendancePercentage,
+                ];
+            });
 
-    //             return [
-    //                 'id' => $attendance->id,
-    //                 'student_history_id' => $attendance->student_history_id,
-    //                 'student' => $student ? [
-    //                     'id' => $student->id,
-    //                     'name' => $student->name,
-    //                     'nis' => $student->nis,
-    //                     'card_uid' => $student->card_uid,
-    //                     'photo' => $student->photo,
-    //                 ] : null,
-    //                 'group' => $group ? [
-    //                     'id' => $group->id,
-    //                     'name' => $group->name,
-    //                 ] : null,
-    //                 'check_in_time' => $attendance->check_in_time 
-    //                     ? Carbon::parse($attendance->check_in_time)->timezone('Asia/Jakarta')->toDateTimeString() 
-    //                     : null,
-    //                 'check_out_time' => $attendance->check_out_time 
-    //                     ? Carbon::parse($attendance->check_out_time)->timezone('Asia/Jakarta')->toDateTimeString() 
-    //                     : null,
-    //                 'check_in_date' => $attendance->check_in_time 
-    //                     ? Carbon::parse($attendance->check_in_time)->timezone('Asia/Jakarta')->format('Y-m-d') 
-    //                     : null,
-    //                 'check_in_time_only' => $attendance->check_in_time 
-    //                     ? Carbon::parse($attendance->check_in_time)->timezone('Asia/Jakarta')->format('H:i:s') 
-    //                     : null,
-    //                 'check_out_time_only' => $attendance->check_out_time 
-    //                     ? Carbon::parse($attendance->check_out_time)->timezone('Asia/Jakarta')->format('H:i:s') 
-    //                     : null,
-    //                 'status' => $attendance->status,
-    //                 'created_at' => $attendance->created_at 
-    //                     ? Carbon::parse($attendance->created_at)->timezone('Asia/Jakarta')->toDateTimeString() 
-    //                     : null,
-    //                 'updated_at' => $attendance->updated_at 
-    //                     ? Carbon::parse($attendance->updated_at)->timezone('Asia/Jakarta')->toDateTimeString() 
-    //                     : null,
-    //             ];
-    //         });
+            $histories->setCollection($data);
 
-    //         // Additional meta data
-    //         $meta = [
-    //             // 'total_active' => StudentHistory::where('academic_year_id', $currentAcademicYear->id)
-    //             //     ->where('status', 'active')
-    //             //     ->count(),
-    //             'total_present' => Attendance::when($date, function($q) use ($date) {
-    //                     $q->whereDate('check_in_time', '=', $date);
-    //                 })
-    //                 ->where('status', 'present')->count(),
-    //             'total_late' => Attendance::when($date, function($q) use ($date) {
-    //                     $q->whereDate('check_in_time', '=', $date);
-    //                 })
-    //                 ->where('status', 'late')->count(),
-    //             'total_missing' => Attendance::when($date, function($q) use ($date) {
-    //                     $q->whereDate('check_in_time', '=', $date);
-    //                 })
-    //                 ->where('status', 'missing')->count(),
-    //             'total_sick' => Attendance::when($date, function($q) use ($date) {
-    //                     $q->whereDate('check_in_time', '=', $date);
-    //                 })
-    //                 ->where('status', 'sick')->count(),
-    //             'total_excused' => Attendance::when($date, function($q) use ($date) {
-    //                     $q->whereDate('check_in_time', '=', $date);
-    //                 })
-    //                 ->where('status', 'excused')->count(),
-    //         ];
+            // Daftar kolom yang bisa disortir
+            $allowedSortFields = [
+                'name',
+                'attendance_percentage',
+                'present',
+                'late',
+                'missing',
+                'sick',
+                'excused',
+            ];
 
-    //         return response()->json([
-    //             'status' => 'success',
-    //             'data' => $attendances,
-    //             'meta' => $meta,
-    //             'filters' => [
-    //                 'academic_year_id' => $academicYearId,
-    //                 'group_id' => $groupId,
-    //                 'status' => $statusFilter,
-    //                 'date' => $date,
-    //                 'search' => $search,
-    //                 'sort_field' => $sortField,
-    //                 'sort_direction' => $sortDirection,
-    //             ]
-    //         ]);
+            if (in_array($sortField, $allowedSortFields)) {
+                $collection = $histories->getCollection();
 
-    //     } catch (\Exception $e) {
-    //         return response()->json([
-    //             'status' => 'error',
-    //             'message' => 'Gagal mengambil data presensi: ' . $e->getMessage()
-    //         ], 500);
-    //     }
-    // }
+                // Tentukan apakah urutan descending
+                $isDesc = strtolower($sortDirection) === 'desc';
+
+                // Custom sorting logic
+                $sorted = $collection->sortBy(function ($item) use ($sortField) {
+                    // Jika yang di-sort adalah status tertentu
+                    if (isset($item['status_counts'][$sortField])) {
+                        return $item['status_counts'][$sortField];
+                    }
+
+                    // Kalau yang di-sort adalah field biasa
+                    return $item[$sortField] ?? null;
+                }, SORT_REGULAR, $isDesc)->values();
+
+                $histories->setCollection($sorted);
+            }
+            // if (in_array($sortField, ['name', 'attendance_percentage'])) {
+            //     $sorted = $histories->getCollection()
+            //         ->sortBy($sortField, SORT_REGULAR, $sortDirection === 'desc')
+            //         ->values();
+            //     $histories->setCollection($sorted);
+            // }
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $histories,
+                'filters' => [
+                    'academicYearId' => $currentAcademicYear->id, 
+                    'groupId' => $currentGroup->id, 
+                    'search' => $search, 
+                    'sortField' => $sortField, 
+                    'sortDirection' => $sortDirection, 
+                    'perPage' => $perPage,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal mengambil data presensi: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function getTodayAttendances(Request $request)
+    {
+        try {
+            $date = $request->get('date', Carbon::now('Asia/Jakarta')->toDateString());
+            $search = $request->get('search', '');
+            $sortField = $request->get('sort_field', 'check_in_time');
+            $sortDirection = $request->get('sort_direction', 'asc');
+            $page = $request->integer('page');
+            $perPage = $request->integer('per_page', 10);
+
+            $currentAcademicYear = AcademicYear::where('is_active', true)->firstOrFail();
+
+            $query = Attendance::with(['student_histories.students', 'student_histories.groups'])
+                ->whereDate('check_in_time', $date)
+                ->whereHas('student_histories', function ($q) use ($currentAcademicYear) {
+                    $q->where('academic_year_id', $currentAcademicYear->id)
+                    ->where('status', 'active');
+                });
+
+            if ($search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('status', 'LIKE', "%{$search}%")
+                        ->orWhereHas('student_histories.students', function($q) use ($search) {
+                            $q->where('name', 'LIKE', "%{$search}%")
+                              ->orWhere('nis', 'LIKE', "%{$search}%")
+                              ->orWhere('card_uid', 'LIKE', "%{$search}%");
+                        })
+                        ->orWhereHas('student_histories.groups', function($q) use ($search) {
+                            $q->where('name', 'LIKE', "%{$search}%");
+                        });
+                });
+            }
+
+            $allowedSortFields = ['check_in_time', 'check_out_time', 'status'];
+            if (in_array($sortField, $allowedSortFields)) {
+                $query->orderBy($sortField, $sortDirection);
+            } elseif ($sortField === 'name') {
+                $query->join('student_histories', 'student_histories.id', '=', 'attendances.student_history_id')
+                    ->join('students', 'students.id', '=', 'student_histories.student_id')
+                    ->orderBy('students.name', $sortDirection)
+                    ->select('attendances.*');
+            } elseif ($sortField === 'group') {
+                $query->join('student_histories', 'student_histories.id', '=', 'attendances.student_history_id')
+                    ->join('groups', 'groups.id', '=', 'student_histories.group_id')
+                    ->orderBy('groups.name', $sortDirection)
+                    ->select('attendances.*');
+            } else {
+                $query->orderBy('updated_at', 'desc');
+            }
+
+            $attendances = $query->paginate($perPage);
+
+            $attendances->getCollection()->transform(fn($a) => $this->transformAttendance($a));
+
+            $meta = [
+                'total_active_students' => StudentHistory::where('academic_year_id', $currentAcademicYear->id)->where('status', 'active')->count(),
+                'total_present_in' => Attendance::whereDate('check_in_time', $date)->whereNotNull('check_in_time')->count(),
+                'total_present_out' => Attendance::whereDate('check_in_time', $date)->whereNotNull('check_out_time')->count(),
+                'total_late' => Attendance::whereDate('check_in_time', $date)->where('status', 'late')->count(),
+                'total_sick_excused' => Attendance::whereDate('check_in_time', $date)->whereIn('status', ['sick', 'excused'])->count(),
+            ];
+
+            // 9️⃣ Response
+            return response()->json([
+                'status' => 'success',
+                'data' => $attendances,
+                'meta' => $meta,
+                'filters' => compact('date', 'search', 'sortField', 'sortDirection', 'perPage', 'page')
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal mengambil data presensi: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
 
     public function getFilterOptions(Request $request)
     {
@@ -805,209 +812,6 @@ class AttendanceController extends Controller
             ], 404);
         }
     }
-
-    public function getTodayAttendances(Request $request)
-    {
-        try {
-            $date = $request->get('date', Carbon::now('Asia/Jakarta')->toDateString());
-            $search = $request->get('search', '');
-            $sortField = $request->get('sort_field', 'check_in_time');
-            $sortDirection = $request->get('sort_direction', 'asc');
-            $page = $request->integer('page');
-            $perPage = $request->integer('per_page', 10);
-
-            $currentAcademicYear = AcademicYear::where('is_active', true)->firstOrFail();
-
-            $query = Attendance::with(['student_histories.students', 'student_histories.groups'])
-                ->whereDate('check_in_time', $date)
-                ->whereHas('student_histories', function ($q) use ($currentAcademicYear) {
-                    $q->where('academic_year_id', $currentAcademicYear->id)
-                    ->where('status', 'active');
-                });
-
-            if ($search) {
-                $query->where(function ($query) use ($search) {
-                    $query->where('status', 'LIKE', "%{$search}%")
-                        ->orWhereHas('student_histories.students', function($q) use ($search) {
-                            $q->where('name', 'LIKE', "%{$search}%")
-                              ->orWhere('nis', 'LIKE', "%{$search}%")
-                              ->orWhere('card_uid', 'LIKE', "%{$search}%");
-                        })
-                        ->orWhereHas('student_histories.groups', function($q) use ($search) {
-                            $q->where('name', 'LIKE', "%{$search}%");
-                        });
-                });
-            }
-
-            $allowedSortFields = ['check_in_time', 'check_out_time', 'status'];
-            if (in_array($sortField, $allowedSortFields)) {
-                $query->orderBy($sortField, $sortDirection);
-            } elseif ($sortField === 'name') {
-                $query->join('student_histories', 'student_histories.id', '=', 'attendances.student_history_id')
-                    ->join('students', 'students.id', '=', 'student_histories.student_id')
-                    ->orderBy('students.name', $sortDirection)
-                    ->select('attendances.*');
-            } elseif ($sortField === 'group') {
-                $query->join('student_histories', 'student_histories.id', '=', 'attendances.student_history_id')
-                    ->join('groups', 'groups.id', '=', 'student_histories.group_id')
-                    ->orderBy('groups.name', $sortDirection)
-                    ->select('attendances.*');
-            } else {
-                $query->orderBy('updated_at', 'desc');
-            }
-
-            $attendances = $query->paginate($perPage);
-
-            $attendances->getCollection()->transform(fn($a) => $this->transformAttendance($a));
-
-            $meta = [
-                'total_active_students' => StudentHistory::where('academic_year_id', $currentAcademicYear->id)->where('status', 'active')->count(),
-                'total_present_in' => Attendance::whereDate('check_in_time', $date)->whereNotNull('check_in_time')->count(),
-                'total_present_out' => Attendance::whereDate('check_in_time', $date)->whereNotNull('check_out_time')->count(),
-                'total_late' => Attendance::whereDate('check_in_time', $date)->where('status', 'late')->count(),
-                'total_sick_excused' => Attendance::whereDate('check_in_time', $date)->whereIn('status', ['sick', 'excused'])->count(),
-            ];
-
-            // 9️⃣ Response
-            return response()->json([
-                'status' => 'success',
-                'data' => $attendances,
-                'meta' => $meta,
-                'filters' => compact('date', 'search', 'sortField', 'sortDirection', 'perPage', 'page')
-            ]);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Gagal mengambil data presensi: ' . $e->getMessage(),
-            ], 500);
-        }
-    }
-    // public function getTodayAttendances(Request $request)
-    // {
-    //     try {
-    //         $today = Carbon::now('Asia/Jakarta')->startOfDay();
-    //         $search = $request->get('search', '');
-    //         $sortField = $request->get('sort_field', 'check_in_time');
-    //         $sortDirection = $request->get('sort_direction', 'asc');
-    //         $perPage = $request->get('per_page', 10);
-
-    //         $currentAcademicYear = AcademicYear::where('is_active', true)->first();
-    //         if (!$currentAcademicYear) {
-    //             return response()->json([
-    //                 'status' => 'error',
-    //                 'message' => 'Tahun akademik aktif tidak ditemukan'
-    //             ], 400);
-    //         }
-
-    //         $todayAttendances = Attendance::whereDate('check_in_time', $today)
-    //             ->with('student_histories')
-    //             ->get();
-
-    //         $query = Attendance::with(['student_histories.students', 'student_histories.groups'])
-    //             ->whereDate('check_in_time', $today)
-    //             ->whereHas('student_histories', function($q) use ($currentAcademicYear) {
-    //                 $q->where('academic_year_id', $currentAcademicYear->id)
-    //                   ->where('status', 'active');
-    //             });
-
-
-    //         // Search filter
-    //         if ($search) {
-    //             $query->where(function ($query) use ($search) {
-    //                 $query->where('status', 'LIKE', "%{$search}%")
-    //                     ->orWhereHas('student_histories.students', function($q) use ($search) {
-    //                         $q->where('name', 'LIKE', "%{$search}%")
-    //                           ->orWhere('nis', 'LIKE', "%{$search}%")
-    //                           ->orWhere('card_uid', 'LIKE', "%{$search}%");
-    //                     })
-    //                     ->orWhereHas('student_histories.groups', function($q) use ($search) {
-    //                         $q->where('name', 'LIKE', "%{$search}%");
-    //                     });
-    //             });
-    //         }
-
-    //         // Sorting
-    //         if (in_array($sortField, ['check_in_time', 'check_out_time', 'status'])) {
-    //             $query->orderBy($sortField, $sortDirection);
-    //         }
-            
-    //         if ($sortField === 'name') {
-    //             $query->join('student_histories', 'student_histories.id', '=', 'attendances.student_history_id')
-    //                 ->join('students', 'students.id', '=', 'student_histories.student_id')
-    //                 ->orderBy('students.name', $sortDirection)
-    //                 ->select('attendances.*');
-    //         }
-            
-    //         if ($sortField === 'group') {
-    //             $query->join('student_histories', 'student_histories.id', '=', 'attendances.student_history_id')
-    //                 ->join('groups', 'groups.id', '=', 'student_histories.group_id')
-    //                 ->orderBy('groups.name', $sortDirection)
-    //                 ->select('attendances.*');
-    //         }
-
-    //         // Hitung total data untuk mendapatkan last page
-    //         $totalData = $query->count();
-    //         $lastPage = ceil($totalData / $perPage);
-            
-    //         // Jika tidak ada parameter page, set ke last page
-    //         $currentPage = $request->get('page', $lastPage);
-            
-    //         // Pastikan current page tidak melebihi last page dan minimal 1
-    //         $currentPage = max(1, min($currentPage, $lastPage));
-
-    //         $attendances = $query->orderBy('updated_at')
-    //                             ->paginate($perPage, ['*'], 'page', $currentPage);
-
-    //         // Transform data untuk response
-    //         $attendances->getCollection()->transform(function ($attendance) {
-    //             return [
-    //                 'id' => $attendance->id,
-    //                 'student' => [
-    //                     'id' => $attendance->student_histories->students->id,
-    //                     'name' => $attendance->student_histories->students->name,
-    //                     'nis' => $attendance->student_histories->students->nis,
-    //                     'photo' => $attendance->student_histories->students->photo,
-    //                     'class' => $attendance->student_histories->groups->name ?? '-'
-    //                 ],
-    //                 'check_in_time' => $attendance->check_in_time 
-    //                     ? Carbon::parse($attendance->check_in_time)->timezone('Asia/Jakarta')->toDateTimeString() 
-    //                     : null,
-    //                 'check_out_time' => $attendance->check_out_time 
-    //                     ? Carbon::parse($attendance->check_out_time)->timezone('Asia/Jakarta')->toDateTimeString() 
-    //                     : null,
-    //                 'status' => $attendance->status,
-    //                 'created_at' => $attendance->created_at,
-    //                 'updated_at' => $attendance->updated_at,
-    //             ];
-    //         });
-
-    //         $meta = [
-    //             'total_active_students' => StudentHistory::where('academic_year_id', $currentAcademicYear->id)->where('status', 'active')->count(),
-    //             'total_present_in' => Attendance::whereDate('check_in_time', $today)->whereNotNull('check_in_time')->count(),
-    //             'total_present_out' => Attendance::whereDate('check_in_time', $today)->whereNotNull('check_out_time')->count(),
-    //             'total_late' => Attendance::whereDate('check_in_time', $today)->where('status', 'late')->count(),
-    //             'total_sick_excused' => Attendance::whereDate('check_in_time', $today)->whereIn('status', ['sick', 'excused'])->count(),
-    //         ];
-            
-    //         return response()->json([
-    //             'status' => 'success',
-    //             'data' => $attendances,
-    //             'meta' => $meta,
-    //             'filters' => [
-    //                 'search' => $search,
-    //                 'sort_field' => $sortField,
-    //                 'sort_direction' => $sortDirection,
-    //             ]
-    //         ]);
-
-    //     } catch (\Exception $e) {
-    //         return response()->json([
-    //             'status' => 'error',
-    //             'message' => 'Gagal mengambil data presensi: ' . $e->getMessage()
-    //         ], 500);
-    //     }
-    // }
 
     public function rfidAttendance(Request $request)
     {
@@ -1592,5 +1396,4 @@ class AttendanceController extends Controller
             ], 500);
         }
     }
-
 }

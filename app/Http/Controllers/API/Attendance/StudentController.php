@@ -9,6 +9,23 @@ use App\Http\Controllers\Controller;
 
 class StudentController extends Controller
 {
+    public function index(Request $request) 
+    {
+        try {
+            $status = $request->get('status', 'active');
+            $groupId =$request->get('group');
+            $academicYearId =$request->get('academic_year');
+            $search = $request->get('search', '');
+            $sortField = $request->get('sort_field', 'name');
+            $sortDirection = $request->get('sort_direction', 'asc');
+            $perPage = $request->integer('per_page', 10);
+
+            
+        } catch (\Exception $e) {
+
+        }
+    }
+
     public function searchForAttendance(Request $request)
     {
         try {

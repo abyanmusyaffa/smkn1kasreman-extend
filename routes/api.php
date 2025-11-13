@@ -23,6 +23,7 @@ Route::prefix('v1/auth')->group(function () {
 
 Route::middleware(['auth:sanctum'])->prefix('attendance')->group(function () {
     Route::get('/today', [AttendanceController::class, 'getTodayAttendances']);
+    Route::get('/group', [AttendanceController::class, 'getGroupAttendances']);
     Route::get('/', [AttendanceController::class, 'index']);
     
     Route::post('/rfid', [AttendanceController::class, 'rfidAttendance']);
