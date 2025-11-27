@@ -11,10 +11,13 @@
         "bezhansalleh/filament-shield": "^3.3",
         "filament/filament": "^3.2",
         "laravel/framework": "^11.31",
+        "laravel/reverb": "^1.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.5",
         "owenvoke/blade-fontawesome": "^2.8",
+        "phpoffice/phpspreadsheet": "^5.3",
+        "pusher/pusher-php-server": "^7.2",
         "rappasoft/laravel-livewire-tables": "^3.7",
         "torgodly/html2media": "^1.1",
         "wireui/wireui": "^2.4"

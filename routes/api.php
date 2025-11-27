@@ -2,7 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\Attendance\ExportController;
 use App\Http\Controllers\API\Attendance\StudentController;
+use App\Http\Controllers\API\Attendance\ScheduleController;
 use App\Http\Controllers\API\Attendance\DashboardController;
 use App\Http\Controllers\API\Attendance\AttendanceController;
 
@@ -22,17 +24,44 @@ Route::prefix('v1/auth')->group(function () {
 
 
 Route::middleware(['auth:sanctum'])->prefix('attendance')->group(function () {
+    Route::get('/', [AttendanceController::class, 'index']);
     Route::get('/today', [AttendanceController::class, 'getTodayAttendances']);
     Route::get('/group', [AttendanceController::class, 'getGroupAttendances']);
-    Route::get('/', [AttendanceController::class, 'index']);
+    Route::get('/student/{id}', [AttendanceController::class, 'getAttendancesByStudent']);
+    Route::get('/students', [StudentController::class, 'getForAddAttendance']);
+    Route::get('/filter', [AttendanceController::class, 'getFilterOptions']);
+    Route::get('/bulk/students', [AttendanceController::class, 'getStudentsForBulkAttendance']);
     
     Route::post('/rfid', [AttendanceController::class, 'rfidAttendance']);
     Route::post('/nis', [AttendanceController::class, 'nisBased']);
+    Route::post('/', [AttendanceController::class, 'store']);
     Route::post('/generate-status', [AttendanceController::class, 'generateStatus']);
+    Route::post('/bulk', [AttendanceController::class, 'bulkCreateAttendance']);
     
-    Route::get('/filter', [AttendanceController::class, 'getFilterOptions']);
+    Route::put('/{id}', [AttendanceController::class, 'update']);
+    Route::delete('/{id}', [AttendanceController::class, 'destroy']);
+
+
+    Route::get('/schedule', [ScheduleController::class, 'index']);
+    Route::put('/schedule/{id}', [ScheduleController::class, 'update']);
+    Route::post('/schedule', [ScheduleController::class, 'store']);
+    Route::delete('/schedule/{id}', [ScheduleController::class, 'destroy']);
+
+    Route::get('/schedule-override', [ScheduleController::class, 'getScheduleOverrides']);
+    Route::put('/schedule-override/{id}', [ScheduleController::class, 'updateScheduleOverride']);
+    Route::post('/schedule-override', [ScheduleController::class, 'storeScheduleOverride']);
+    Route::delete('/schedule-override/{id}', [ScheduleController::class, 'destroyScheduleOverride']);
+
+    Route::get('/student-history', [StudentController::class, 'index']);
     
-    // Route::get('/statistics', [DashboardController::class, 'getTodayStatistics']);
+
+    Route::post('/export/by-date', [ExportController::class, 'exportByDate']);
+    Route::post('/export/by-student', [ExportController::class, 'exportByStudent']);
+    Route::post('/export/by-group', [ExportController::class, 'exportByGroup']);
+    Route::get('/export/students', [StudentController::class, 'getForExportAttendance']);
+
+
+
 
     // Route::get('/current-student/{cardUid}', [AttendanceController::class, 'getCurrentStudentInfo']);
 
@@ -42,18 +71,14 @@ Route::middleware(['auth:sanctum'])->prefix('attendance')->group(function () {
     
     
     // // Student search for attendance
-    // Route::get('/students/search', [StudentController::class, 'searchForAttendance']);
 
     
     // // Show single
-    // Route::get('/detail/{id}', [AttendanceController::class, 'show']);
     
     // // Update single
-    // Route::put('/{id}', [AttendanceController::class, 'update']);
     // Route::patch('/{id}', [AttendanceController::class, 'update']);
     
     // // Delete single
-    // Route::delete('/{id}', [AttendanceController::class, 'destroy']);
     
     // // Approve single
     // Route::post('/{id}/approve', [AttendanceController::class, 'approve']);
