@@ -18,14 +18,22 @@
                 display: none !important;
             }
         </style>
+        @vite('resources/css/app.css')
         <link rel="stylesheet" href="/css/custom.css">
         <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
         <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
         {{-- <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.19/index.global.min.js'></script> --}}
         {{-- <script src="/js/fancybox.umd.js"></script>
         <script src="/js/carousel.umd.js"></script> --}}
+        {{-- <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@6.1/dist/fancybox/fancybox.css"
+            />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@6.1/dist/carousel/carousel.css"
+            /> --}}
         @filamentStyles
-        @vite('resources/css/app.css')
         @wireUiScripts
         {{-- <script src="//unpkg.com/alpinejs" defer></script> --}}
     </head>
@@ -40,6 +48,9 @@
         <livewire:templates.footer />
 
         {{-- <script src="/js/script.js"></script> --}}
+        {{-- <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@6.1/dist/fancybox/fancybox.umd.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@6.1/dist/carousel/carousel.umd.js"></script> --}}
+        {{-- <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@6.1/dist/carousel/carousel.dots.js"></script> --}}
         <script>
             AOS.init();
         </script>

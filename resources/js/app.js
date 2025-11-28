@@ -1,3 +1,4 @@
+
 import "./bootstrap";
 import { Fancybox } from "@fancyapps/ui/dist/fancybox/";
 import "@fancyapps/ui/dist/fancybox/fancybox.css";
@@ -29,3 +30,5 @@ window.dayGridPlugin = dayGridPlugin;
 window.timeGridPlugin = timeGridPlugin;
 window.listPlugin = listPlugin;
 window.idLocale = idLocale;
+
+// import './echo';
