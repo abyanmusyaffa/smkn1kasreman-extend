@@ -1173,8 +1173,6 @@ class AttendanceController extends Controller
             ], 500);
         }
     }
-
-
     public function destroy($id)
     {
         try {
