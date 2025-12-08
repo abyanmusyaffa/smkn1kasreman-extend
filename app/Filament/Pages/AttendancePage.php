@@ -184,7 +184,10 @@ class AttendancePage extends Page implements HasForms, HasTable
             ->paginated([12, 24, 36, 48])
             ->defaultPaginationPageOption(36);
     }
-
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false; 
+    }
     protected function getTableQuery(): Builder
     {
         return StudentHistory::query()

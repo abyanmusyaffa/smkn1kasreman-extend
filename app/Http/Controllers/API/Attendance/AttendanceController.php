@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Models\AttendanceScheduleOverride;
+use App\Services\WhatsAppService;
 
 class AttendanceController extends Controller
 {
@@ -1199,142 +1200,6 @@ class AttendanceController extends Controller
         }
     }
 
-    // public function bulkApprove(Request $request)
-    // {
-    //     $validator = Validator::make($request->all(), [
-    //         'ids' => 'required|array',
-    //         'ids.*' => 'required|integer|exists:attendances,id'
-    //     ]);
-
-    //     if ($validator->fails()) {
-    //         return response()->json([
-    //             'status' => 'error',
-    //             'message' => 'Data tidak valid',
-    //             'errors' => $validator->errors()
-    //         ], 422);
-    //     }
-
-    //     try {
-    //         DB::beginTransaction();
-
-    //         $updated = Attendance::whereIn('id', $request->ids)
-    //             ->update([
-    //                 'is_approved' => true,
-    //                 'updated_at' => Carbon::now('Asia/Jakarta')
-    //             ]);
-
-    //         DB::commit();
-
-    //         return response()->json([
-    //             'status' => 'success',
-    //             'message' => "{$updated} presensi berhasil disetujui",
-    //             'data' => [
-    //                 'total_updated' => $updated
-    //             ]
-    //         ]);
-
-    //     } catch (\Exception $e) {
-    //         DB::rollback();
-    //         return response()->json([
-    //             'status' => 'error',
-    //             'message' => 'Gagal menyetujui presensi: ' . $e->getMessage()
-    //         ], 500);
-    //     }
-    // }
-
-    // public function bulkDelete(Request $request)
-    // {
-    //     $validator = Validator::make($request->all(), [
-    //         'ids' => 'required|array',
-    //         'ids.*' => 'required|integer|exists:attendances,id'
-    //     ]);
-
-    //     if ($validator->fails()) {
-    //         return response()->json([
-    //             'status' => 'error',
-    //             'message' => 'Data tidak valid',
-    //             'errors' => $validator->errors()
-    //         ], 422);
-    //     }
-
-    //     try {
-    //         DB::beginTransaction();
-
-    //         $deleted = Attendance::whereIn('id', $request->ids)->delete();
-
-    //         DB::commit();
-
-    //         return response()->json([
-    //             'status' => 'success',
-    //             'message' => "{$deleted} presensi berhasil dihapus",
-    //             'data' => [
-    //                 'total_deleted' => $deleted
-    //             ]
-    //         ]);
-
-    //     } catch (\Exception $e) {
-    //         DB::rollback();
-    //         return response()->json([
-    //             'status' => 'error',
-    //             'message' => 'Gagal menghapus presensi: ' . $e->getMessage()
-    //         ], 500);
-    //     }
-    // }
-
-    // public function show($id)
-    // {
-    //     try {
-    //         $attendance = Attendance::with(['student_histories.students', 'student_histories.groups'])
-    //                                ->findOrFail($id);
-
-    //         $studentHistory = $attendance->student_histories;
-    //         $student = $studentHistory->students ?? null;
-    //         $group = $studentHistory->groups ?? null;
-
-    //         $data = [
-    //             'id' => $attendance->id,
-    //             'student_history_id' => $attendance->student_history_id,
-    //             'student' => $student ? [
-    //                 'id' => $student->id,
-    //                 'name' => $student->name,
-    //                 'nis' => $student->nis,
-    //                 'nisn' => $student->nisn,
-    //                 'photo' => $student->photo,
-    //                 'class' => $group->name,
-    //             ] : null,
-    //             // 'group' => $group ? [
-    //             //     'id' => $group->id,
-    //             //     'name' => $group->name,
-    //             // ] : null,
-    //             'date' => $attendance->check_in_time ? Carbon::parse($attendance->check_in_time)->timezone('Asia/Jakarta')->locale('id')->isoFormat('dddd, D MMMM YYYY') : null,
-    //             'check_in_time' => $attendance->check_in_time 
-    //                 ? Carbon::parse($attendance->check_in_time)->timezone('Asia/Jakarta')->toDateTimeString() 
-    //                 : null,
-    //             'check_out_time' => $attendance->check_out_time 
-    //                 ? Carbon::parse($attendance->check_out_time)->timezone('Asia/Jakarta')->toDateTimeString() 
-    //                 : null,
-    //             'status' => $attendance->status,
-    //             'reason' => $attendance->reason,
-    //             'file' => $attendance->file,
-    //             'is_approved' => (bool) $attendance->is_approved,
-    //             'note' => $attendance->note,
-    //             'created_at' => $attendance->created_at,
-    //             'updated_at' => $attendance->updated_at,
-    //         ];
-
-    //         return response()->json([
-    //             'status' => 'success',
-    //             'data' => $data
-    //         ]);
-
-    //     } catch (\Exception $e) {
-    //         return response()->json([
-    //             'status' => 'error',
-    //             'message' => 'Data tidak ditemukan: ' . $e->getMessage()
-    //         ], 404);
-    //     }
-    // }
-
     public function update(Request $request, $id)
     {
         // Validation rules
@@ -1783,7 +1648,7 @@ class AttendanceController extends Controller
                               ->limit(1);
                     }
                 ])
-                ->first(['id', 'name', 'nis', 'card_uid', 'photo']); // Only select needed columns
+                ->first(['id', 'name', 'nis', 'card_uid', 'photo', 'phone', 'father_phone', 'mother_phone', 'guardian_phone']); // Only select needed columns
 
             if (!$studentData) {
                 return response()->json([
@@ -1871,22 +1736,28 @@ class AttendanceController extends Controller
 
             DB::commit();
 
-            // 🚀 OPTIMIZATION 5: Dispatch event AFTER response (non-blocking)
-            // // Statistics akan di-calculate di background
-            // dispatch(function() use ($attendance, $studentData, $studentHistory) {
-            //     try {
-            //         AttendanceRecorded::dispatch(
-            //             $attendance,
-            //             $studentData,
-            //             $studentHistory,
-            //         );
-            //     } catch (\Exception $e) {
-            //         Log::error('Failed to dispatch attendance event', [
-            //             'error' => $e->getMessage(),
-            //             'attendance_id' => $attendance->id
-            //         ]);
-            //     }
-            // })->afterResponse();
+            try {
+                $whatsapp = app(WhatsAppService::class);
+                
+                if ($action === 'check_in') {
+                    if ($attendance->status === 'late') {
+                        $checkInEnd = Carbon::parse($today->toDateString() . ' ' . $schedule->check_in_end);
+                        $lateMinutes = $checkInEnd->diffInMinutes($now);
+                        $whatsapp->sendLateNotification($studentData, $attendance, $studentHistory, $lateMinutes);
+                    } else {
+                        $whatsapp->sendCheckInNotification($studentData, $attendance, $studentHistory);
+                    }
+                } else {
+                    $whatsapp->sendCheckOutNotification($studentData, $attendance, $studentHistory);
+                }
+            } catch (\Exception $e) {
+                // Jangan throw error - WhatsApp gagal tidak boleh break presensi
+                Log::error('WhatsApp queue failed (non-critical)', [
+                    'attendance_id' => $attendance->id,
+                    'error' => $e->getMessage()
+                ]);
+            }
+
             dispatch(function() {
                 try {
                     broadcast(new AttendanceRecorded());
@@ -1975,7 +1846,7 @@ class AttendanceController extends Controller
                               ->limit(1);
                     }
                 ])
-                ->first(['id', 'name', 'nis', 'card_uid', 'photo']);
+                ->first(['id', 'name', 'nis', 'card_uid', 'photo', 'phone', 'father_phone', 'mother_phone', 'guardian_phone']);
 
             if (!$studentData) {
                 return response()->json([
@@ -2062,21 +1933,27 @@ class AttendanceController extends Controller
 
             DB::commit();
 
-            // Dispatch event after response
-            // dispatch(function() use ($attendance, $studentData, $studentHistory) {
-            //     try {
-            //         AttendanceRecorded::dispatch(
-            //             $attendance,
-            //             $studentData,
-            //             $studentHistory,
-            //         );
-            //     } catch (\Exception $e) {
-            //         Log::error('Failed to dispatch attendance event', [
-            //             'error' => $e->getMessage(),
-            //             'attendance_id' => $attendance->id
-            //         ]);
-            //     }
-            // })->afterResponse();
+            try {
+                $whatsapp = app(WhatsAppService::class);
+                
+                if ($action === 'check_in') {
+                    if ($attendance->status === 'late') {
+                        $checkInEnd = Carbon::parse($today->toDateString() . ' ' . $schedule->check_in_end);
+                        $lateMinutes = $checkInEnd->diffInMinutes($now);
+                        $whatsapp->sendLateNotification($studentData, $attendance, $studentHistory, $lateMinutes);
+                    } else {
+                        $whatsapp->sendCheckInNotification($studentData, $attendance, $studentHistory);
+                    }
+                } else {
+                    $whatsapp->sendCheckOutNotification($studentData, $attendance, $studentHistory);
+                }
+            } catch (\Exception $e) {
+                Log::error('WhatsApp queue failed (non-critical)', [
+                    'attendance_id' => $attendance->id,
+                    'error' => $e->getMessage()
+                ]);
+            }
+
             dispatch(function() {
                 try {
                     broadcast(new AttendanceRecorded());
