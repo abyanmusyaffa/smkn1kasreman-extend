@@ -591,7 +591,7 @@ class AttendanceController extends Controller
             $date = Carbon::parse($request->date)->startOfDay();
 
             // Validate schedule exists
-            $schedule = $this->getCachedAttendanceSchedule($date);
+            $schedule = $this->getAttendanceSchedule($date);
             
             if (!$schedule) {
                 return response()->json([
@@ -808,7 +808,7 @@ class AttendanceController extends Controller
             $date = Carbon::parse($checkInTime)->startOfDay();
 
             // Get attendance schedule for validation
-            $schedule = $this->getCachedAttendanceSchedule($date);
+            $schedule = $this->getAttendanceSchedule($date);
             
             if (!$schedule) {
                 return response()->json([
@@ -1099,7 +1099,7 @@ class AttendanceController extends Controller
             $studentHistoryIds = $request->student_history_ids;
 
             // Get schedule
-            $schedule = $this->getCachedAttendanceSchedule($date);
+            $schedule = $this->getAttendanceSchedule($date);
             
             if (!$schedule) {
                 return response()->json([
@@ -1283,7 +1283,7 @@ class AttendanceController extends Controller
             $date = Carbon::parse($checkInTime)->startOfDay();
 
             // Get attendance schedule for validation
-            $schedule = $this->getCachedAttendanceSchedule($date);
+            $schedule = $this->getAttendanceSchedule($date);
             
             if (!$schedule) {
                 return response()->json([
@@ -1673,7 +1673,7 @@ class AttendanceController extends Controller
                 ])
                 ->first(['id', 'student_history_id', 'check_in_time', 'check_out_time', 'status']);
 
-            $schedule = $this->getCachedAttendanceSchedule($today);
+            $schedule = $this->getAttendanceSchedule($today);
             
             if (!$schedule) {
                 return response()->json([
@@ -1873,7 +1873,7 @@ class AttendanceController extends Controller
                 ->first(['id', 'student_history_id', 'check_in_time', 'check_out_time', 'status']);
 
             // Get cached schedule
-            $schedule = $this->getCachedAttendanceSchedule($today);
+            $schedule = $this->getAttendanceSchedule($today);
             
             if (!$schedule) {
                 return response()->json([
@@ -1933,26 +1933,26 @@ class AttendanceController extends Controller
 
             DB::commit();
 
-            try {
-                $whatsapp = app(WhatsAppService::class);
+            // try {
+            //     $whatsapp = app(WhatsAppService::class);
                 
-                if ($action === 'check_in') {
-                    if ($attendance->status === 'late') {
-                        $checkInEnd = Carbon::parse($today->toDateString() . ' ' . $schedule->check_in_end);
-                        $lateMinutes = $checkInEnd->diffInMinutes($now);
-                        $whatsapp->sendLateNotification($studentData, $attendance, $studentHistory, $lateMinutes);
-                    } else {
-                        $whatsapp->sendCheckInNotification($studentData, $attendance, $studentHistory);
-                    }
-                } else {
-                    $whatsapp->sendCheckOutNotification($studentData, $attendance, $studentHistory);
-                }
-            } catch (\Exception $e) {
-                Log::error('WhatsApp queue failed (non-critical)', [
-                    'attendance_id' => $attendance->id,
-                    'error' => $e->getMessage()
-                ]);
-            }
+            //     if ($action === 'check_in') {
+            //         if ($attendance->status === 'late') {
+            //             $checkInEnd = Carbon::parse($today->toDateString() . ' ' . $schedule->check_in_end);
+            //             $lateMinutes = $checkInEnd->diffInMinutes($now);
+            //             $whatsapp->sendLateNotification($studentData, $attendance, $studentHistory, $lateMinutes);
+            //         } else {
+            //             $whatsapp->sendCheckInNotification($studentData, $attendance, $studentHistory);
+            //         }
+            //     } else {
+            //         $whatsapp->sendCheckOutNotification($studentData, $attendance, $studentHistory);
+            //     }
+            // } catch (\Exception $e) {
+            //     Log::error('WhatsApp queue failed (non-critical)', [
+            //         'attendance_id' => $attendance->id,
+            //         'error' => $e->getMessage()
+            //     ]);
+            // }
 
             dispatch(function() {
                 try {
@@ -2070,14 +2070,14 @@ class AttendanceController extends Controller
         return Carbon::createFromTimestamp($randomTimestamp, 'Asia/Jakarta');
     }
 
-    protected function getCachedAttendanceSchedule($date)
-    {
-        $cacheKey = 'attendance_schedule:' . $date->format('Y-m-d');
+    // protected function getCachedAttendanceSchedule($date)
+    // {
+    //     $cacheKey = 'attendance_schedule:' . $date->format('Y-m-d');
         
-        return Cache::remember($cacheKey, now()->addHours(6), function() use ($date) {
-            return $this->getAttendanceSchedule($date);
-        });
-    }
+    //     return Cache::remember($cacheKey, now()->addHours(6), function() use ($date) {
+    //         return $this->getAttendanceSchedule($date);
+    //     });
+    // }
 
     private function validateAttendanceTime($currentTime, $schedule, $existingAttendance)
     {
