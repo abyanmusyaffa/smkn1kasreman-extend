@@ -217,6 +217,7 @@ class AttendanceController extends Controller
                     'missing' => $records->where('status', 'missing')->count(),
                     'sick' => $records->where('status', 'sick')->count(),
                     'excused' => $records->where('status', 'excused')->count(),
+                    'absent' => $records->where('status', 'absent')->count(),
                 ];
 
                 // $presentCount = $statusCounts['present'] + $statusCounts['late'];
@@ -371,7 +372,9 @@ class AttendanceController extends Controller
                 'total_active_students' => StudentHistory::where('academic_year_id', $currentAcademicYear->id)->where('status', 'active')->count(),
                 'total_present_in' => Attendance::whereDate('check_in_time', $date)->whereNotNull('check_in_time')->count(),
                 'total_present_out' => Attendance::whereDate('check_in_time', $date)->whereNotNull('check_out_time')->count(),
+                'total_present' => Attendance::whereDate('check_in_time', $date)->where('status', 'present')->count(),
                 'total_late' => Attendance::whereDate('check_in_time', $date)->where('status', 'late')->count(),
+                'total_absent' => Attendance::whereDate('check_in_time', $date)->where('status', 'absent')->count(),
                 'total_sick_excused' => Attendance::whereDate('check_in_time', $date)->whereIn('status', ['sick', 'excused'])->count(),
             ];
 
@@ -702,6 +705,7 @@ class AttendanceController extends Controller
                 ['value' => 'missing', 'label' => 'Tidak Presensi Pulang', 'color' => 'red'],
                 ['value' => 'sick', 'label' => 'Sakit', 'color' => 'blue'],
                 ['value' => 'excused', 'label' => 'Izin', 'color' => 'purple'],
+                ['value' => 'absent', 'label' => 'Tidak Hadir', 'color' => 'slate'],
             ];
 
             $statusStudents = [
@@ -744,7 +748,7 @@ class AttendanceController extends Controller
             'student_history_id' => 'required|exists:student_histories,id',
             'check_in_time' => 'required|date',
             'check_out_time' => 'nullable',
-            'status' => 'required|in:present,late,missing,sick,excused',
+            'status' => 'required|in:present,late,missing,sick,excused,absent',
             'file' => 'nullable|array',
             'file.content' => 'required_with:file|string',
             'file.name' => 'required_with:file|string',
@@ -829,7 +833,7 @@ class AttendanceController extends Controller
                 ], 400);
             }
             
-            // sick dan excused HARUS ada reason
+            // sick dan excused HARUS ada reason (absent TIDAK PERLU)
             $fileUrl = null;
             if (in_array($status, ['sick', 'excused'])) {
                 // Validasi reason
@@ -841,7 +845,7 @@ class AttendanceController extends Controller
                     ], 400);
                 }
 
-                // Handle file upload
+                // Handle file upload (opsional untuk absent, wajib untuk sick/excused jika ada)
                 if ($request->has('file') && is_array($request->file)) {
                     // Validasi file structure
                     if (!isset($request->file['content']) || !isset($request->file['name']) || !isset($request->file['mime_type'])) {
@@ -892,7 +896,7 @@ class AttendanceController extends Controller
                 }
                 
             } else {
-                // present, late, missing TIDAK BOLEH ada reason dan file
+                // present, late, missing, absent TIDAK BOLEH ada reason dan file
                 if ($request->filled('reason')) {
                     return response()->json([
                         'status' => 'error',
@@ -925,7 +929,7 @@ class AttendanceController extends Controller
             // VALIDATE TIME AGAINST SCHEDULE
             // ==========================================
             
-            // Only validate time for present, late, missing status
+            // Only validate time for present, late, missing status (tidak validasi untuk sick, excused, absent)
             if (in_array($status, ['present', 'late', 'missing'])) {
                 $checkInTimeOnly = Carbon::parse($checkInTime)->format('H:i:s');
                 
@@ -975,8 +979,14 @@ class AttendanceController extends Controller
             // Prepare insert data
             $insertData = [
                 'student_history_id' => $request->student_history_id,
-                'check_in_time' => $checkInTime,
-                'check_out_time' => $checkOutTime,
+                // Untuk absent: set check_in_time ke 00:00:00 (awal hari)
+                'check_in_time' => in_array($status, ['absent']) 
+                    ? Carbon::parse($checkInTime)->startOfDay() 
+                    : $checkInTime,
+                // Untuk absent: check_out_time selalu null
+                'check_out_time' => in_array($status, ['absent']) 
+                    ? null 
+                    : $checkOutTime,
                 'status' => $status,
                 'is_approved' => $isApproved,
                 'note' => $note,
@@ -984,7 +994,7 @@ class AttendanceController extends Controller
                 'updated_at' => Carbon::now('Asia/Jakarta'),
             ];
 
-            // Add reason and file only for sick/excused
+            // Add reason and file only for sick/excused (TIDAK untuk absent)
             if (in_array($status, ['sick', 'excused'])) {
                 $insertData['reason'] = $request->reason;
                 $insertData['file'] = $fileUrl;
@@ -1068,13 +1078,346 @@ class AttendanceController extends Controller
             ], 500);
         }
     }
+    // public function store(Request $request)
+    // {
+    //     // Validation rules
+    //     $validator = Validator::make($request->all(), [
+    //         'student_history_id' => 'required|exists:student_histories,id',
+    //         'check_in_time' => 'required|date',
+    //         'check_out_time' => 'nullable',
+    //         'status' => 'required|in:present,late,missing,sick,excused,absent',
+    //         'file' => 'nullable|array',
+    //         'file.content' => 'required_with:file|string',
+    //         'file.name' => 'required_with:file|string',
+    //         'file.mime_type' => 'required_with:file|string',
+    //         'reason' => 'nullable|string|max:500',
+    //         'is_approved' => 'nullable|boolean',
+    //         'note' => 'nullable|string|max:500',
+    //     ], [
+    //         'student_history_id.required' => 'ID riwayat siswa harus diisi',
+    //         'student_history_id.exists' => 'Data siswa tidak ditemukan',
+    //         'check_in_time.required' => 'Waktu masuk harus diisi',
+    //         'check_in_time.date' => 'Format waktu masuk tidak valid',
+    //         'status.required' => 'Status harus dipilih',
+    //         'status.in' => 'Status tidak valid',
+    //         'file.image' => 'File harus berupa gambar',
+    //         'file.mimes' => 'File harus berformat jpeg, jpg, atau png',
+    //         'file.max' => 'Ukuran file maksimal 1MB',
+    //         'reason.max' => 'Alasan maksimal 500 karakter',
+    //         'note.max' => 'Catatan maksimal 500 karakter',
+    //     ]);
+
+    //     if ($validator->fails()) {
+    //         return response()->json([
+    //             'status' => 'error',
+    //             'message' => 'Data tidak valid',
+    //             'errors' => $validator->errors()
+    //         ], 422);
+    //     }
+
+    //     try {
+    //         DB::beginTransaction();
+
+    //         $status = $request->status;
+    //         $isApproved = $request->is_approved ?? true;
+    //         $note = $request->note;
+            
+    //         $checkInTime = Carbon::parse($request->check_in_time);
+            
+    //         // Handle check_out_time: empty string = missing, null = no change
+    //         $checkOutTime = null;
+    //         if ($request->has('check_out_time')) {
+    //             if ($request->check_out_time === '' || $request->check_out_time === null) {
+    //                 // Empty = set missing status
+    //                 $checkOutTime = null;
+    //                 if ($status === 'present' || $status === 'late') {
+    //                     $status = 'missing';
+    //                 }
+    //             } else {
+    //                 $checkOutTime = Carbon::parse($request->check_out_time);
+                    
+    //                 // Validate check_out_time after check_in_time
+    //                 if ($checkOutTime && $checkInTime && $checkOutTime->lt($checkInTime)) {
+    //                     return response()->json([
+    //                         'status' => 'error',
+    //                         'message' => 'Waktu pulang harus setelah waktu masuk'
+    //                     ], 400);
+    //                 }
+    //             }
+    //         }
+
+    //         $date = Carbon::parse($checkInTime)->startOfDay();
+
+    //         // Get attendance schedule for validation
+    //         $schedule = $this->getAttendanceSchedule($date);
+            
+    //         if (!$schedule) {
+    //             return response()->json([
+    //                 'status' => 'error',
+    //                 'message' => 'Jadwal presensi tidak ditemukan untuk tanggal ini'
+    //             ], 400);
+    //         }
+
+    //         // Check for duplicate attendance
+    //         $existingAttendance = Attendance::where('student_history_id', $request->student_history_id)
+    //             ->whereDate('check_in_time', $date)
+    //             ->first();
+
+    //         if ($existingAttendance) {
+    //             return response()->json([
+    //                 'status' => 'error',
+    //                 'message' => 'Presensi untuk siswa ini pada tanggal tersebut sudah ada'
+    //             ], 400);
+    //         }
+            
+    //         // sick dan excused HARUS ada reason
+    //         $fileUrl = null;
+    //         if (in_array($status, ['sick', 'excused'])) {
+    //             // Validasi reason
+    //             if (empty($request->reason)) {
+    //                 return response()->json([
+    //                     'status' => 'error',
+    //                     'message' => 'Alasan harus diisi untuk status ' . 
+    //                             ($status === 'sick' ? 'sakit' : 'izin')
+    //                 ], 400);
+    //             }
+
+    //             // Handle file upload
+    //             if ($request->has('file') && is_array($request->file)) {
+    //                 // Validasi file structure
+    //                 if (!isset($request->file['content']) || !isset($request->file['name']) || !isset($request->file['mime_type'])) {
+    //                     return response()->json([
+    //                         'status' => 'error',
+    //                         'message' => 'Format file tidak valid'
+    //                     ], 400);
+    //                 }
+
+    //                 try {
+    //                     // Decode base64 dan simpan file
+    //                     $fileContent = base64_decode($request->file['content']);
+                        
+    //                     // Validasi apakah decode berhasil
+    //                     if ($fileContent === false) {
+    //                         return response()->json([
+    //                             'status' => 'error',
+    //                             'message' => 'File tidak valid'
+    //                         ], 400);
+    //                     }
+
+    //                     // Generate filename yang aman
+    //                     $extension = pathinfo($request->file['name'], PATHINFO_EXTENSION);
+    //                     $fileName = time() . '_' . uniqid() . '.' . $extension;
+    //                     $filePath = 'attendance/' . $fileName;
+                        
+    //                     // Simpan file
+    //                     Storage::disk('public')->put($filePath, $fileContent);
+                        
+    //                     // Update path
+    //                     $fileUrl = $filePath;
+                        
+    //                     Log::info('File uploaded successfully', [
+    //                         'file_path' => $filePath,
+    //                         'file_size' => strlen($fileContent)
+    //                     ]);
+                        
+    //                 } catch (\Exception $e) {
+    //                     Log::error('File upload error', [
+    //                         'error' => $e->getMessage()
+    //                     ]);
+                        
+    //                     return response()->json([
+    //                         'status' => 'error',
+    //                         'message' => 'Gagal mengupload file: ' . $e->getMessage()
+    //                     ], 500);
+    //                 }
+    //             }
+                
+    //         } else {
+    //             // present, late, missing TIDAK BOLEH ada reason dan file
+    //             if ($request->filled('reason')) {
+    //                 return response()->json([
+    //                     'status' => 'error',
+    //                     'message' => 'Alasan hanya dapat diisi untuk status sakit atau izin'
+    //                 ], 400);
+    //             }
+                
+    //             if ($request->has('file')) {
+    //                 return response()->json([
+    //                     'status' => 'error',
+    //                     'message' => 'File hanya dapat diupload untuk status sakit atau izin'
+    //                 ], 400);
+    //             }
+    //         }
+
+    //         // Note hanya untuk is_approved = false
+    //         if ($isApproved && $request->filled('note')) {
+    //             return response()->json([
+    //                 'status' => 'error',
+    //                 'message' => 'Catatan hanya dapat diisi jika presensi tidak disetujui'
+    //             ], 400);
+    //         }
+
+    //         // Clear note if approved
+    //         if ($isApproved) {
+    //             $note = null;
+    //         }
+
+    //         // ==========================================
+    //         // VALIDATE TIME AGAINST SCHEDULE
+    //         // ==========================================
+            
+    //         // Only validate time for present, late, missing status
+    //         if (in_array($status, ['present', 'late', 'missing'])) {
+    //             $checkInTimeOnly = Carbon::parse($checkInTime)->format('H:i:s');
+                
+    //             // Validate check-in time using existing method
+    //             $validation = $this->validateAttendanceTime($checkInTimeOnly, $schedule, null);
+                
+    //             if (!$validation['allowed']) {
+    //                 return response()->json([
+    //                     'status' => 'error',
+    //                     'message' => $validation['message']
+    //                 ], 400);
+    //             }
+
+    //             // Auto-detect if late based on schedule
+    //             if ($checkInTimeOnly > $schedule->check_in_end) {
+    //                 $status = 'late';
+    //             } else if ($checkInTimeOnly >= $schedule->check_in_start && $checkInTimeOnly <= $schedule->check_in_end) {
+    //                 // Only override to 'present' if user explicitly set it to 'present'
+    //                 if ($status === 'present') {
+    //                     $status = 'present';
+    //                 }
+    //             }
+
+    //             // Validate check-out time if provided
+    //             if ($checkOutTime) {
+    //                 $checkOutTimeOnly = Carbon::parse($checkOutTime)->format('H:i:s');
+                    
+    //                 // Create dummy attendance object for validation
+    //                 $dummyAttendance = new \stdClass();
+    //                 $dummyAttendance->check_out_time = null;
+                    
+    //                 $checkOutValidation = $this->validateAttendanceTime($checkOutTimeOnly, $schedule, $dummyAttendance);
+                    
+    //                 if (!$checkOutValidation['allowed']) {
+    //                     return response()->json([
+    //                         'status' => 'error',
+    //                         'message' => $checkOutValidation['message']
+    //                     ], 400);
+    //                 }
+    //             }
+    //         }
+
+    //         // ==========================================
+    //         // CREATE ATTENDANCE
+    //         // ==========================================
+            
+    //         // Prepare insert data
+    //         $insertData = [
+    //             'student_history_id' => $request->student_history_id,
+    //             'check_in_time' => $checkInTime,
+    //             'check_out_time' => $checkOutTime,
+    //             'status' => $status,
+    //             'is_approved' => $isApproved,
+    //             'note' => $note,
+    //             'created_at' => Carbon::now('Asia/Jakarta'),
+    //             'updated_at' => Carbon::now('Asia/Jakarta'),
+    //         ];
+
+    //         // Add reason and file only for sick/excused
+    //         if (in_array($status, ['sick', 'excused'])) {
+    //             $insertData['reason'] = $request->reason;
+    //             $insertData['file'] = $fileUrl;
+    //         } else {
+    //             $insertData['reason'] = null;
+    //             $insertData['file'] = null;
+    //         }
+
+    //         // Insert attendance
+    //         $attendanceId = DB::table('attendances')->insertGetId($insertData);
+
+    //         // Get the created attendance with relations
+    //         $attendance = Attendance::with(['student_histories.students', 'student_histories.groups'])
+    //             ->findOrFail($attendanceId);
+
+    //         DB::commit();
+
+    //         // Log activity
+    //         Log::info('Attendance created', [
+    //             'attendance_id' => $attendanceId,
+    //             'student_id' => $attendance->student_histories->students->id ?? null,
+    //             'status' => $status,
+    //             'created_by' => auth()->id(),
+    //         ]);
+
+    //         // Direct response
+    //         return response()->json([
+    //             'status' => 'success',
+    //             'message' => 'Presensi berhasil dibuat',
+    //             'data' => [
+    //                 'id' => $attendance->id,
+    //                 'student_history_id' => $attendance->student_history_id,
+    //                 'check_in_time' => $attendance->check_in_time 
+    //                     ? Carbon::parse($attendance->check_in_time)->format('Y-m-d H:i:s')
+    //                     : null,
+    //                 'check_out_time' => $attendance->check_out_time 
+    //                     ? Carbon::parse($attendance->check_out_time)->format('Y-m-d H:i:s')
+    //                     : null,
+    //                 'status' => $attendance->status,
+    //                 'reason' => $attendance->reason,
+    //                 'file' => $attendance->file 
+    //                     ? Storage::url($attendance->file) 
+    //                     : null,
+    //                 'is_approved' => (bool) $attendance->is_approved,
+    //                 'note' => $attendance->note,
+    //                 'student' => [
+    //                     'id' => $attendance->student_histories->students->id ?? null,
+    //                     'name' => $attendance->student_histories->students->name ?? '-',
+    //                     'nis' => $attendance->student_histories->students->nis ?? '-',
+    //                     'photo' => $attendance->student_histories->students->photo ?? null,
+    //                 ],
+    //                 'group' => [
+    //                     'id' => $attendance->student_histories->groups->id ?? null,
+    //                     'name' => $attendance->student_histories->groups->name ?? '-',
+    //                 ],
+    //                 'created_at' => $attendance->created_at 
+    //                     ? Carbon::parse($attendance->created_at)->format('Y-m-d H:i:s')
+    //                     : null,
+    //                 'updated_at' => $attendance->updated_at 
+    //                     ? Carbon::parse($attendance->updated_at)->format('Y-m-d H:i:s')
+    //                     : null,
+    //             ]
+    //         ], 201);
+
+    //     } catch (\Exception $e) {
+    //         DB::rollback();
+            
+    //         // Delete uploaded file if exists
+    //         if (isset($fileUrl) && $fileUrl && Storage::disk('public')->exists($fileUrl)) {
+    //             Storage::disk('public')->delete($fileUrl);
+    //         }
+            
+    //         Log::error('Create Attendance Error', [
+    //             'error' => $e->getMessage(),
+    //             'trace' => $e->getTraceAsString()
+    //         ]);
+            
+    //         return response()->json([
+    //             'status' => 'error',
+    //             'message' => 'Gagal membuat presensi: ' . $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
+
     public function bulkCreateAttendance(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'date' => 'required|date',
-            'status' => 'required|in:present,late,missing',
+            'status' => 'required|in:present,late,missing,absent', // TAMBAH absent
             'student_history_ids' => 'required|array|min:1',
             'student_history_ids.*' => 'required|exists:student_histories,id',
+            'reason' => 'nullable|string|max:500', // TAMBAH untuk absent
         ], [
             'date.required' => 'Tanggal harus diisi',
             'status.required' => 'Status harus dipilih',
@@ -1097,6 +1440,15 @@ class AttendanceController extends Controller
             $date = Carbon::parse($request->date)->startOfDay();
             $status = $request->status;
             $studentHistoryIds = $request->student_history_ids;
+
+            // Validasi reason untuk sick dan excused (TIDAK untuk absent)
+            if (in_array($status, ['sick', 'excused']) && empty($request->reason)) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Alasan harus diisi untuk status ' . 
+                            ($status === 'sick' ? 'sakit' : 'izin')
+                ], 400);
+            }
 
             // Get schedule
             $schedule = $this->getAttendanceSchedule($date);
@@ -1127,23 +1479,39 @@ class AttendanceController extends Controller
                 ], 400);
             }
 
-            // Generate attendance times based on status
-            $times = $this->generateAttendanceTimes($date, $schedule, $status);
+            // Generate attendance times based on status (kecuali absent)
+            $times = $status !== 'absent' 
+                ? $this->generateAttendanceTimes($date, $schedule, $status)
+                : null;
 
             // Prepare bulk insert data
             $attendancesData = [];
             $now = Carbon::now('Asia/Jakarta');
 
             foreach ($newStudentHistoryIds as $studentHistoryId) {
-                $attendancesData[] = [
+                $attendanceData = [
                     'student_history_id' => $studentHistoryId,
-                    'check_in_time' => $times['check_in_time'],
-                    'check_out_time' => $times['check_out_time'],
                     'status' => $status,
-                    'is_approved' => 1, // Auto approved for bulk
+                    'is_approved' => 1, // Auto approved untuk semua status termasuk absent
                     'created_at' => $now,
                     'updated_at' => $now,
                 ];
+
+                // Set waktu berdasarkan status
+                if ($status === 'absent') {
+                    $attendanceData['check_in_time'] = $date->copy()->startOfDay(); // 00:00:00
+                    $attendanceData['check_out_time'] = null;
+                    // absent tidak ada reason
+                } elseif (in_array($status, ['sick', 'excused'])) {
+                    $attendanceData['check_in_time'] = $date->copy()->startOfDay();
+                    $attendanceData['check_out_time'] = null;
+                    $attendanceData['reason'] = $request->reason ?? null;
+                } else {
+                    $attendanceData['check_in_time'] = $times['check_in_time'];
+                    $attendanceData['check_out_time'] = $times['check_out_time'];
+                }
+
+                $attendancesData[] = $attendanceData;
             }
 
             // Bulk insert
@@ -1174,6 +1542,113 @@ class AttendanceController extends Controller
             ], 500);
         }
     }
+    // public function bulkCreateAttendance(Request $request)
+    // {
+    //     $validator = Validator::make($request->all(), [
+    //         'date' => 'required|date',
+    //         'status' => 'required|in:present,late,missing',
+    //         'student_history_ids' => 'required|array|min:1',
+    //         'student_history_ids.*' => 'required|exists:student_histories,id',
+    //     ], [
+    //         'date.required' => 'Tanggal harus diisi',
+    //         'status.required' => 'Status harus dipilih',
+    //         'status.in' => 'Status tidak valid',
+    //         'student_history_ids.required' => 'Pilih minimal 1 siswa',
+    //         'student_history_ids.min' => 'Pilih minimal 1 siswa',
+    //     ]);
+
+    //     if ($validator->fails()) {
+    //         return response()->json([
+    //             'status' => 'error',
+    //             'message' => 'Data tidak valid',
+    //             'errors' => $validator->errors()
+    //         ], 422);
+    //     }
+
+    //     try {
+    //         DB::beginTransaction();
+
+    //         $date = Carbon::parse($request->date)->startOfDay();
+    //         $status = $request->status;
+    //         $studentHistoryIds = $request->student_history_ids;
+
+    //         // Get schedule
+    //         $schedule = $this->getAttendanceSchedule($date);
+            
+    //         if (!$schedule) {
+    //             return response()->json([
+    //                 'status' => 'error',
+    //                 'message' => 'Jadwal presensi tidak ditemukan untuk tanggal ini'
+    //             ], 400);
+    //         }
+
+    //         // Check existing attendances
+    //         $existingAttendances = Attendance::whereIn('student_history_id', $studentHistoryIds)
+    //             ->whereBetween('check_in_time', [
+    //                 $date->toDateTimeString(),
+    //                 $date->copy()->endOfDay()->toDateTimeString()
+    //             ])
+    //             ->pluck('student_history_id')
+    //             ->toArray();
+
+    //         // Filter out students who already have attendance
+    //         $newStudentHistoryIds = array_diff($studentHistoryIds, $existingAttendances);
+
+    //         if (empty($newStudentHistoryIds)) {
+    //             return response()->json([
+    //                 'status' => 'error',
+    //                 'message' => 'Semua siswa yang dipilih sudah memiliki presensi hari ini'
+    //             ], 400);
+    //         }
+
+    //         // Generate attendance times based on status
+    //         $times = $this->generateAttendanceTimes($date, $schedule, $status);
+
+    //         // Prepare bulk insert data
+    //         $attendancesData = [];
+    //         $now = Carbon::now('Asia/Jakarta');
+
+    //         foreach ($newStudentHistoryIds as $studentHistoryId) {
+    //             $attendancesData[] = [
+    //                 'student_history_id' => $studentHistoryId,
+    //                 'check_in_time' => $times['check_in_time'],
+    //                 'check_out_time' => $times['check_out_time'],
+    //                 'status' => $status,
+    //                 'is_approved' => 1, // Auto approved for bulk
+    //                 'created_at' => $now,
+    //                 'updated_at' => $now,
+    //             ];
+    //         }
+
+    //         // Bulk insert
+    //         DB::table('attendances')->insert($attendancesData);
+
+    //         DB::commit();
+
+    //         $skippedCount = count($existingAttendances);
+    //         $createdCount = count($newStudentHistoryIds);
+
+    //         return response()->json([
+    //             'status' => 'success',
+    //             'message' => "Berhasil menambahkan {$createdCount} presensi" . 
+    //                        ($skippedCount > 0 ? ", {$skippedCount} siswa dilewati (sudah presensi)" : ""),
+    //             'data' => [
+    //                 'created' => $createdCount,
+    //                 'skipped' => $skippedCount,
+    //                 'total_selected' => count($studentHistoryIds),
+    //             ]
+    //         ]);
+
+    //     } catch (\Exception $e) {
+    //         DB::rollback();
+            
+    //         return response()->json([
+    //             'status' => 'error',
+    //             'message' => 'Gagal menambahkan presensi: ' . $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
+    
     public function destroy($id)
     {
         try {
@@ -1206,7 +1681,7 @@ class AttendanceController extends Controller
         $validator = Validator::make($request->all(), [
             'check_in_time' => 'nullable|date',
             'check_out_time' => 'nullable',
-            'status' => 'required|in:present,late,missing,sick,excused',
+            'status' => 'required|in:present,late,missing,sick,excused,absent', // TAMBAH absent
             'file' => 'nullable|array',
             'file.content' => 'required_with:file|string',
             'file.name' => 'required_with:file|string',
@@ -1292,7 +1767,7 @@ class AttendanceController extends Controller
                 ], 400);
             }
             
-            // sick dan excused HARUS ada reason
+            // sick dan excused HARUS ada reason (absent TIDAK PERLU)
             if (in_array($status, ['sick', 'excused'])) {
                 // Validasi reason
                 if (empty($request->reason)) {
@@ -1364,7 +1839,7 @@ class AttendanceController extends Controller
                 }
                 
             } else {
-                // present, late, missing TIDAK BOLEH ada reason dan file
+                // present, late, missing, absent TIDAK BOLEH ada reason dan file
                 if ($request->filled('reason')) {
                     return response()->json([
                         'status' => 'error',
@@ -1387,67 +1862,6 @@ class AttendanceController extends Controller
                     Storage::disk('public')->delete($attendance->file);
                 }
             }
-            // if (in_array($status, ['sick', 'excused'])) {
-            //     if (empty($request->reason)) {
-            //         return response()->json([
-            //             'status' => 'error',
-            //             'message' => 'Alasan harus diisi untuk status ' . 
-            //                        ($status === 'sick' ? 'sakit' : 'izin')
-            //         ], 400);
-            //     }
-
-            //     // Validate file for sick/excused (optional but if provided must be valid)
-            //     if (isset($validator['file'])) {
-            //         if ($attendance->file) {
-            //             Storage::disk('public')->delete($attendance->file);
-            //         }
-
-            //         $fileContent = base64_decode($validator['file']['content']);
-            //         $fileName = time() . '_' . $validator['file']['name'];
-            //         $filePath = 'attendance/' . $fileName;
-                    
-            //         Storage::disk('public')->put($filePath, $fileContent);
-                    
-            //         $validator['file'] = $filePath;
-            //         unset($validator['file']);
-            //     }
-            //     // $fileUrl = $attendance->file;
-                
-            //     // if ($request->hasFile('file')) {
-            //     //     if ($fileUrl && Storage::disk('public')->exists($fileUrl)) {
-            //     //         Storage::disk('public')->delete($fileUrl);
-            //     //     }
-
-
-            //     //     $file = $request->file('file');
-            //     //     $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-            //     //     $fileUrl = $file->storeAs('attendance_files', $filename, 'public');
-            //     // }
-            // } else {
-            //     // present, late, missing TIDAK BOLEH ada reason dan file
-            //     if ($request->filled('reason')) {
-            //         return response()->json([
-            //             'status' => 'error',
-            //             'message' => 'Alasan hanya dapat diisi untuk status sakit atau izin'
-            //         ], 400);
-            //     }
-                
-            //     if ($request->hasFile('file')) {
-            //         return response()->json([
-            //             'status' => 'error',
-            //             'message' => 'File hanya dapat diupload untuk status sakit atau izin'
-            //         ], 400);
-            //     }
-
-            //     // Clear reason and file if changing from sick/excused to other status
-            //     $request->merge(['reason' => null]);
-            //     $fileUrl = null;
-                
-            //     // Delete file if exists
-            //     if ($attendance->file && Storage::disk('public')->exists($attendance->file)) {
-            //         Storage::disk('public')->delete($attendance->file);
-            //     }
-            // }
 
             // Note hanya untuk is_approved = false
             if ($isApproved && $request->filled('note')) {
@@ -1466,7 +1880,7 @@ class AttendanceController extends Controller
             // VALIDATE TIME AGAINST SCHEDULE
             // ==========================================
             
-            // Only validate time for present, late, missing status
+            // Only validate time for present, late, missing status (tidak validasi untuk sick, excused, absent)
             if (in_array($status, ['present', 'late', 'missing'])) {
                 $checkInTimeOnly = Carbon::parse($checkInTime)->format('H:i:s');
                 
@@ -1515,15 +1929,21 @@ class AttendanceController extends Controller
             
             // Prepare update data
             $updateData = [
-                'check_in_time' => $checkInTime,
-                'check_out_time' => $checkOutTime,
+                // Untuk absent: set check_in_time ke 00:00:00 (awal hari)
+                'check_in_time' => in_array($status, ['absent']) 
+                    ? Carbon::parse($checkInTime)->startOfDay() 
+                    : $checkInTime,
+                // Untuk absent: check_out_time selalu null
+                'check_out_time' => in_array($status, ['absent']) 
+                    ? null 
+                    : $checkOutTime,
                 'status' => $status,
                 'is_approved' => $isApproved,
                 'note' => $note,
                 'updated_at' => Carbon::now('Asia/Jakarta'),
             ];
 
-            // Add reason and file only for sick/excused
+            // Add reason and file only for sick/excused (TIDAK untuk absent)
             if (in_array($status, ['sick', 'excused'])) {
                 $updateData['reason'] = $request->reason;
                 $updateData['file'] = $fileUrl;
@@ -1551,7 +1971,7 @@ class AttendanceController extends Controller
                 'updated_by' => auth()->id(),
             ]);
 
-            // Direct response (tidak pakai transform method)
+            // Direct response
             return response()->json([
                 'status' => 'success',
                 'message' => 'Presensi berhasil diperbarui',
@@ -1613,6 +2033,419 @@ class AttendanceController extends Controller
             ], 500);
         }
     }
+    // public function update(Request $request, $id)
+    // {
+    //     // Validation rules
+    //     $validator = Validator::make($request->all(), [
+    //         'check_in_time' => 'nullable|date',
+    //         'check_out_time' => 'nullable',
+    //         'status' => 'required|in:present,late,missing,sick,excused',
+    //         'file' => 'nullable|array',
+    //         'file.content' => 'required_with:file|string',
+    //         'file.name' => 'required_with:file|string',
+    //         'file.mime_type' => 'required_with:file|string',
+    //         'reason' => 'nullable|string|max:500',
+    //         'is_approved' => 'nullable|boolean',
+    //         'note' => 'nullable|string|max:500',
+    //     ], [
+    //         'check_in_time.date' => 'Format waktu masuk tidak valid',
+    //         'status.required' => 'Status harus dipilih',
+    //         'status.in' => 'Status tidak valid',
+    //         'file.image' => 'File harus berupa gambar',
+    //         'file.mimes' => 'File harus berformat jpeg, jpg, atau png',
+    //         'file.max' => 'Ukuran file maksimal 1MB',
+    //         'reason.max' => 'Alasan maksimal 500 karakter',
+    //         'note.max' => 'Catatan maksimal 500 karakter',
+    //     ]);
+
+    //     if ($validator->fails()) {
+    //         return response()->json([
+    //             'status' => 'error',
+    //             'message' => 'Data tidak valid',
+    //             'errors' => $validator->errors()
+    //         ], 422);
+    //     }
+
+    //     try {
+    //         DB::beginTransaction();
+
+    //         // Find attendance record
+    //         $attendance = Attendance::with(['student_histories.students', 'student_histories.groups'])
+    //             ->findOrFail($id);
+
+    //         $status = $request->status;
+    //         $isApproved = $request->is_approved ?? $attendance->is_approved;
+    //         $note = $request->note ?? $attendance->note;
+            
+    //         $checkInTime = $request->check_in_time 
+    //             ? Carbon::parse($request->check_in_time) 
+    //             : $attendance->check_in_time;
+            
+    //         // Handle check_out_time: empty string = missing, null = no change
+    //         $checkOutTime = null;
+    //         if ($request->has('check_out_time')) {
+    //             if ($request->check_out_time === '' || $request->check_out_time === null) {
+    //                 // Empty = set missing status
+    //                 $checkOutTime = null;
+    //                 if ($status === 'present' || $status === 'late') {
+    //                     $status = 'missing';
+    //                 }
+    //             } else {
+    //                 $checkOutTime = Carbon::parse($request->check_out_time);
+                    
+    //                 // Validate check_out_time after check_in_time
+    //                 if ($checkOutTime && $checkInTime && $checkOutTime->lt($checkInTime)) {
+    //                     return response()->json([
+    //                         'status' => 'error',
+    //                         'message' => 'Waktu pulang harus setelah waktu masuk'
+    //                     ], 400);
+    //                 }
+    //             }
+    //         } else {
+    //             $checkOutTime = $attendance->check_out_time;
+    //         }
+
+    //         // Validate check-in time exists
+    //         if (!$checkInTime) {
+    //             return response()->json([
+    //                 'status' => 'error',
+    //                 'message' => 'Waktu masuk harus diisi'
+    //             ], 400);
+    //         }
+
+    //         $date = Carbon::parse($checkInTime)->startOfDay();
+
+    //         // Get attendance schedule for validation
+    //         $schedule = $this->getAttendanceSchedule($date);
+            
+    //         if (!$schedule) {
+    //             return response()->json([
+    //                 'status' => 'error',
+    //                 'message' => 'Jadwal presensi tidak ditemukan untuk tanggal ini'
+    //             ], 400);
+    //         }
+            
+    //         // sick dan excused HARUS ada reason
+    //         if (in_array($status, ['sick', 'excused'])) {
+    //             // Validasi reason
+    //             if (empty($request->reason)) {
+    //                 return response()->json([
+    //                     'status' => 'error',
+    //                     'message' => 'Alasan harus diisi untuk status ' . 
+    //                             ($status === 'sick' ? 'sakit' : 'izin')
+    //                 ], 400);
+    //             }
+
+    //             // Initialize dengan file yang sudah ada (jika tidak ada upload baru)
+    //             $fileUrl = $attendance->file;
+
+    //             // Handle file upload baru
+    //             if ($request->has('file') && is_array($request->file)) {
+    //                 // Validasi file structure
+    //                 if (!isset($request->file['content']) || !isset($request->file['name']) || !isset($request->file['mime_type'])) {
+    //                     return response()->json([
+    //                         'status' => 'error',
+    //                         'message' => 'Format file tidak valid'
+    //                     ], 400);
+    //                 }
+
+    //                 try {
+    //                     // Hapus file lama jika ada
+    //                     if ($attendance->file && Storage::disk('public')->exists($attendance->file)) {
+    //                         Storage::disk('public')->delete($attendance->file);
+    //                     }
+
+    //                     // Decode base64 dan simpan file baru
+    //                     $fileContent = base64_decode($request->file['content']);
+                        
+    //                     // Validasi apakah decode berhasil
+    //                     if ($fileContent === false) {
+    //                         return response()->json([
+    //                             'status' => 'error',
+    //                             'message' => 'File tidak valid'
+    //                         ], 400);
+    //                     }
+
+    //                     // Generate filename yang aman
+    //                     $extension = pathinfo($request->file['name'], PATHINFO_EXTENSION);
+    //                     $fileName = time() . '_' . uniqid() . '.' . $extension;
+    //                     $filePath = 'attendance/' . $fileName;
+                        
+    //                     // Simpan file
+    //                     Storage::disk('public')->put($filePath, $fileContent);
+                        
+    //                     // Update path
+    //                     $fileUrl = $filePath;
+                        
+    //                     Log::info('File uploaded successfully', [
+    //                         'attendance_id' => $id,
+    //                         'file_path' => $filePath,
+    //                         'file_size' => strlen($fileContent)
+    //                     ]);
+                        
+    //                 } catch (\Exception $e) {
+    //                     Log::error('File upload error', [
+    //                         'attendance_id' => $id,
+    //                         'error' => $e->getMessage()
+    //                     ]);
+                        
+    //                     return response()->json([
+    //                         'status' => 'error',
+    //                         'message' => 'Gagal mengupload file: ' . $e->getMessage()
+    //                     ], 500);
+    //                 }
+    //             }
+                
+    //         } else {
+    //             // present, late, missing TIDAK BOLEH ada reason dan file
+    //             if ($request->filled('reason')) {
+    //                 return response()->json([
+    //                     'status' => 'error',
+    //                     'message' => 'Alasan hanya dapat diisi untuk status sakit atau izin'
+    //                 ], 400);
+    //             }
+                
+    //             if ($request->has('file')) {
+    //                 return response()->json([
+    //                     'status' => 'error',
+    //                     'message' => 'File hanya dapat diupload untuk status sakit atau izin'
+    //                 ], 400);
+    //             }
+
+    //             // Set fileUrl ke null untuk status selain sick/excused
+    //             $fileUrl = null;
+                
+    //             // Hapus file lama jika ada
+    //             if ($attendance->file && Storage::disk('public')->exists($attendance->file)) {
+    //                 Storage::disk('public')->delete($attendance->file);
+    //             }
+    //         }
+    //         // if (in_array($status, ['sick', 'excused'])) {
+    //         //     if (empty($request->reason)) {
+    //         //         return response()->json([
+    //         //             'status' => 'error',
+    //         //             'message' => 'Alasan harus diisi untuk status ' . 
+    //         //                        ($status === 'sick' ? 'sakit' : 'izin')
+    //         //         ], 400);
+    //         //     }
+
+    //         //     // Validate file for sick/excused (optional but if provided must be valid)
+    //         //     if (isset($validator['file'])) {
+    //         //         if ($attendance->file) {
+    //         //             Storage::disk('public')->delete($attendance->file);
+    //         //         }
+
+    //         //         $fileContent = base64_decode($validator['file']['content']);
+    //         //         $fileName = time() . '_' . $validator['file']['name'];
+    //         //         $filePath = 'attendance/' . $fileName;
+                    
+    //         //         Storage::disk('public')->put($filePath, $fileContent);
+                    
+    //         //         $validator['file'] = $filePath;
+    //         //         unset($validator['file']);
+    //         //     }
+    //         //     // $fileUrl = $attendance->file;
+                
+    //         //     // if ($request->hasFile('file')) {
+    //         //     //     if ($fileUrl && Storage::disk('public')->exists($fileUrl)) {
+    //         //     //         Storage::disk('public')->delete($fileUrl);
+    //         //     //     }
+
+
+    //         //     //     $file = $request->file('file');
+    //         //     //     $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+    //         //     //     $fileUrl = $file->storeAs('attendance_files', $filename, 'public');
+    //         //     // }
+    //         // } else {
+    //         //     // present, late, missing TIDAK BOLEH ada reason dan file
+    //         //     if ($request->filled('reason')) {
+    //         //         return response()->json([
+    //         //             'status' => 'error',
+    //         //             'message' => 'Alasan hanya dapat diisi untuk status sakit atau izin'
+    //         //         ], 400);
+    //         //     }
+                
+    //         //     if ($request->hasFile('file')) {
+    //         //         return response()->json([
+    //         //             'status' => 'error',
+    //         //             'message' => 'File hanya dapat diupload untuk status sakit atau izin'
+    //         //         ], 400);
+    //         //     }
+
+    //         //     // Clear reason and file if changing from sick/excused to other status
+    //         //     $request->merge(['reason' => null]);
+    //         //     $fileUrl = null;
+                
+    //         //     // Delete file if exists
+    //         //     if ($attendance->file && Storage::disk('public')->exists($attendance->file)) {
+    //         //         Storage::disk('public')->delete($attendance->file);
+    //         //     }
+    //         // }
+
+    //         // Note hanya untuk is_approved = false
+    //         if ($isApproved && $request->filled('note')) {
+    //             return response()->json([
+    //                 'status' => 'error',
+    //                 'message' => 'Catatan hanya dapat diisi jika presensi tidak disetujui'
+    //             ], 400);
+    //         }
+
+    //         // Clear note if approved
+    //         if ($isApproved) {
+    //             $note = null;
+    //         }
+
+    //         // ==========================================
+    //         // VALIDATE TIME AGAINST SCHEDULE
+    //         // ==========================================
+            
+    //         // Only validate time for present, late, missing status
+    //         if (in_array($status, ['present', 'late', 'missing'])) {
+    //             $checkInTimeOnly = Carbon::parse($checkInTime)->format('H:i:s');
+                
+    //             // Validate check-in time using existing method
+    //             $validation = $this->validateAttendanceTime($checkInTimeOnly, $schedule, null);
+                
+    //             if (!$validation['allowed']) {
+    //                 return response()->json([
+    //                     'status' => 'error',
+    //                     'message' => $validation['message']
+    //                 ], 400);
+    //             }
+
+    //             // Auto-detect if late based on schedule
+    //             if ($checkInTimeOnly > $schedule->check_in_end) {
+    //                 $status = 'late';
+    //             } else if ($checkInTimeOnly >= $schedule->check_in_start && $checkInTimeOnly <= $schedule->check_in_end) {
+    //                 // Only override to 'present' if user explicitly set it to 'present'
+    //                 if ($status === 'present') {
+    //                     $status = 'present';
+    //                 }
+    //             }
+
+    //             // Validate check-out time if provided
+    //             if ($checkOutTime) {
+    //                 $checkOutTimeOnly = Carbon::parse($checkOutTime)->format('H:i:s');
+                    
+    //                 // Create dummy attendance object for validation
+    //                 $dummyAttendance = new \stdClass();
+    //                 $dummyAttendance->check_out_time = null;
+                    
+    //                 $checkOutValidation = $this->validateAttendanceTime($checkOutTimeOnly, $schedule, $dummyAttendance);
+                    
+    //                 if (!$checkOutValidation['allowed']) {
+    //                     return response()->json([
+    //                         'status' => 'error',
+    //                         'message' => $checkOutValidation['message']
+    //                     ], 400);
+    //                 }
+    //             }
+    //         }
+
+    //         // ==========================================
+    //         // UPDATE ATTENDANCE
+    //         // ==========================================
+            
+    //         // Prepare update data
+    //         $updateData = [
+    //             'check_in_time' => $checkInTime,
+    //             'check_out_time' => $checkOutTime,
+    //             'status' => $status,
+    //             'is_approved' => $isApproved,
+    //             'note' => $note,
+    //             'updated_at' => Carbon::now('Asia/Jakarta'),
+    //         ];
+
+    //         // Add reason and file only for sick/excused
+    //         if (in_array($status, ['sick', 'excused'])) {
+    //             $updateData['reason'] = $request->reason;
+    //             $updateData['file'] = $fileUrl;
+    //         } else {
+    //             $updateData['reason'] = null;
+    //             $updateData['file'] = null;
+    //         }
+
+    //         // Use query builder for better performance
+    //         DB::table('attendances')
+    //             ->where('id', $id)
+    //             ->update($updateData);
+
+    //         // Refresh model for response
+    //         $attendance->refresh();
+
+    //         DB::commit();
+
+    //         // Log activity
+    //         Log::info('Attendance updated', [
+    //             'attendance_id' => $id,
+    //             'student_id' => $attendance->student_histories->students->id ?? null,
+    //             'old_status' => $attendance->getOriginal('status'),
+    //             'new_status' => $status,
+    //             'updated_by' => auth()->id(),
+    //         ]);
+
+    //         // Direct response (tidak pakai transform method)
+    //         return response()->json([
+    //             'status' => 'success',
+    //             'message' => 'Presensi berhasil diperbarui',
+    //             'data' => [
+    //                 'id' => $attendance->id,
+    //                 'student_history_id' => $attendance->student_history_id,
+    //                 'check_in_time' => $attendance->check_in_time 
+    //                     ? Carbon::parse($attendance->check_in_time)->format('Y-m-d H:i:s')
+    //                     : null,
+    //                 'check_out_time' => $attendance->check_out_time 
+    //                     ? Carbon::parse($attendance->check_out_time)->format('Y-m-d H:i:s')
+    //                     : null,
+    //                 'status' => $attendance->status,
+    //                 'reason' => $attendance->reason,
+    //                 'file' => $attendance->file 
+    //                     ? Storage::url($attendance->file) 
+    //                     : null,
+    //                 'is_approved' => (bool) $attendance->is_approved,
+    //                 'note' => $attendance->note,
+    //                 'student' => [
+    //                     'id' => $attendance->student_histories->students->id ?? null,
+    //                     'name' => $attendance->student_histories->students->name ?? '-',
+    //                     'nis' => $attendance->student_histories->students->nis ?? '-',
+    //                     'photo' => $attendance->student_histories->students->photo ?? null,
+    //                 ],
+    //                 'group' => [
+    //                     'id' => $attendance->student_histories->groups->id ?? null,
+    //                     'name' => $attendance->student_histories->groups->name ?? '-',
+    //                 ],
+    //                 'created_at' => $attendance->created_at 
+    //                     ? Carbon::parse($attendance->created_at)->format('Y-m-d H:i:s')
+    //                     : null,
+    //                 'updated_at' => $attendance->updated_at 
+    //                     ? Carbon::parse($attendance->updated_at)->format('Y-m-d H:i:s')
+    //                     : null,
+    //             ]
+    //         ]);
+
+    //     } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+    //         DB::rollback();
+            
+    //         return response()->json([
+    //             'status' => 'error',
+    //             'message' => 'Data presensi tidak ditemukan'
+    //         ], 404);
+
+    //     } catch (\Exception $e) {
+    //         DB::rollback();
+            
+    //         Log::error('Update Attendance Error', [
+    //             'attendance_id' => $id,
+    //             'error' => $e->getMessage(),
+    //             'trace' => $e->getTraceAsString()
+    //         ]);
+            
+    //         return response()->json([
+    //             'status' => 'error',
+    //             'message' => 'Gagal memperbarui presensi: ' . $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
     
     public function rfidAttendance(Request $request)
     {
@@ -1736,27 +2569,27 @@ class AttendanceController extends Controller
 
             DB::commit();
 
-            try {
-                $whatsapp = app(WhatsAppService::class);
+            // try {
+            //     $whatsapp = app(WhatsAppService::class);
                 
-                if ($action === 'check_in') {
-                    if ($attendance->status === 'late') {
-                        $checkInEnd = Carbon::parse($today->toDateString() . ' ' . $schedule->check_in_end);
-                        $lateMinutes = $checkInEnd->diffInMinutes($now);
-                        $whatsapp->sendLateNotification($studentData, $attendance, $studentHistory, $lateMinutes);
-                    } else {
-                        $whatsapp->sendCheckInNotification($studentData, $attendance, $studentHistory);
-                    }
-                } else {
-                    $whatsapp->sendCheckOutNotification($studentData, $attendance, $studentHistory);
-                }
-            } catch (\Exception $e) {
-                // Jangan throw error - WhatsApp gagal tidak boleh break presensi
-                Log::error('WhatsApp queue failed (non-critical)', [
-                    'attendance_id' => $attendance->id,
-                    'error' => $e->getMessage()
-                ]);
-            }
+            //     if ($action === 'check_in') {
+            //         if ($attendance->status === 'late') {
+            //             $checkInEnd = Carbon::parse($today->toDateString() . ' ' . $schedule->check_in_end);
+            //             $lateMinutes = $checkInEnd->diffInMinutes($now);
+            //             $whatsapp->sendLateNotification($studentData, $attendance, $studentHistory, $lateMinutes);
+            //         } else {
+            //             $whatsapp->sendCheckInNotification($studentData, $attendance, $studentHistory);
+            //         }
+            //     } else {
+            //         $whatsapp->sendCheckOutNotification($studentData, $attendance, $studentHistory);
+            //     }
+            // } catch (\Exception $e) {
+            //     // Jangan throw error - WhatsApp gagal tidak boleh break presensi
+            //     Log::error('WhatsApp queue failed (non-critical)', [
+            //         'attendance_id' => $attendance->id,
+            //         'error' => $e->getMessage()
+            //     ]);
+            // }
 
             dispatch(function() {
                 try {
@@ -2194,10 +3027,10 @@ class AttendanceController extends Controller
             }
 
             // Ambil presensi hari ini yang check_out_time nya kosong
-            // Kecuali yang sudah berstatus sick atau excused
+            // Kecuali yang sudah berstatus sick, excused, atau absent
             $missingCheckouts = Attendance::whereDate('check_in_time', $today)
                 ->whereNull('check_out_time')
-                ->whereNotIn('status', ['sick', 'excused'])
+                ->whereNotIn('status', ['sick', 'excused', 'absent'])
                 ->whereHas('student_histories', function($q) use ($currentAcademicYear) {
                     $q->where('academic_year_id', $currentAcademicYear->id)
                       ->where('status', 'active');
@@ -2205,12 +3038,32 @@ class AttendanceController extends Controller
                 ->with('student_histories.students')
                 ->get();
 
+            // TAMBAHAN: Ambil siswa yang TIDAK PRESENSI SAMA SEKALI hari ini
+            $studentsWithAttendance = Attendance::whereDate('check_in_time', $today)
+                ->pluck('student_history_id')
+                ->toArray();
+
+            $allActiveStudents = DB::table('student_histories')
+                ->join('students', 'student_histories.student_id', '=', 'students.id')
+                ->where('student_histories.academic_year_id', $currentAcademicYear->id)
+                ->where('student_histories.status', 'active')
+                ->whereNotIn('student_histories.id', $studentsWithAttendance)
+                ->select(
+                    'student_histories.id as student_history_id',
+                    'students.id as student_id',
+                    'students.name as student_name',
+                    'students.nis as student_nis'
+                )
+                ->get();
+
             $stats = [
                 'total_checked' => $missingCheckouts->count(),
                 'updated_to_missing' => 0,
+                'created_absent' => 0, // BARU
                 'details' => []
             ];
 
+            // Update yang sudah check-in tapi belum check-out jadi 'missing'
             foreach ($missingCheckouts as $attendance) {
                 $oldStatus = $attendance->status;
                 
@@ -2227,9 +3080,36 @@ class AttendanceController extends Controller
                     'student_id' => $attendance->student_histories->student_id,
                     'student_name' => $attendance->student_histories->students->name,
                     'nis' => $attendance->student_histories->students->nis,
+                    'action' => 'updated',
                     'old_status' => $oldStatus,
                     'new_status' => 'missing',
                     'check_in_time' => Carbon::parse($attendance->check_in_time)->format('H:i:s')
+                ];
+            }
+
+            // BARU: Create 'absent' untuk siswa yang tidak presensi sama sekali
+            foreach ($allActiveStudents as $student) {
+                $attendance = Attendance::create([
+                    'student_history_id' => $student->student_history_id,
+                    'check_in_time' => $today->copy()->startOfDay(), // 00:00:00
+                    'check_out_time' => null,
+                    'status' => 'absent',
+                    'reason' => null, // absent tidak ada reason
+                    'is_approved' => true, // Auto approved
+                    'note' => "Status 'absent' generated automatically at " . $now->format('Y-m-d H:i:s'),
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]);
+
+                $stats['created_absent']++;
+                $stats['details'][] = [
+                    'student_id' => $student->student_id,
+                    'student_name' => $student->student_name,
+                    'nis' => $student->student_nis,
+                    'action' => 'created',
+                    'old_status' => null,
+                    'new_status' => 'absent',
+                    'check_in_time' => null
                 ];
             }
 
@@ -2237,7 +3117,7 @@ class AttendanceController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'message' => "Berhasil rekap status {$stats['updated_to_missing']} siswa",
+                'message' => "Berhasil rekap status: {$stats['updated_to_missing']} diupdate jadi Tidak Presensi Pulang, {$stats['created_absent']} dibuat jadi Tidak Hadir",
                 'data' => [
                     'generated_at' => $now->toDateTimeString(),
                     'date' => $today->format('Y-m-d'),
@@ -2253,4 +3133,101 @@ class AttendanceController extends Controller
             ], 500);
         }
     }
+    // public function generateStatus(Request $request)
+    // {
+    //     try {
+    //         DB::beginTransaction();
+
+    //         // Gunakan timezone WIB
+    //         $today = Carbon::now('Asia/Jakarta')->startOfDay();
+    //         $now = Carbon::now('Asia/Jakarta');
+
+    //         // Ambil jadwal hari ini
+    //         $schedule = $this->getAttendanceSchedule($today);
+            
+    //         if (!$schedule) {
+    //             return response()->json([
+    //                 'status' => 'error',
+    //                 'message' => 'Jadwal presensi tidak ditemukan untuk hari ini'
+    //             ], 400);
+    //         }
+
+    //         // Validasi apakah sudah melewati waktu check_out_end
+    //         $currentTime = $now->format('H:i:s');
+    //         if ($currentTime < $schedule->check_out_end) {
+    //             return response()->json([
+    //                 'status' => 'error',
+    //                 'message' => 'Belum waktunya rekap status. Waktu selesai presensi pulang: ' . substr($schedule->check_out_end, 0, 5)
+    //             ], 400);
+    //         }
+
+    //         // Ambil tahun akademik aktif
+    //         $currentAcademicYear = AcademicYear::where('is_active', true)->first();
+    //         if (!$currentAcademicYear) {
+    //             return response()->json([
+    //                 'status' => 'error',
+    //                 'message' => 'Tahun akademik aktif tidak ditemukan'
+    //             ], 400);
+    //         }
+
+    //         // Ambil presensi hari ini yang check_out_time nya kosong
+    //         // Kecuali yang sudah berstatus sick atau excused
+    //         $missingCheckouts = Attendance::whereDate('check_in_time', $today)
+    //             ->whereNull('check_out_time')
+    //             ->whereNotIn('status', ['sick', 'excused'])
+    //             ->whereHas('student_histories', function($q) use ($currentAcademicYear) {
+    //                 $q->where('academic_year_id', $currentAcademicYear->id)
+    //                   ->where('status', 'active');
+    //             })
+    //             ->with('student_histories.students')
+    //             ->get();
+
+    //         $stats = [
+    //             'total_checked' => $missingCheckouts->count(),
+    //             'updated_to_missing' => 0,
+    //             'details' => []
+    //         ];
+
+    //         foreach ($missingCheckouts as $attendance) {
+    //             $oldStatus = $attendance->status;
+                
+    //             // Update ke missing
+    //             $attendance->update([
+    //                 'status' => 'missing',
+    //                 'note' => ($attendance->note ? $attendance->note . ' | ' : '') . 
+    //                           "Status updated from '{$oldStatus}' to 'missing' (no check-out) at " . 
+    //                           $now->format('Y-m-d H:i:s')
+    //             ]);
+
+    //             $stats['updated_to_missing']++;
+    //             $stats['details'][] = [
+    //                 'student_id' => $attendance->student_histories->student_id,
+    //                 'student_name' => $attendance->student_histories->students->name,
+    //                 'nis' => $attendance->student_histories->students->nis,
+    //                 'old_status' => $oldStatus,
+    //                 'new_status' => 'missing',
+    //                 'check_in_time' => Carbon::parse($attendance->check_in_time)->format('H:i:s')
+    //             ];
+    //         }
+
+    //         DB::commit();
+
+    //         return response()->json([
+    //             'status' => 'success',
+    //             'message' => "Berhasil rekap status {$stats['updated_to_missing']} siswa",
+    //             'data' => [
+    //                 'generated_at' => $now->toDateTimeString(),
+    //                 'date' => $today->format('Y-m-d'),
+    //                 'statistics' => $stats
+    //             ]
+    //         ]);
+
+    //     } catch (\Exception $e) {
+    //         DB::rollback();
+    //         return response()->json([
+    //             'status' => 'error',
+    //             'message' => 'Gagal rekap status: ' . $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
 }
