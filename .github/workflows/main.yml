@@ -1,4 +1,4 @@
-name: Laravel to cPanel via FTP yes
+name: Laravel to cPanel via FTP
 
 on:
   push:
